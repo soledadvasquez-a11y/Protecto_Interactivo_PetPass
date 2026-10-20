@@ -1,8 +1,14 @@
+import Header from '/src/components/Header/Header';
 function App() {
   return (
-    <main>
-      <h1>PetPass La Paz</h1>
-    </main>
+    <>
+      <Header />
+
+      <main style={{ padding: '24px' }}>
+        <h1>PetPass La Paz</h1>
+        <p>Proyecto React funcionando correctamente.</p>
+      </main>
+    </>
   );
 }
 
