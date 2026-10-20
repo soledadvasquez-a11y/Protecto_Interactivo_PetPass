@@ -1,0 +1,86 @@
+.pet-card {
+  width: 100%;
+
+  background: var(--color-info-bg);
+  color: var(--color-surface);
+
+  font-family: 'Poppins', sans-serif;
+
+  overflow: hidden;
+
+  cursor: pointer;
+}
+
+.pet-card--compact {
+  min-height: 100px;
+  padding: 14px 18px;
+
+  border-radius: 28px;
+}
+
+.pet-card--detailed {
+  min-height: 327px;
+  padding: 24px;
+
+  border-radius: 67px;
+}
+
+.pet-card__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.pet-card__info {
+  flex: 1;
+}
+
+.pet-card__name {
+  margin: 0 0 8px;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 22px;
+}
+
+.pet-card__info p {
+  margin: 4px 0;
+}
+
+.pet-card__compact-info {
+  font-size: 14px;
+}
+
+.pet-card__photo {
+  width: 110px;
+  height: 110px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+}
+
+.pet-card--compact .pet-card__photo {
+  width: 72px;
+  height: 72px;
+}
+
+.pet-card__actions {
+  margin-top: 20px;
+
+  display: flex;
+  gap: 10px;
+}
+
+.pet-card__action {
+  padding: 8px 14px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: var(--color-surface);
+  color: var(--color-text);
+
+  cursor: pointer;
+}
