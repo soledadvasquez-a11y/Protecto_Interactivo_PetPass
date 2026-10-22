@@ -1,0 +1,36 @@
+.onboarding-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+}
+
+.onboarding-dots__dot {
+  width: 10px;
+  height: 10px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 999px;
+
+  background: var(--color-border);
+
+  cursor: pointer;
+
+  transition:
+    width 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.onboarding-dots__dot:hover {
+  transform: scale(1.1);
+}
+
+.onboarding-dots__dot--active {
+  width: 28px;
+
+  background: var(--color-primary);
+}
