@@ -1,0 +1,120 @@
+.alert-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(94, 90, 87, 0.45);
+}
+
+.alert-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 380px;
+
+  padding: 32px 24px 26px;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+
+  font-family: 'Poppins', sans-serif;
+
+  text-align: center;
+
+  box-shadow: 0 12px 32px rgba(94, 90, 87, 0.18);
+}
+
+.alert-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  background: var(--color-accent);
+  color: var(--color-text);
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+.alert-modal__icon {
+  width: 64px;
+  height: 64px;
+
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.alert-modal--permission .alert-modal__icon {
+  background: var(--color-info-bg);
+  color: var(--color-surface);
+}
+
+.alert-modal--success .alert-modal__icon {
+  background: var(--color-success);
+  color: var(--color-surface);
+}
+
+.alert-modal__title {
+  margin: 0;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+
+  color: var(--color-text);
+}
+
+.alert-modal__message {
+  margin: 12px 0 0;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  color: var(--color-muted);
+}
+
+.alert-modal__actions {
+  display: flex;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 24px;
+}
+
+@media (max-width: 480px) {
+  .alert-modal__actions {
+    flex-direction: column;
+  }
+
+  .alert-modal__actions .button {
+    width: 100%;
+  }
+}
