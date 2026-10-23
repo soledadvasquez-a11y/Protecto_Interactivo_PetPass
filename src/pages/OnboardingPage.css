@@ -1,0 +1,122 @@
+.onboarding-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Colores de fondo exactos con variables de tokens.css */
+.onboarding-page--welcome-1 {
+  background-color: var(--color-info-bg);
+}
+
+.onboarding-page--welcome-2 {
+  background-color: var(--color-accent);
+}
+
+.onboarding-page--welcome-3 {
+  background-color: var(--color-primary);
+}
+
+.onboarding-page__brand {
+  margin-top: 14vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.onboarding-page__logo-img {
+  width: 200px;
+  max-width: 80%;
+  height: auto;
+  filter: brightness(0) invert(1); /* Pone el SVG completamente blanco como en Figma */
+}
+
+/* Tarjeta inferior anclada al fondo de la pantalla */
+.onboarding-page__card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--color-surface);
+  border-top-left-radius: 44px;
+  border-top-right-radius: 44px;
+  padding: 36px 28px 44px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.onboarding-page__copy h1 {
+  margin: 0;
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.onboarding-page__copy p {
+  margin: 12px auto 0;
+  max-width: 300px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.onboarding-page__dots-container {
+  margin-top: 24px;
+}
+
+.onboarding-page__action-wrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Botón circular naranja con flecha (pasos 1 y 2) */
+.onboarding-page__btn-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--color-danger);
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(223, 109, 65, 0.35);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.onboarding-page__btn-circle:hover {
+  transform: scale(1.06);
+  opacity: 0.95;
+}
+
+/* Botón Empezar (paso 3) */
+.onboarding-page__btn-start {
+  padding: 12px 42px;
+  border-radius: 24px;
+  border: none;
+  background-color: var(--color-danger);
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(223, 109, 65, 0.35);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.onboarding-page__btn-start:hover {
+  transform: scale(1.04);
+  opacity: 0.95;
+}
