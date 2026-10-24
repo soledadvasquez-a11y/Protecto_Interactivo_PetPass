@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+.map-page {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  min-height: 80vh; /* Asegura visibilidad independientemente del layout */
+  margin: 0 auto;
+  box-sizing: border-box;
+  background-color: #e8ecf0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1. Header con SearchBar y FilterTabs */
+.map-page__controls {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.map-page__controls .search-bar {
+  background-color: #ffffff;
+  border-radius: 999px;
+  border: 1.5px solid #dcd7ce;
+  min-height: 44px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.map-page__categories {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.map-page__categories::-webkit-scrollbar {
+  display: none;
+}
+
+.map-page .filter-tab {
+  background-color: #ffffff;
+  border: 1.5px solid #5e5a57;
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5e5a57;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.map-page .filter-tab--active {
+  background-color: #a49e49;
+  border-color: #a49e49;
+  color: #ffffff;
+}
+
+/* 2. Canvas interactivo del mapa */
+.map-page__canvas {
+  position: relative;
+  width: 100%;
+  min-height: 520px; /* Le da altura física fija al mapa */
+  flex: 1;
+}
+
+.map-page__map-img {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Marcadores posicionados de forma absoluta */
+.map-page__marker-spot {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.map-page__marker-spot--selected {
+  z-index: 15;
+}
+
+/* Miniatura fotográfica que flota sobre el marcador activo */
+.map-page__bubble-preview {
+  margin-bottom: 6px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 3px solid #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.25s ease-out;
+}
+
+.map-page__bubble-preview img {
+  width: 90px;
+  height: 60px;
+  object-fit: cover;
+  display: block;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 3. Panel inferior de información (PlaceCard adaptable) */
+.map-page__card-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 25;
+  border-top-left-radius: 36px;
+  border-top-right-radius: 36px;
+  padding: 16px 20px 24px;
+  box-sizing: border-box;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+  transition: background-color 0.3s ease;
+}
+
+/* Colores de fondo de la tarjeta según el tipo en Figma */
+.map-page__card-container--park {
+  background-color: #a49e49;
+}
+
+.map-page__card-container--vet {
+  background-color: #8da7cc;
+}
+
+.map-page__card-container--cafe {
+  background-color: #55524e;
+}
+
+/* Pastilla verde de normativa */
+.map-page__badge {
+  align-self: center;
+  background-color: #bbf7d0;
+  color: #14532d;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin: 0 auto 12px;
+  width: fit-content;
+  text-align: center;
+}
+
+/* Integración con PlaceCard */
+.map-page__card-container .place-card {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.map-page__card-container .place-card__name {
+  display: none; /* Ya está referenciado en el marcador */
+}
+
+.map-page__card-container .place-card__type,
+.map-page__card-container .place-card__distance,
+.map-page__card-container .place-card__action {
+  display: none;
+}
+
+.map-page__card-container .place-card__schedule {
+  margin: 0 0 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.map-page__card-container .place-card__address {
+  margin: 0 0 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.map-page__card-container .place-card__description {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
