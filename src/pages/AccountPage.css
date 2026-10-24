@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap');
+
+.account-page {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 16px 20px 100px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-background, #faf7ef);
+}
+
+/* Título superior "Mi Cuenta" */
+.account-page__title {
+  margin: 8px 0 18px;
+  font-family: 'MuseoModerno', cursive, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text, #5e5a57);
+  text-align: center;
+}
+
+/* Tarjeta verde oliva amplia de Figma */
+.account-page__card {
+  position: relative;
+  width: 100%;
+  background-color: var(--color-primary, #aaa648);
+  border-radius: 40px;
+  padding: 34px 22px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Avatar circular blanco con icono */
+.account-page__avatar-wrapper {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.account-page__avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #ffffff;
+}
+
+.account-page__avatar-icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Botón flotante de cámara */
+.account-page__camera-btn {
+  position: absolute;
+  bottom: 2px;
+  right: -2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 5px;
+}
+
+.account-page__btn-icon {
+  width: 100%;
+  height: 100%;
+}
+
+/* Nombre "Usuario" blanco en tipografía MuseoModerno */
+.account-page__user-name {
+  margin: 6px 0 20px;
+  font-family: 'MuseoModerno', cursive, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* Campos de formulario */
+.account-page__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Etiquetas de los inputs sobre fondo verde */
+.account-page__card .form-field__label {
+  color: #4a4642;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* Inputs blancos con esquinas redondeadas estilo Figma */
+.account-page__card .form-field__control {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  min-height: 44px;
+  padding: 8px 18px;
+  font-size: 14px;
+  color: var(--color-text, #5e5a57);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Fila de dirección con el botón cuadrado de edición */
+.account-page__address-container {
+  position: relative;
+  width: 100%;
+}
+
+.account-page__address-container .form-field {
+  width: calc(100% - 46px);
+}
+
+.account-page__edit-btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  background-color: var(--color-danger, #df6d41);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 8px;
+  box-shadow: 0 3px 8px rgba(223, 109, 65, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.account-page__edit-btn:hover {
+  transform: scale(1.06);
+}
+
+/* Pie: Términos y botón de eliminar cuenta */
+.account-page__footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.account-page__terms-link {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: var(--color-danger, #df6d41);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.account-page__footer .button--danger {
+  width: 100%;
+  font-family: 'MuseoModerno', cursive, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  min-height: 54px;
+  box-shadow: 0 4px 12px rgba(223, 109, 65, 0.35);
+}
+
+/* Adaptación del modal de confirmación a los tonos de Figma */
+.confirmation-modal--danger {
+  background: #9ab2d4 !important;
+  border: none !important;
+  border-radius: 32px !important;
+  color: #ffffff;
+}
+
+.confirmation-modal--danger .confirmation-modal__title {
+  color: #3b3936 !important;
+  text-align: center;
+  font-size: 24px;
+}
+
+.confirmation-modal--danger .confirmation-modal__message {
+  color: #4f4c49 !important;
+  text-align: center;
+  font-size: 14px;
+}
+
+.confirmation-modal--danger .confirmation-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.confirmation-modal--danger .confirmation-modal__actions .button {
+  min-height: 44px;
+  padding: 0 24px;
+  font-size: 14px;
+  border-radius: 20px;
+}
