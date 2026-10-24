@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OnboardingDots from '../components/OnboardingDots/OnboardingDots.jsx';
 import logoPetpass from '../assets/logo-petpass.svg';
+import confettiPattern from '../assets/confetti.png';
 import './OnboardingPage.css';
 
 const onboardingSteps = [
@@ -40,29 +41,29 @@ function OnboardingPage() {
 
   return (
     <main className={`onboarding-page onboarding-page--${stepData.theme}`}>
-      <div className="onboarding-page__brand">
+      {/* Fondo de confeti inferior */}
+      <img
+        src={confettiPattern}
+        alt=""
+        aria-hidden="true"
+        className="onboarding-page__confetti-bg"
+      />
+
+      {/* Header con Logo PetPass */}
+      <header className="onboarding-page__header">
         <img
           src={logoPetpass}
           alt="PetPass"
-          className="onboarding-page__logo-img"
+          className="onboarding-page__logo"
         />
-      </div>
+      </header>
 
-      <section className="onboarding-page__card">
-        <div className="onboarding-page__copy">
+      {/* Bloque inferior: Tarjeta + Puntos unidos */}
+      <div className="onboarding-page__main-content">
+        <section className="onboarding-page__card">
           <h1>{stepData.title}</h1>
           <p>{stepData.description}</p>
-        </div>
 
-        <div className="onboarding-page__dots-container">
-          <OnboardingDots
-            currentStep={currentStep}
-            totalSteps={3}
-            onStepChange={setCurrentStep}
-          />
-        </div>
-
-        <div className="onboarding-page__action-wrapper">
           {currentStep === 3 ? (
             <button
               type="button"
@@ -81,8 +82,17 @@ function OnboardingPage() {
               ➔
             </button>
           )}
-        </div>
-      </section>
+        </section>
+
+        {/* Puntos elevados pegados a la base de la tarjeta */}
+        <footer className="onboarding-page__dots-wrapper">
+          <OnboardingDots
+            currentStep={currentStep}
+            totalSteps={3}
+            onStepChange={setCurrentStep}
+          />
+        </footer>
+      </div>
     </main>
   );
 }
