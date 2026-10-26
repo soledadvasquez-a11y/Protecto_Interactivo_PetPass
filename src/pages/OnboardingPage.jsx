@@ -1,8 +1,13 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import OnboardingDots from '../components/OnboardingDots/OnboardingDots.jsx';
+
+import OnboardingConfetti from '../components/decorative/DecorativeConfetti.jsx';
+
 import logoPetpass from '../assets/logo-petpass.svg';
-import confettiPattern from '../assets/confetti.png';
+
 import './OnboardingPage.css';
 
 const onboardingSteps = [
@@ -29,6 +34,7 @@ const onboardingSteps = [
 function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
+
   const stepData = onboardingSteps[currentStep - 1];
 
   const handleNext = () => {
@@ -36,18 +42,16 @@ function OnboardingPage() {
       setCurrentStep((step) => step + 1);
       return;
     }
+
     navigate('/login');
   };
 
   return (
-    <main className={`onboarding-page onboarding-page--${stepData.theme}`}>
-      {/* Fondo de confeti inferior */}
-      <img
-        src={confettiPattern}
-        alt=""
-        aria-hidden="true"
-        className="onboarding-page__confetti-bg"
-      />
+    <main
+      className={`onboarding-page onboarding-page--${stepData.theme}`}
+    >
+      {/* Fondo decorativo responsive */}
+      <OnboardingConfetti />
 
       {/* Header con Logo PetPass */}
       <header className="onboarding-page__header">
@@ -62,6 +66,7 @@ function OnboardingPage() {
       <div className="onboarding-page__main-content">
         <section className="onboarding-page__card">
           <h1>{stepData.title}</h1>
+
           <p>{stepData.description}</p>
 
           {currentStep === 3 ? (
@@ -84,7 +89,7 @@ function OnboardingPage() {
           )}
         </section>
 
-        {/* Puntos elevados pegados a la base de la tarjeta */}
+        {/* Indicadores del onboarding */}
         <footer className="onboarding-page__dots-wrapper">
           <OnboardingDots
             currentStep={currentStep}

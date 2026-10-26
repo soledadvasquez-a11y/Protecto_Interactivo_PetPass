@@ -1,15 +1,19 @@
+
 import { useState } from 'react';
+
 import Button from '../components/Button/Button.jsx';
 import AlertModal from '../components/AlertModal/AlertModal.jsx';
 
+// Componente decorativo reutilizable
+import OnboardingConfetti from '../components/decorative/DecorativeConfetti.jsx';
+
 import pugPhoto from '../assets/pug-photo.svg';
 import pugAvatar from '../assets/pug-avatar.svg';
-import confettiPattern from '../assets/confetti.png';
 
 import './PublicPetProfilePage.css';
 
 function PublicPetProfilePage() {
-  const [modalType, setModalType] = useState(null); // 'permission' | 'success' | null
+  const [modalType, setModalType] = useState(null);
   const [isCalling, setIsCalling] = useState(false);
 
   const handleOpenGpsModal = () => {
@@ -26,16 +30,14 @@ function PublicPetProfilePage() {
 
   return (
     <div className="pet-profile-page">
-      <img
-        src={confettiPattern}
-        alt=""
-        aria-hidden="true"
-        className="pet-profile-page__confetti"
-      />
+
+      {/* Fondo decorativo reutilizable */}
+      <OnboardingConfetti />
 
       {isCalling ? (
         /* Pantalla de llamada en curso */
         <main className="pet-profile-page__call-card">
+
           <div className="pet-profile-page__call-avatar-wrapper">
             <img
               src={pugAvatar}
@@ -44,19 +46,38 @@ function PublicPetProfilePage() {
             />
           </div>
 
-          <h1 className="pet-profile-page__call-title">¡Estoy perdido!</h1>
+          <h1 className="pet-profile-page__call-title">
+            ¡Estoy perdido!
+          </h1>
 
           <div className="pet-profile-page__call-controls">
-            <button type="button" className="pet-profile-page__call-circle-btn">
-              <span className="pet-profile-page__call-icon">🔊</span>
+            <button
+              type="button"
+              className="pet-profile-page__call-circle-btn"
+            >
+              <span className="pet-profile-page__call-icon">
+                🔊
+              </span>
               <span>Speaker</span>
             </button>
-            <button type="button" className="pet-profile-page__call-circle-btn">
-              <span className="pet-profile-page__call-icon">🔇</span>
+
+            <button
+              type="button"
+              className="pet-profile-page__call-circle-btn"
+            >
+              <span className="pet-profile-page__call-icon">
+                🔇
+              </span>
               <span>Mute</span>
             </button>
-            <button type="button" className="pet-profile-page__call-circle-btn">
-              <span className="pet-profile-page__call-icon">▦</span>
+
+            <button
+              type="button"
+              className="pet-profile-page__call-circle-btn"
+            >
+              <span className="pet-profile-page__call-icon">
+                ▦
+              </span>
               <span>Keypad</span>
             </button>
           </div>
@@ -71,8 +92,9 @@ function PublicPetProfilePage() {
           </button>
         </main>
       ) : (
-        /* Vista de perfil público normal */
+        /* Vista normal del perfil público */
         <main className="pet-profile-page__card">
+
           <section className="pet-profile-page__info-box">
             <div className="pet-profile-page__photo-container">
               <img
@@ -82,17 +104,29 @@ function PublicPetProfilePage() {
               />
             </div>
 
-            <h1 className="pet-profile-page__title">¡Estoy perdido!</h1>
-            <p className="pet-profile-page__subtitle">Ayudame a volver a casa</p>
+            <h1 className="pet-profile-page__title">
+              ¡Estoy perdido!
+            </h1>
+
+            <p className="pet-profile-page__subtitle">
+              Ayudame a volver a casa
+            </p>
 
             <div className="pet-profile-page__data">
-              <p><strong>Nombre:</strong> Toby</p>
-              <p><strong>Raza:</strong> Pug</p>
+              <p>
+                <strong>Nombre:</strong> Toby
+              </p>
+              <p>
+                <strong>Raza:</strong> Pug
+              </p>
             </div>
           </section>
 
           <footer className="pet-profile-page__actions">
-            <Button variant="danger" onClick={handleOpenGpsModal}>
+            <Button
+              variant="danger"
+              onClick={handleOpenGpsModal}
+            >
               Enviar Alerta Gps
             </Button>
 
@@ -107,7 +141,7 @@ function PublicPetProfilePage() {
         </main>
       )}
 
-      {/* Modal de ubicación (Permiso GPS) */}
+      {/* Modal de permiso GPS */}
       <AlertModal
         isOpen={modalType === 'permission'}
         variant="permission"
@@ -120,7 +154,7 @@ function PublicPetProfilePage() {
         onClose={handleCloseModal}
       />
 
-      {/* Modal de confirmación (Alerta enviada) */}
+      {/* Modal de confirmación */}
       <AlertModal
         isOpen={modalType === 'success'}
         variant="success"
