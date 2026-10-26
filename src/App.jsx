@@ -53,7 +53,7 @@ function App() {
       />
 
       <Route
-        path="/mascotas/publico"
+        path="/mascotas/:id/perfil-publico"
         element={<PublicPetProfilePage />}
       />
 
