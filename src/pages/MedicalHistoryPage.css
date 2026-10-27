@@ -1,0 +1,40 @@
+.medical-history-page {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 28px 24px 120px;
+}
+
+.medical-history-page__heading {
+  margin-bottom: 22px;
+}
+
+.medical-history-page__heading h1 {
+  margin: 0;
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 28px;
+  color: var(--color-text);
+}
+
+.medical-history-page__heading p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.medical-history-page__filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  overflow-x: auto;
+}
+
+.medical-history-page__filters > * {
+  flex-shrink: 0;
+}
+
+.medical-history-page__records {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
