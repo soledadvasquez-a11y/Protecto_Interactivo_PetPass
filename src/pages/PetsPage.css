@@ -1,0 +1,85 @@
+.pets-page {
+  width: 100%;
+  max-width: 640px;
+
+  margin: 0 auto;
+
+  padding: 28px 24px 120px;
+}
+
+.pets-page__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  margin-bottom: 30px;
+}
+
+.pets-page__heading h1 {
+  margin: 0;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 28px;
+
+  color: var(--color-text);
+}
+
+.pets-page__heading p {
+  margin: 6px 0 0;
+
+  max-width: 360px;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  color: var(--color-muted);
+}
+
+.pets-page h2 {
+  margin: 0 0 16px;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 20px;
+
+  color: var(--color-text);
+}
+
+.pets-page__selector-section {
+  margin-bottom: 30px;
+}
+
+.pets-page__selectors {
+  display: flex;
+
+  gap: 12px;
+
+  padding-bottom: 6px;
+
+  overflow-x: auto;
+}
+
+.pets-page__selectors > * {
+  flex-shrink: 0;
+}
+
+.pets-page__detail {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.pets-page__actions {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+@media (max-width: 560px) {
+  .pets-page__heading {
+    flex-direction: column;
+  }
+}
