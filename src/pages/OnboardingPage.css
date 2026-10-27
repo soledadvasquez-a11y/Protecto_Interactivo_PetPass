@@ -1,0 +1,249 @@
+
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap');
+
+.onboarding-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 16px 40px;
+
+  box-sizing: border-box;
+  overflow: hidden;
+
+  transition: background-color 0.35s ease;
+}
+
+/* =========================================
+   COLORES DE FONDO
+========================================= */
+
+.onboarding-page--welcome-1 {
+  background-color: #8da7cc;
+}
+
+.onboarding-page--welcome-2 {
+  background-color: #f7d695;
+}
+
+.onboarding-page--welcome-3 {
+  background-color: #a49e49;
+}
+
+/* =========================================
+   LOGO
+========================================= */
+
+.onboarding-page__header {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 10vh;
+
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+}
+
+.onboarding-page__logo {
+  width: 290px;
+  max-width: 82vw;
+  height: auto;
+
+  display: block;
+}
+
+/* =========================================
+   CONTENIDO PRINCIPAL
+========================================= */
+
+.onboarding-page__main-content {
+  position: relative;
+  z-index: 3;
+
+  width: 100%;
+  max-width: 375px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: 100px;
+}
+
+/* =========================================
+   TARJETA PRINCIPAL
+========================================= */
+
+.onboarding-page__card {
+  width: 100%;
+
+  background-color: #faf7ef;
+  border-radius: 44px;
+
+  padding: 38px 24px 34px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
+/* Título */
+
+.onboarding-page__card h1 {
+  margin: 0;
+
+  font-family:
+    'MuseoModerno',
+    cursive,
+    sans-serif;
+
+  font-size: 36px;
+  line-height: 1.15;
+  font-weight: 700;
+
+  color: #55524e;
+
+  letter-spacing: -0.5px;
+}
+
+/* Descripción */
+
+.onboarding-page__card p {
+  margin: 14px auto 26px;
+
+  font-family: 'Poppins', sans-serif;
+
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.45;
+
+  color: #5e5a57;
+
+  max-width: 280px;
+}
+
+/* =========================================
+   BOTÓN CIRCULAR
+========================================= */
+
+.onboarding-page__btn-circle {
+  align-self: flex-end;
+
+  margin-right: 6px;
+
+  width: 58px;
+  height: 58px;
+
+  border-radius: 50%;
+  border: none;
+
+  background-color: #df683e;
+  color: #ffffff;
+
+  font-size: 26px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 4px 12px rgba(223, 104, 62, 0.38);
+
+  transition: transform 0.2s ease;
+}
+
+.onboarding-page__btn-circle:hover {
+  transform: scale(1.08);
+}
+
+/* =========================================
+   BOTÓN EMPEZAR
+========================================= */
+
+.onboarding-page__btn-start {
+  width: 100%;
+  max-width: 230px;
+
+  padding: 13px 22px;
+
+  border-radius: 999px;
+  border: none;
+
+  background-color: #df683e;
+  color: #ffffff;
+
+  font-family:
+    'MuseoModerno',
+    cursive,
+    sans-serif;
+
+  font-size: 19px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 12px rgba(223, 104, 62, 0.38);
+
+  transition: transform 0.2s ease;
+}
+
+.onboarding-page__btn-start:hover {
+  transform: scale(1.04);
+}
+
+/* =========================================
+   INDICADORES DEL ONBOARDING
+========================================= */
+
+.onboarding-page__dots-wrapper {
+  margin-top: 18px;
+}
+
+.onboarding-page .onboarding-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 16px;
+}
+
+/* Puntos circulares estilo Figma */
+
+.onboarding-page .onboarding-dots__dot {
+  background: transparent;
+
+  border: 4px solid rgba(255, 255, 255, 0.95);
+
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  padding: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Indicador activo */
+
+.onboarding-page .onboarding-dots__dot--active {
+  background: #ffffff;
+  border-color: #ffffff;
+
+  width: 24px;
+}

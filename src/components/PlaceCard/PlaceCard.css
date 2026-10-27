@@ -1,0 +1,140 @@
+.place-card {
+  width: 100%;
+
+  padding: 20px;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: 28px;
+
+  font-family: 'Poppins', sans-serif;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.place-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(94, 90, 87, 0.12);
+}
+
+.place-card--veterinary {
+  border-left: 6px solid var(--color-info-bg);
+}
+
+.place-card--petFriendly {
+  border-left: 6px solid var(--color-primary);
+}
+
+.place-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 8px;
+}
+
+.place-card__type {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: var(--color-info-border);
+
+  text-transform: uppercase;
+}
+
+.place-card--petFriendly .place-card__type {
+  color: var(--color-primary);
+}
+
+.place-card__icon {
+  font-size: 16px;
+}
+
+.place-card__distance {
+  font-size: 12px;
+  font-weight: 600;
+
+  color: var(--color-muted);
+}
+
+.place-card__name {
+  margin: 0;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+
+  color: var(--color-text);
+}
+
+.place-card__address {
+  margin: 6px 0 0;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: var(--color-text);
+}
+
+.place-card__description {
+  margin: 10px 0 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: var(--color-muted);
+}
+
+.place-card__schedule {
+  margin: 10px 0 0;
+
+  font-size: 13px;
+
+  color: var(--color-text);
+}
+
+.place-card__action {
+  width: 100%;
+
+  margin-top: 16px;
+  padding: 10px 16px;
+
+  border: none;
+  border-radius: 20px;
+
+  background: var(--color-accent);
+  color: var(--color-text);
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.place-card__action:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+  .place-card {
+    padding: 16px;
+  }
+
+  .place-card__name {
+    font-size: 18px;
+  }
+}

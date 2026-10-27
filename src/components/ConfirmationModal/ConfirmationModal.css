@@ -1,0 +1,70 @@
+.confirmation-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(94, 90, 87, 0.45);
+}
+
+.confirmation-modal {
+  width: 100%;
+  max-width: 380px;
+
+  padding: 28px 24px;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+
+  font-family: 'Poppins', sans-serif;
+
+  box-shadow: 0 12px 32px rgba(94, 90, 87, 0.18);
+}
+
+.confirmation-modal--danger {
+  background: var(--color-danger-bg);
+}
+
+.confirmation-modal__title {
+  margin: 0 0 12px;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+
+  color: var(--color-text);
+}
+
+.confirmation-modal__message {
+  margin: 0;
+
+  font-size: 15px;
+  line-height: 1.5;
+
+  color: var(--color-muted);
+}
+
+.confirmation-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 24px;
+}
+
+@media (max-width: 480px) {
+  .confirmation-modal__actions {
+    flex-direction: column;
+  }
+
+  .confirmation-modal__actions .button {
+    width: 100%;
+  }
+}
