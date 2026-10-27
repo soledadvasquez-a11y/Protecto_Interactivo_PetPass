@@ -1,0 +1,128 @@
+.register-tutor-page {
+  position: relative;
+
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px 24px;
+
+  overflow: hidden;
+
+  background: var(--color-background);
+}
+
+.register-tutor-page__content {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  max-width: 440px;
+
+  padding: 30px 24px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 40px;
+
+  background: var(--color-surface);
+}
+
+.register-tutor-page__back {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  color: var(--color-info-border);
+
+  cursor: pointer;
+}
+
+.register-tutor-page__heading {
+  margin: 22px 0 28px;
+
+  text-align: center;
+}
+
+.register-tutor-page__brand {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+
+  color: var(--color-primary);
+}
+
+.register-tutor-page__heading h1 {
+  margin: 0;
+
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 28px;
+
+  color: var(--color-text);
+}
+
+.register-tutor-page__heading p {
+  margin: 8px 0 0;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  color: var(--color-muted);
+}
+
+.register-tutor-page__form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.register-tutor-page__error {
+  margin: 0;
+
+  padding: 10px 14px;
+
+  border-radius: 18px;
+
+  background: var(--color-danger-bg);
+
+  color: var(--color-danger);
+
+  font-size: 13px;
+}
+
+.register-tutor-page__login {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+
+  color: var(--color-text);
+
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .register-tutor-page {
+    padding: 20px 16px;
+  }
+
+  .register-tutor-page__content {
+    padding: 26px 20px;
+  }
+}
