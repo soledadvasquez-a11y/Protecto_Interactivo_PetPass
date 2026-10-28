@@ -9,14 +9,22 @@
   box-sizing: border-box;
 }
 
+/* Color por defecto oscuro para fondos blancos/claros */
 .form-field__label {
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  color: #5e5a57;
   padding-left: 16px;
   letter-spacing: 0.2px;
 }
 
+/* Solo si está dentro de una tarjeta con color (verde, azul, naranja), se pone blanco */
+[class*="account"] .form-field__label,
+[class*="card--colored"] .form-field__label,
+.bg-colored .form-field__label {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
 .form-field__control {
   width: 100%;
   min-height: 44px;
