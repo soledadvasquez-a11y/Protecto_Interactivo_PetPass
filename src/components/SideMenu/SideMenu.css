@@ -1,133 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
 .side-menu__overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-
-  background: rgba(94, 90, 87, 0.45);
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: flex-start;
 }
 
 .side-menu {
-  width: min(82%, 320px);
-  height: 100%;
+  width: 78%;
+  max-width: 320px;
+  height: 100vh;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
-
-  padding: 28px 20px;
-
-  background: var(--color-surface);
-
-  font-family: 'Poppins', sans-serif;
-
-  box-shadow: 8px 0 28px rgba(94, 90, 87, 0.18);
-}
-
-.side-menu__header {
-  display: flex;
-  align-items: flex-start;
   justify-content: space-between;
 
-  padding-bottom: 24px;
-
-  border-bottom: 1px solid var(--color-border);
-}
-
-.side-menu__greeting {
-  margin: 0 0 2px;
-
-  font-size: 13px;
-
-  color: var(--color-muted);
-}
-
-.side-menu__user {
-  margin: 0;
-
-  font-family: 'MuseoModerno', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-
-  color: var(--color-text);
-}
-
-.side-menu__close {
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  border-radius: 50%;
-
-  background: var(--color-accent);
-  color: var(--color-text);
-
-  font-size: 26px;
-  line-height: 1;
-
-  cursor: pointer;
+  padding: 60px 24px 38px;
+  background-color: #5e5a57; /* Fondo gris grafito oficial Figma */
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.25);
+  animation: slideSideMenu 0.22s ease-out;
 }
 
 .side-menu__navigation {
   display: flex;
   flex-direction: column;
-
-  gap: 8px;
-
-  margin-top: 24px;
+  gap: 20px;
+  margin-top: 10px;
 }
 
 .side-menu__option {
   width: 100%;
-
   display: flex;
   align-items: center;
+  gap: 16px;
 
-  gap: 12px;
-
-  padding: 14px 16px;
-
+  padding: 8px 6px;
   border: none;
-  border-radius: 18px;
-
   background: transparent;
-  color: var(--color-text);
+  color: #ffffff;
 
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  font-weight: 600;
-
+  font-weight: 500;
   text-align: left;
-
   cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.15s ease;
 }
 
 .side-menu__option:hover {
-  background: var(--color-accent);
-}
-
-.side-menu__option--danger {
-  color: var(--color-danger);
-}
-
-.side-menu__option--danger:hover {
-  background: var(--color-danger-bg);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .side-menu__option-icon {
-  width: 24px;
-
+  width: 28px;
+  font-size: 21px;
+  color: #f7d79a; /* Iconos dorados/amarillo suave Figma */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 18px;
 }
 
-@media (max-width: 480px) {
-  .side-menu {
-    width: 85%;
+.side-menu__option-label {
+  letter-spacing: 0.2px;
+}
+
+.side-menu__logout {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  transition: opacity 0.2s ease;
+}
+
+.side-menu__logout:hover {
+  opacity: 0.8;
+}
+
+@keyframes slideSideMenu {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }

@@ -1,44 +1,47 @@
 .header {
+  position: sticky;
+  top: 0;
   width: 100%;
-  min-height: 88px;
-  padding: 16px 24px;
+  max-width: 430px;
+  margin: 0 auto;
+  height: 94px; /* Altura del frame de Figma */
+  padding: 0 24px;
+  box-sizing: border-box;
+
+  background-color: #8da7cc; /* Azul grisáceo Figma */
+  border-bottom-left-radius: 34px;
+  border-bottom-right-radius: 34px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  background: var(--color-info-bg);
-
-  border-bottom-left-radius: 28px;
-  border-bottom-right-radius: 28px;
+  z-index: 150;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .header__logo {
-  width: 150px;
-  height: auto;
+  height: 48px; /* Logo más grande y nítido */
+  width: auto;
   object-fit: contain;
+  display: block;
 }
 
 .header__menu {
-  width: 44px;
-  height: 44px;
-
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 4px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-
-  padding: 8px;
-
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+  gap: 6px;
 }
 
 .header__menu span {
-  width: 100%;
+  display: block;
+  width: 30px;
   height: 4px;
-
-  background: var(--color-surface);
+  background-color: #ffffff;
   border-radius: 999px;
 }
