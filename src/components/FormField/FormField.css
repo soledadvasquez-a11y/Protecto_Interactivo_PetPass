@@ -1,37 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
 .form-field {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-
+  gap: 4px;
   font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
 .form-field__label {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff; /* Blanco para contrastar sobre la tarjeta azul de Figma */
+  padding-left: 14px;
+  letter-spacing: 0.2px;
 }
 
 .form-field__control {
   width: 100%;
-  min-height: 46px;
+  min-height: 40px;
+  padding: 8px 18px;
 
-  padding: 10px 16px;
+  border: 1.5px solid transparent;
+  border-radius: 999px; /* Forma de píldora idéntica al mockup */
 
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
+  background-color: #ffffff;
+  color: #3b3936;
 
-  background: var(--color-surface);
-  color: var(--color-text);
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
 
   outline: none;
+  box-sizing: border-box;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-field__control::placeholder {
-  color: var(--color-muted);
+  color: #9c9895;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 .form-field__control:focus {
-  border-color: var(--color-info-bg);
+  border-color: #3b3936;
+  box-shadow: 0 0 0 2px rgba(59, 57, 54, 0.12);
+}
+
+/* Adaptación cuando FormField se renderiza fuera de fondos oscuros */
+.form-field--dark .form-field__label {
+  color: #3b3936;
 }

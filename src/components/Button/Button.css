@@ -1,42 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&display=swap');
+
 .button {
-  min-height: 60px;
-  padding: 0 32px;
+  width: 100%;
+  max-width: 380px;
+  min-height: 50px;
+  padding: 0 28px;
 
-  border: none;
-  border-radius: var(--radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  border: 2px solid transparent;
+  border-radius: 999px; /* Forma de cápsula exacta de Figma */
+
+  font-family: 'MuseoModerno', cursive, sans-serif;
+  font-size: 20px;
   font-weight: 700;
+  letter-spacing: 0.3px;
+  text-decoration: none;
 
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  box-sizing: border-box;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* 1. Primary: Verde oliva Figma */
 .button--primary {
-  background: var(--color-primary);
-  color: var(--color-surface);
+  background-color: #a49e49;
+  color: #ffffff;
 }
 
-.button--secondary {
-  background: var(--color-info-bg);
-  color: var(--color-surface);
-}
-
-.button--danger {
-  background: var(--color-danger);
-  color: var(--color-surface);
-}
-
-.button--disabled {
-  background: var(--color-accent);
-  color: var(--color-danger);
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.button:hover:not(:disabled) {
+.button--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
   transform: translateY(-1px);
+}
+
+/* 2. Secondary: Azul grisáceo Figma */
+.button--secondary {
+  background-color: #8da7cc;
+  color: #ffffff;
+}
+
+.button--secondary:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+/* 3. Danger: Naranja/terracota Figma */
+.button--danger {
+  background-color: #df683e;
+  color: #ffffff;
+}
+
+.button--danger:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+/* 4. Disabled: Fondo crema con borde y texto naranja Figma */
+.button--disabled,
+.button:disabled {
+  background-color: #fef0db;
+  border-color: #e58b66;
+  color: #df683e;
+  cursor: not-allowed;
+  transform: none !important;
+  filter: none !important;
 }
 
 .button:active:not(:disabled) {
