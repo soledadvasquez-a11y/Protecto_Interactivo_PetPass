@@ -11,45 +11,39 @@
 
 .form-field__label {
   font-size: 13px;
-  font-weight: 500;
-  color: #ffffff; /* Blanco para contrastar sobre la tarjeta azul de Figma */
-  padding-left: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  padding-left: 16px;
   letter-spacing: 0.2px;
 }
 
 .form-field__control {
   width: 100%;
-  min-height: 40px;
-  padding: 8px 18px;
+  min-height: 44px;
+  padding: 10px 22px;
 
-  border: 1.5px solid transparent;
-  border-radius: 999px; /* Forma de píldora idéntica al mockup */
+  border: none;
+  border-radius: 999px; /* Forma de píldora idéntica a Figma */
 
   background-color: #ffffff;
   color: #3b3936;
 
   font-family: 'Poppins', sans-serif;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
 
   outline: none;
   box-sizing: border-box;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
 }
 
 .form-field__control::placeholder {
-  color: #9c9895;
-  font-size: 13px;
-  font-weight: 400;
+  color: #797672;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .form-field__control:focus {
-  border-color: #3b3936;
-  box-shadow: 0 0 0 2px rgba(59, 57, 54, 0.12);
-}
-
-/* Adaptación cuando FormField se renderiza fuera de fondos oscuros */
-.form-field--dark .form-field__label {
-  color: #3b3936;
+  box-shadow: 0 0 0 3px rgba(223, 104, 62, 0.25);
 }
