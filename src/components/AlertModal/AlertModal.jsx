@@ -1,105 +1,61 @@
 import './AlertModal.css';
-import Button from '../Button/Button.jsx';
-
-const alertConfig = {
-  permission: {
-    icon: '⌖',
-    defaultTitle: 'Permiso de ubicación',
-  },
-
-  success: {
-    icon: '✓',
-    defaultTitle: 'Operación completada',
-  },
-};
 
 function AlertModal({
   isOpen = false,
-  variant = 'permission',
-  title,
+  variant = 'perdido', // 'perdido' | 'emergencia' | 'permission'
+  title = 'Perdido',
   message,
+  imageSrc,
+  contactText,
   actionLabel,
-  secondaryLabel,
   onAction,
-  onSecondary,
   onClose,
 }) {
-  if (!isOpen) {
-    return null;
-  }
+  if (!isOpen) return null;
 
-  const config =
-    alertConfig[variant] || alertConfig.permission;
-
-  const finalTitle =
-    title || config.defaultTitle;
+  const isEmergency = variant === 'emergencia';
 
   return (
-    <div
-      className="alert-modal__overlay"
-      onClick={onClose}
-    >
+    <div className="alert-modal__overlay" onClick={onClose}>
       <section
-        className={`alert-modal alert-modal--${variant}`}
+        className={`alert-modal ${isEmergency ? 'alert-modal--danger' : 'alert-modal--olive'}`}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="alert-modal-title"
-        aria-describedby="alert-modal-message"
-        onClick={(event) => event.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
-          className="alert-modal__close"
+          className="alert-modal__close-btn"
           onClick={onClose}
-          aria-label="Cerrar"
+          aria-label="Cerrar modal"
         >
           ×
         </button>
 
-        <div
-          className="alert-modal__icon"
-          aria-hidden="true"
-        >
-          {config.icon}
-        </div>
+        <h2 className="alert-modal__header-title">{title}</h2>
 
-        <h2
-          id="alert-modal-title"
-          className="alert-modal__title"
-        >
-          {finalTitle}
-        </h2>
-
-        <p
-          id="alert-modal-message"
-          className="alert-modal__message"
-        >
-          {message}
-        </p>
-
-        <div className="alert-modal__actions">
-          {secondaryLabel && (
-            <Button
-              variant="secondary"
-              onClick={onSecondary}
-            >
-              {secondaryLabel}
-            </Button>
-          )}
-
-          {actionLabel && (
-            <Button
-              variant={
-                variant === 'success'
-                  ? 'primary'
-                  : 'primary'
-              }
-              onClick={onAction}
-            >
-              {actionLabel}
-            </Button>
+        <div className="alert-modal__card-body">
+          {imageSrc ? (
+            <img src={imageSrc} alt={title} className="alert-modal__poster-img" />
+          ) : (
+            <div className="alert-modal__poster-placeholder">
+              <span className="alert-modal__poster-badge">{title.toUpperCase()}</span>
+              {contactText && <p className="alert-modal__poster-info">{contactText}</p>}
+            </div>
           )}
         </div>
+
+        {message && <p className="alert-modal__footer-text">{message}</p>}
+
+        {actionLabel && (
+          <button
+            type="button"
+            className="alert-modal__action-button"
+            onClick={onAction}
+          >
+            {actionLabel}
+          </button>
+        )}
       </section>
     </div>
   );
