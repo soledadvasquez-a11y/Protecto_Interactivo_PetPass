@@ -7,6 +7,7 @@
   background: rgba(0, 0, 0, 0.45);
   display: flex;
   justify-content: flex-start;
+  animation: fadeInOverlay 0.2s ease-out;
 }
 
 .side-menu {
@@ -19,18 +20,19 @@
   flex-direction: column;
   justify-content: space-between;
 
-  padding: 60px 24px 38px;
+  padding: 48px 24px 36px 28px;
   background-color: #5e5a57; /* Fondo gris grafito oficial Figma */
   color: #ffffff;
+
   font-family: 'Poppins', sans-serif;
-  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.25);
-  animation: slideSideMenu 0.22s ease-out;
+  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.3);
+  animation: slideMenuLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .side-menu__navigation {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px; /* Separación vertical exacta entre opciones */
   margin-top: 10px;
 }
 
@@ -38,37 +40,40 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
 
-  padding: 8px 6px;
+  padding: 6px 4px;
   border: none;
   background: transparent;
   color: #ffffff;
 
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
+  font-size: 15.5px;
   font-weight: 500;
   text-align: left;
   cursor: pointer;
-  border-radius: 10px;
-  transition: background-color 0.15s ease;
+  border-radius: 8px;
+  transition: transform 0.1s ease, opacity 0.15s ease;
 }
 
 .side-menu__option:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  opacity: 0.85;
+  transform: translateX(2px);
 }
 
 .side-menu__option-icon {
-  width: 28px;
-  font-size: 21px;
-  color: #f7d79a; /* Iconos dorados/amarillo suave Figma */
+  width: 30px;
+  height: 30px;
+  color: #f7d79a; /* Amarillo suave/dorado oficial de Figma */
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .side-menu__option-label {
-  letter-spacing: 0.2px;
+  letter-spacing: 0.15px;
+  line-height: 1.25;
 }
 
 .side-menu__logout {
@@ -81,20 +86,21 @@
   text-align: center;
   cursor: pointer;
   width: 100%;
-  padding-top: 16px;
+  padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   transition: opacity 0.2s ease;
 }
 
 .side-menu__logout:hover {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
-@keyframes slideSideMenu {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideMenuLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
