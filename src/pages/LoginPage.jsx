@@ -31,58 +31,61 @@ function LoginPage() {
 
   return (
     <main className="login-page">
+      {/* Elemento gráfico para la mancha azul en el fondo */}
+      <div className="login-page__bg-blob" aria-hidden="true" />
+
       <section className="login-page__card">
+        {/* Cabecera con el Logo PetPass fuera de la tarjeta oscura */}
         <div className="login-page__brand">
-          <span className="login-page__brand-mark" aria-hidden="true">
+          <span className="login-page__brand-mark">
             PetPass
           </span>
-
-          <h1>Iniciar sesión</h1>
-
-          <p>
-            Ingresa tus datos para continuar.
-          </p>
         </div>
 
-        <div className="login-page__form">
-          <FormField
-            label="Correo electrónico"
-            type="email"
-            value={formData.email}
-            placeholder="correo@ejemplo.com"
-            onChange={handleChange('email')}
-          />
+        {/* Tarjeta flotante con el formulario */}
+        <div className="login-page__box">
+          <h1>LOGIN</h1>
 
-          <FormField
-            label="Contraseña"
-            type="password"
-            value={formData.password}
-            placeholder="Ingresa tu contraseña"
-            onChange={handleChange('password')}
-          />
+          <div className="login-page__form">
+            <FormField
+              label=""
+              type="email"
+              value={formData.email}
+              placeholder="Correo"
+              onChange={handleChange('email')}
+            />
 
-          <button
-            type="button"
-            className="login-page__text-action"
-            onClick={() => navigate('/recuperar-contrasena')}
-          >
-            ¿Olvidaste tu contraseña?
-          </button>
+            <FormField
+              label=""
+              type="password"
+              value={formData.password}
+              placeholder="Contraseña"
+              onChange={handleChange('password')}
+            />
 
-          <Button
-            variant="primary"
-            onClick={handleLogin}
-          >
-            Iniciar sesión
-          </Button>
+            <button
+              type="button"
+              className="login-page__text-action"
+              onClick={() => navigate('/recuperar-contrasena')}
+            >
+              Restablecer contraseña
+            </button>
 
-          <button
-            type="button"
-            className="login-page__register"
-            onClick={() => navigate('/registro-tutor')}
-          >
-            ¿Aún no tienes cuenta? Regístrate
-          </button>
+            <Button
+              variant="primary"
+              onClick={handleLogin}
+            >
+              Iniciar sesión
+            </Button>
+
+            <button
+              type="button"
+              className="login-page__register"
+              onClick={() => navigate('/registro-tutor')}
+            >
+              ¿Aún no tienes cuenta? Regístrate
+            </button>
+          </div>
         </div>
       </section>
     </main>
