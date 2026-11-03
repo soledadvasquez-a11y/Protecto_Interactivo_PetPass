@@ -1,20 +1,31 @@
-
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import Button from '../components/Button/Button.jsx';
 import AlertModal from '../components/AlertModal/AlertModal.jsx';
 
-// Componente decorativo reutilizable
-import OnboardingConfetti from '../components/decorative/DecorativeConfetti.jsx';
+import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx';
 
-import pugPhoto from '../assets/pug-photo.svg';
-import pugAvatar from '../assets/pug-avatar.svg';
+import pets from '../data/pets.js';
 
 import './PublicPetProfilePage.css';
 
 function PublicPetProfilePage() {
-  const [modalType, setModalType] = useState(null);
-  const [isCalling, setIsCalling] = useState(false);
+  const { id } = useParams();
+
+  const [modalType, setModalType] =
+    useState(null);
+
+  const [isCalling, setIsCalling] =
+    useState(false);
+
+  /*
+    Obtenemos la mascota desde pets.js
+    usando el id de la URL.
+  */
+  const pet = pets.find(
+    (item) => item.id === Number(id)
+  );
 
   const handleOpenGpsModal = () => {
     setModalType('permission');
@@ -28,22 +39,52 @@ function PublicPetProfilePage() {
     setModalType(null);
   };
 
+  /*
+    Protección para un id inexistente.
+  */
+  if (!pet) {
+    return (
+      <div className="pet-profile-page">
+        <DecorativeConfetti />
+
+        <main className="pet-profile-page__card">
+          <section className="pet-profile-page__info-box">
+            <h1 className="pet-profile-page__title">
+              Mascota no encontrada
+            </h1>
+
+            <p className="pet-profile-page__subtitle">
+              El perfil solicitado no existe.
+            </p>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="pet-profile-page">
 
-      {/* Fondo decorativo reutilizable */}
-      <OnboardingConfetti />
+      <DecorativeConfetti />
 
       {isCalling ? (
-        /* Pantalla de llamada en curso */
+        /*
+          Pantalla provisional de llamada.
+        */
         <main className="pet-profile-page__call-card">
 
           <div className="pet-profile-page__call-avatar-wrapper">
-            <img
-              src={pugAvatar}
-              alt="Toby"
-              className="pet-profile-page__call-avatar"
-            />
+            {pet.photo ? (
+              <img
+                src={pet.photo}
+                alt={pet.name}
+                className="pet-profile-page__call-avatar"
+              />
+            ) : (
+              <span aria-hidden="true">
+                🐾
+              </span>
+            )}
           </div>
 
           <h1 className="pet-profile-page__call-title">
@@ -51,6 +92,7 @@ function PublicPetProfilePage() {
           </h1>
 
           <div className="pet-profile-page__call-controls">
+
             <button
               type="button"
               className="pet-profile-page__call-circle-btn"
@@ -58,6 +100,7 @@ function PublicPetProfilePage() {
               <span className="pet-profile-page__call-icon">
                 🔊
               </span>
+
               <span>Speaker</span>
             </button>
 
@@ -68,6 +111,7 @@ function PublicPetProfilePage() {
               <span className="pet-profile-page__call-icon">
                 🔇
               </span>
+
               <span>Mute</span>
             </button>
 
@@ -78,30 +122,48 @@ function PublicPetProfilePage() {
               <span className="pet-profile-page__call-icon">
                 ▦
               </span>
+
               <span>Keypad</span>
             </button>
+
           </div>
 
           <button
             type="button"
             className="pet-profile-page__end-call-btn"
-            onClick={() => setIsCalling(false)}
+            onClick={() =>
+              setIsCalling(false)
+            }
             aria-label="Finalizar llamada"
           >
             🕽
           </button>
+
         </main>
       ) : (
-        /* Vista normal del perfil público */
+
+        /*
+          Vista actual del perfil público.
+          normal/lost se implementará más adelante.
+        */
         <main className="pet-profile-page__card">
 
           <section className="pet-profile-page__info-box">
+
             <div className="pet-profile-page__photo-container">
-              <img
-                src={pugPhoto}
-                alt="Toby"
-                className="pet-profile-page__pet-photo"
-              />
+
+              {pet.photo ? (
+                <img
+                  src={pet.photo}
+                  alt={pet.name}
+                  className="pet-profile-page__pet-photo"
+                />
+              ) : (
+                <span aria-hidden="true">
+                  🐾
+                </span>
+              )}
+
             </div>
 
             <h1 className="pet-profile-page__title">
@@ -109,41 +171,64 @@ function PublicPetProfilePage() {
             </h1>
 
             <p className="pet-profile-page__subtitle">
-              Ayudame a volver a casa
+              Ayúdame a volver a casa
             </p>
 
             <div className="pet-profile-page__data">
+
               <p>
-                <strong>Nombre:</strong> Toby
+                <strong>
+                  Nombre:
+                </strong>{' '}
+                {pet.name}
               </p>
+
               <p>
-                <strong>Raza:</strong> Pug
+                <strong>
+                  Especie:
+                </strong>{' '}
+                {pet.species}
               </p>
+
+              <p>
+                <strong>
+                  Raza:
+                </strong>{' '}
+                {pet.breed}
+              </p>
+
             </div>
+
           </section>
 
           <footer className="pet-profile-page__actions">
+
             <Button
               variant="danger"
               onClick={handleOpenGpsModal}
             >
-              Enviar Alerta Gps
+              Enviar Alerta GPS
             </Button>
 
             <button
               type="button"
               className="pet-profile-page__call-action-btn"
-              onClick={() => setIsCalling(true)}
+              onClick={() =>
+                setIsCalling(true)
+              }
             >
               Llamada de emergencia
             </button>
+
           </footer>
+
         </main>
       )}
 
-      {/* Modal de permiso GPS */}
       <AlertModal
-        isOpen={modalType === 'permission'}
+        isOpen={
+          modalType === 'permission'
+        }
         variant="permission"
         title="¿Permitir que PetPass acceda a tu ubicación?"
         message=""
@@ -154,16 +239,18 @@ function PublicPetProfilePage() {
         onClose={handleCloseModal}
       />
 
-      {/* Modal de confirmación */}
       <AlertModal
-        isOpen={modalType === 'success'}
+        isOpen={
+          modalType === 'success'
+        }
         variant="success"
         title="¡Alerta enviada!"
-        message="El tutor ya tiene la ubicación, por favor quédate con el perrito unos minutos."
+        message="El tutor ya tiene la ubicación, por favor quédate con la mascota unos minutos."
         actionLabel="Aceptar"
         onAction={handleCloseModal}
         onClose={handleCloseModal}
       />
+
     </div>
   );
 }
