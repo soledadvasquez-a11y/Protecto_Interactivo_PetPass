@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import FormField from '../components/FormField/FormField.jsx';
 import Button from '../components/Button/Button.jsx';
-import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx';
 
 import './RegisterTutorPage.css';
 
@@ -15,61 +14,30 @@ function RegisterTutorPage() {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: '',
   });
 
   const [error, setError] = useState('');
 
-  const handleChange = (field) => (event) => {
-    setFormData((current) => ({
-      ...current,
-      [field]: event.target.value,
-    }));
-
-    setError('');
+  const handleChange = (field) => (e) => {
+    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    if (error) setError('');
   };
 
-  const handleRegister = () => {
-    const {
-      name,
-      email,
-      password,
-      confirmPassword,
-    } = formData;
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    if (
-      !name.trim() ||
-      !email.trim() ||
-      !password.trim() ||
-      !confirmPassword.trim()
-    ) {
-      setError(
-        'Completa los campos obligatorios.'
-      );
+    if (!formData.name || !formData.email || !formData.password) {
+      setError('Por favor completa todos los campos requeridos.');
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError(
-        'Las contraseñas no coinciden.'
-      );
-      return;
-    }
-
-    /*
-      REGISTRO PROVISIONAL:
-      la creación real del tutor se conectará
-      posteriormente al backend.
-    */
-
-    navigate('/mascotas/nueva');
+    // Cumple 3.3: Navega directamente a /home
+    navigate('/home');
   };
 
   return (
     <main className="register-tutor-page">
-      <DecorativeConfetti />
-
-      <section className="register-tutor-page__content">
+      <div className="register-tutor-page__content">
         <button
           type="button"
           className="register-tutor-page__back"
@@ -79,75 +47,51 @@ function RegisterTutorPage() {
         </button>
 
         <header className="register-tutor-page__heading">
-          <span className="register-tutor-page__brand">
-            PetPass
-          </span>
-
-          <h1>Crea tu cuenta</h1>
-
-          <p>
-            Registra tus datos para comenzar a
-            cuidar a tus mascotas con PetPass.
-          </p>
+          <span className="register-tutor-page__brand">PetPass</span>
+          <h1>Registro de Tutor</h1>
+          <p>Crea tu cuenta para gestionar la vida de tu mascota</p>
         </header>
 
-        <div className="register-tutor-page__form">
+        <form onSubmit={handleSubmit} className="register-tutor-page__form">
           <FormField
-            label="Nombre completo"
-            type="text"
+            label="Nombre Completo"
             value={formData.name}
-            placeholder="Tu nombre"
             onChange={handleChange('name')}
+            placeholder="Ej. Ana Pérez"
           />
 
           <FormField
-            label="Correo electrónico"
+            label="Correo Electrónico"
             type="email"
             value={formData.email}
-            placeholder="correo@ejemplo.com"
             onChange={handleChange('email')}
+            placeholder="ejemplo@correo.com"
           />
 
           <FormField
-            label="Teléfono"
-            type="text"
+            label="Teléfono / WhatsApp"
             value={formData.phone}
-            placeholder="Ej. 70000000"
             onChange={handleChange('phone')}
+            placeholder="+591 ..."
           />
 
           <FormField
             label="Contraseña"
             type="password"
             value={formData.password}
-            placeholder="Crea una contraseña"
             onChange={handleChange('password')}
+            placeholder="••••••••"
           />
 
-          <FormField
-            label="Confirmar contraseña"
-            type="password"
-            value={formData.confirmPassword}
-            placeholder="Repite tu contraseña"
-            onChange={handleChange(
-              'confirmPassword'
-            )}
-          />
-
+          {/* Condicional Fase 4: Mensaje de error de registro */}
           {error && (
-            <p
-              className="register-tutor-page__error"
-              role="alert"
-            >
+            <p className="register-tutor-page__error" role="alert">
               {error}
             </p>
           )}
 
-          <Button
-            variant="primary"
-            onClick={handleRegister}
-          >
-            Crear cuenta
+          <Button type="submit" variant="primary">
+            Registrarme
           </Button>
 
           <button
@@ -155,10 +99,10 @@ function RegisterTutorPage() {
             className="register-tutor-page__login"
             onClick={() => navigate('/login')}
           >
-            ¿Ya tienes una cuenta? Inicia sesión
+            ¿Ya tienes cuenta? Inicia sesión
           </button>
-        </div>
-      </section>
+        </form>
+      </div>
     </main>
   );
 }

@@ -1,11 +1,8 @@
-
 import { useState } from 'react';
 
 import AlertCard from '../components/AlertCard/AlertCard.jsx';
 import FormField from '../components/FormField/FormField.jsx';
 import Button from '../components/Button/Button.jsx';
-
-// Componente decorativo reutilizable
 import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx';
 
 import posterLost from '../assets/poster-lost.svg';
@@ -35,9 +32,10 @@ const INITIAL_ALERTS = [
     petName: 'Perdido',
     photo: posterLost,
     location: 'Sopocachi, La Paz',
+    zone: 'sopocachi',
     date: 'Ayer',
-    description:
-      'Visto por última vez cerca de Plaza Abaroa.',
+    status: 'active',
+    description: 'Visto por última vez cerca de Plaza Abaroa.',
   },
   {
     id: 2,
@@ -45,18 +43,23 @@ const INITIAL_ALERTS = [
     petName: 'Emergencia',
     photo: posterEmergency,
     location: 'Miraflores, La Paz',
+    zone: 'miraflores',
     date: 'Hoy',
-    description:
-      'Se busca donante canino urgente para transfusión.',
+    status: 'active',
+    description: 'Se busca donante canino urgente para transfusión.',
   },
 ];
+
+const filterToType = {
+  'Perdidos': 'lost',
+  'Emergencias': 'emergency',
+  'En Adopción': 'adoption',
+};
 
 function AlertsPage() {
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [selectedZone, setSelectedZone] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Formulario de Nuevo Reporte
   const [reportType, setReportType] = useState('Perdidos');
 
   const [formData, setFormData] = useState({
@@ -78,18 +81,20 @@ function AlertsPage() {
     setIsModalOpen(false);
   };
 
+  // Filtrado de alertas (Fase 3 + Fase 4)
+  const filteredAlerts = INITIAL_ALERTS.filter((alert) => {
+    const matchesType = activeFilter === 'Todos' || alert.type === filterToType[activeFilter];
+    const matchesZone = !selectedZone || alert.zone === selectedZone;
+    return matchesType && matchesZone;
+  });
+
   return (
     <div className="alerts-page">
-
-      {/* Fondo decorativo reutilizable */}
       <DecorativeConfetti />
 
-      {/* Cabecera: Título + Botón Nuevo Reporte */}
       <header className="alerts-page__header">
-
         <div className="alerts-page__title-box">
           <span className="alerts-page__highlight" />
-
           <h1 className="alerts-page__title">
             Comunidad y<br />alertas
           </h1>
@@ -105,13 +110,8 @@ function AlertsPage() {
         </button>
       </header>
 
-      {/* Barra de filtros */}
-      <nav
-        className="alerts-page__filters-bar"
-        aria-label="Filtrar alertas"
-      >
+      <nav className="alerts-page__filters-bar" aria-label="Filtrar alertas">
         <div className="alerts-page__tags">
-
           {FILTERS.map((filter) => (
             <button
               key={filter}
@@ -119,18 +119,13 @@ function AlertsPage() {
               className={`
                 alerts-page__tag
                 alerts-page__tag--${filter.toLowerCase().replace(/\s+/g, '-')}
-                ${
-                  activeFilter === filter
-                    ? 'alerts-page__tag--active'
-                    : ''
-                }
+                ${activeFilter === filter ? 'alerts-page__tag--active' : ''}
               `}
               onClick={() => setActiveFilter(filter)}
             >
               {filter}
             </button>
           ))}
-
         </div>
 
         <div className="alerts-page__zone-select">
@@ -139,18 +134,21 @@ function AlertsPage() {
             name="filterZone"
             value={selectedZone}
             options={ZONAS}
-            onChange={(e) =>
-              setSelectedZone(e.target.value)
-            }
+            onChange={(e) => setSelectedZone(e.target.value)}
             placeholder="Zona"
           />
         </div>
       </nav>
 
-      {/* Grid de tarjetas de alerta */}
       <main className="alerts-page__grid">
+        {/* Condicional Fase 4: Estado vacío de alertas */}
+        {filteredAlerts.length === 0 && (
+          <p className="alerts-page__empty">
+            No se encontraron alertas con los filtros seleccionados.
+          </p>
+        )}
 
-        {INITIAL_ALERTS.map((alert) => (
+        {filteredAlerts.map((alert) => (
           <div
             key={alert.id}
             className={`
@@ -169,29 +167,23 @@ function AlertsPage() {
               location={alert.location}
               date={alert.date}
               description={alert.description}
+              status={alert.status}
             />
           </div>
         ))}
-
       </main>
 
-      {/* Modal: Nuevo Reporte */}
+      {/* Condicional Fase 4: Modal de nuevo reporte */}
       {isModalOpen && (
         <div className="alerts-modal__overlay">
-
           <section
             className="alerts-modal__card"
             role="dialog"
             aria-modal="true"
             aria-labelledby="alerts-modal-title"
           >
-
             <header className="alerts-modal__header">
-
-              <h2
-                id="alerts-modal-title"
-                className="alerts-modal__title"
-              >
+              <h2 id="alerts-modal-title" className="alerts-modal__title">
                 Nuevo Reporte
               </h2>
 
@@ -205,22 +197,14 @@ function AlertsPage() {
               </button>
             </header>
 
-            <form
-              onSubmit={handleSubmitReport}
-              className="alerts-modal__form"
-            >
-
+            <form onSubmit={handleSubmitReport} className="alerts-modal__form">
               <div className="alerts-modal__type-section">
-
                 <span className="alerts-modal__label">
                   Tipo de{' '}
-                  <span className="alerts-modal__tag-alert">
-                    Alerta
-                  </span>
+                  <span className="alerts-modal__tag-alert">Alerta</span>
                 </span>
 
                 <div className="alerts-page__tags">
-
                   {FILTERS.map((filter) => (
                     <button
                       key={filter}
@@ -228,18 +212,13 @@ function AlertsPage() {
                       className={`
                         alerts-page__tag
                         alerts-page__tag--${filter.toLowerCase().replace(/\s+/g, '-')}
-                        ${
-                          reportType === filter
-                            ? 'alerts-page__tag--active'
-                            : ''
-                        }
+                        ${reportType === filter ? 'alerts-page__tag--active' : ''}
                       `}
                       onClick={() => setReportType(filter)}
                     >
                       {filter}
                     </button>
                   ))}
-
                 </div>
               </div>
 
@@ -274,19 +253,14 @@ function AlertsPage() {
               />
 
               <div className="alerts-modal__actions">
-                <Button
-                  variant="danger"
-                  type="submit"
-                >
+                <Button variant="danger" type="submit">
                   Publicar Alerta
                 </Button>
               </div>
-
             </form>
           </section>
         </div>
       )}
-
     </div>
   );
 }

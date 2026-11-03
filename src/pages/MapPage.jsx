@@ -83,11 +83,13 @@ function MapPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedPlaceId, setSelectedPlaceId] = useState(1);
 
-  // Filtrado reactivo por texto y categoría
+  // Filtrado de lugares
   const filteredPlaces = PLACES.filter((place) => {
+    const query = searchQuery.trim().toLowerCase();
     const matchesSearch =
-      place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      place.address.toLowerCase().includes(searchQuery.toLowerCase());
+      !query ||
+      place.name.toLowerCase().includes(query) ||
+      place.address.toLowerCase().includes(query);
 
     const matchesCategory =
       activeCategory === 'all' || place.category === activeCategory;
@@ -95,11 +97,11 @@ function MapPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const selectedPlace = PLACES.find((place) => place.id === selectedPlaceId);
+  // Verificar si el lugar seleccionado sigue existiendo en el filtro
+  const selectedPlace = filteredPlaces.find((place) => place.id === selectedPlaceId);
 
   return (
     <div className="map-page">
-      {/* Controles flotantes superiores */}
       <header className="map-page__controls">
         <SearchBar
           value={searchQuery}
@@ -120,13 +122,19 @@ function MapPage() {
         </div>
       </header>
 
-      {/* Contenedor del mapa y marcadores interactivos */}
       <main className="map-page__canvas">
         <img
           src={mapBackground}
           alt="Mapa de Villa Dolores"
           className="map-page__map-img"
         />
+
+        {/* Condicional Fase 4: Sin lugares encontrados */}
+        {filteredPlaces.length === 0 && (
+          <p className="map-page__empty">
+            No se encontraron lugares en esta categoría o búsqueda.
+          </p>
+        )}
 
         {filteredPlaces.map((place) => {
           const isSelected = place.id === selectedPlaceId;
@@ -142,7 +150,7 @@ function MapPage() {
                 left: place.position.left,
               }}
             >
-              {/* Miniatura previa sobre el pin si está seleccionado */}
+              {/* Condicional de miniatura preview si está seleccionado */}
               {isSelected && place.photo && (
                 <div className="map-page__bubble-preview">
                   <img src={place.photo} alt={place.name} />
@@ -160,7 +168,7 @@ function MapPage() {
         })}
       </main>
 
-      {/* Tarjeta inferior con el componente PlaceCard oficial */}
+      {/* Condicional Fase 4: PlaceCard solo si hay lugar seleccionado */}
       {selectedPlace && (
         <section
           className={`map-page__card-container map-page__card-container--${selectedPlace.badgeType}`}
