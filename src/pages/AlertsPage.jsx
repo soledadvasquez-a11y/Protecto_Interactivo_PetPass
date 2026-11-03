@@ -19,7 +19,6 @@ const REPORT_TYPES = [
 ];
 
 const filterToType = {
-  'Todos': 'all',
   'Perdidos': 'lost',
   'En Adopción': 'adoption',
   'Emergencias': 'emergency',
@@ -39,22 +38,22 @@ const INITIAL_ALERTS = [
     type: 'lost',
     petName: 'Perdido',
     photo: posterLost,
-    zone: 'sopocachi',
     location: 'Sopocachi, La Paz',
+    zone: 'sopocachi',
     date: 'Ayer',
-    description: 'Visto por última vez cerca de Plaza Abaroa.',
     status: 'active',
+    description: 'Visto por última vez cerca de Plaza Abaroa.',
   },
   {
     id: 2,
     type: 'emergency',
     petName: 'Emergencia',
     photo: posterEmergency,
-    zone: 'miraflores',
     location: 'Miraflores, La Paz',
+    zone: 'miraflores',
     date: 'Hoy',
-    description: 'Se busca donante canino urgente para transfusión.',
     status: 'active',
+    description: 'Se busca donante canino urgente para transfusión.',
   },
 ];
 
@@ -63,9 +62,8 @@ function AlertsPage() {
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [selectedZone, setSelectedZone] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Formulario de Nuevo Reporte
   const [reportType, setReportType] = useState('lost');
+
   const [formData, setFormData] = useState({
     petName: '',
     zone: '',
@@ -114,7 +112,7 @@ function AlertsPage() {
     setIsModalOpen(false);
   };
 
-  // Alternar entre active y resolved
+  // Alternar estado activa/resuelta
   const toggleAlertStatus = (id) => {
     setAlertsList((prev) =>
       prev.map((alert) =>
@@ -127,10 +125,8 @@ function AlertsPage() {
 
   return (
     <div className="alerts-page">
-      {/* Fondo decorativo reutilizable */}
       <DecorativeConfetti />
 
-      {/* Cabecera: Título + Botón Nuevo Reporte */}
       <header className="alerts-page__header">
         <div className="alerts-page__title-box">
           <span className="alerts-page__highlight" />
@@ -149,7 +145,6 @@ function AlertsPage() {
         </button>
       </header>
 
-      {/* Barra de filtros */}
       <nav className="alerts-page__filters-bar" aria-label="Filtrar alertas">
         <div className="alerts-page__tags">
           {FILTERS.map((filter) => (
@@ -180,34 +175,35 @@ function AlertsPage() {
         </div>
       </nav>
 
-      {/* Grid de tarjetas de alerta */}
       <main className="alerts-page__grid">
-        {filteredAlerts.length > 0 ? (
-          filteredAlerts.map((alert) => (
-            <div
-              key={alert.id}
-              className={`alerts-page__card-col alerts-page__card-col--${alert.type}`}
-            >
-              <h2 className="alerts-page__col-label">{alert.petName}</h2>
-
-              <AlertCard
-                type={alert.type}
-                petName={alert.petName}
-                photo={alert.photo}
-                location={alert.location}
-                date={alert.date}
-                description={alert.description}
-                status={alert.status}
-                onToggleStatus={() => toggleAlertStatus(alert.id)}
-              />
-            </div>
-          ))
-        ) : (
-          <p className="alerts-page__empty">No se encontraron alertas en esta categoría o zona.</p>
+        {filteredAlerts.length === 0 && (
+          <p className="alerts-page__empty">
+            No se encontraron alertas con los filtros seleccionados.
+          </p>
         )}
+
+        {filteredAlerts.map((alert) => (
+          <div
+            key={alert.id}
+            className={`alerts-page__card-col alerts-page__card-col--${alert.type}`}
+          >
+            <h2 className="alerts-page__col-label">{alert.petName}</h2>
+
+            <AlertCard
+              type={alert.type}
+              petName={alert.petName}
+              photo={alert.photo}
+              location={alert.location}
+              date={alert.date}
+              description={alert.description}
+              status={alert.status}
+              onToggleStatus={() => toggleAlertStatus(alert.id)}
+            />
+          </div>
+        ))}
       </main>
 
-      {/* Modal: Nuevo Reporte */}
+      {/* Condicional Fase 4: Modal de nuevo reporte */}
       {isModalOpen && (
         <div className="alerts-modal__overlay">
           <section
@@ -235,9 +231,7 @@ function AlertsPage() {
               <div className="alerts-modal__type-section">
                 <span className="alerts-modal__label">
                   Tipo de{' '}
-                  <span className="alerts-modal__tag-alert">
-                    Alerta
-                  </span>
+                  <span className="alerts-modal__tag-alert">Alerta</span>
                 </span>
 
                 <div className="alerts-page__tags">

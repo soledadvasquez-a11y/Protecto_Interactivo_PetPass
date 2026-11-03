@@ -52,24 +52,10 @@ function MainLayout() {
   };
 
   const getActiveSection = () => {
-    if (location.pathname === '/home') {
-      return 'home';
-    }
-
-    if (location.pathname === '/mapa') {
-      return 'map';
-    }
-
-    if (location.pathname === '/cuenta') {
-      return 'settings';
-    }
-
-    if (
-      location.pathname.startsWith('/mascotas')
-    ) {
-      return 'qr';
-    }
-
+    if (location.pathname === '/home') return 'home';
+    if (location.pathname === '/mapa') return 'map';
+    if (location.pathname === '/cuenta') return 'settings';
+    if (location.pathname.startsWith('/mascotas')) return 'qr';
     return 'home';
   };
 
@@ -82,7 +68,6 @@ function MainLayout() {
     };
 
     const targetRoute = routes[section];
-
     if (targetRoute) {
       navigate(targetRoute);
     }
@@ -90,10 +75,9 @@ function MainLayout() {
 
   return (
     <div className="main-layout">
-      <Header
-        onMenuClick={() => setMenuOpen(true)}
-      />
+      <Header onMenuClick={() => setMenuOpen(true)} />
 
+      {/* Condicional Fase 4: SideMenu activo */}
       <SideMenu
         isOpen={menuOpen}
         userName="Usuario"

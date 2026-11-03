@@ -13,27 +13,20 @@ function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
 
   const handleSend = () => {
-    /*
-      Simulación de interfaz.
-      El correo real se enviará cuando exista backend.
-    */
     setSent(true);
   };
 
   return (
     <main className="forgot-page">
-      {/* Fondo decorativo */}
       <div className="forgot-page__bg-blob" aria-hidden="true" />
 
       <section className="forgot-page__card">
-        {/* Marca superior fuera de la tarjeta flotante */}
         <div className="forgot-page__brand">
           <span className="forgot-page__brand-mark">
             PetPass
           </span>
         </div>
 
-        {/* Tarjeta flotante con los campos */}
         <div className="forgot-page__box">
           <h1>¿Olvidó su contraseña?</h1>
 
@@ -69,6 +62,7 @@ function ForgotPasswordPage() {
               Volver al LOGIN
             </button>
 
+            {/* Condicional Fase 4: Mensaje de confirmación */}
             {sent && (
               <p
                 className="forgot-page__success"

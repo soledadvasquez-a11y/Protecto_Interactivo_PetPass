@@ -1,11 +1,8 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import OnboardingDots from '../components/OnboardingDots/OnboardingDots.jsx';
-
 import OnboardingConfetti from '../components/decorative/DecorativeConfetti.jsx';
-
 import logoPetpass from '../assets/logo-petpass.svg';
 
 import './OnboardingPage.css';
@@ -47,13 +44,9 @@ function OnboardingPage() {
   };
 
   return (
-    <main
-      className={`onboarding-page onboarding-page--${stepData.theme}`}
-    >
-      {/* Fondo decorativo responsive */}
+    <main className={`onboarding-page onboarding-page--${stepData.theme}`}>
       <OnboardingConfetti />
 
-      {/* Header con Logo PetPass */}
       <header className="onboarding-page__header">
         <img
           src={logoPetpass}
@@ -62,13 +55,12 @@ function OnboardingPage() {
         />
       </header>
 
-      {/* Bloque inferior: Tarjeta + Puntos unidos */}
       <div className="onboarding-page__main-content">
         <section className="onboarding-page__card">
           <h1>{stepData.title}</h1>
-
           <p>{stepData.description}</p>
 
+          {/* Condicional Fase 4: Botón Empezar vs Flecha */}
           {currentStep === 3 ? (
             <button
               type="button"
@@ -89,7 +81,6 @@ function OnboardingPage() {
           )}
         </section>
 
-        {/* Indicadores del onboarding */}
         <footer className="onboarding-page__dots-wrapper">
           <OnboardingDots
             currentStep={currentStep}

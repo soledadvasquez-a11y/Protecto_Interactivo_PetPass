@@ -91,6 +91,7 @@ function MapPage() {
       !query ||
       place.name.toLowerCase().includes(query) ||
       place.address.toLowerCase().includes(query);
+
     return matchesCategory && matchesSearch;
   });
 
@@ -108,7 +109,6 @@ function MapPage() {
 
   return (
     <div className="map-page">
-      {/* Controles flotantes superiores */}
       <header className="map-page__controls">
         <SearchBar
           value={searchQuery}
@@ -129,13 +129,19 @@ function MapPage() {
         </div>
       </header>
 
-      {/* Contenedor del mapa y marcadores interactivos */}
       <main className="map-page__canvas">
         <img
           src={mapBackground}
           alt="Mapa de Villa Dolores"
           className="map-page__map-img"
         />
+
+        {/* Condicional Fase 4: Sin lugares encontrados */}
+        {filteredPlaces.length === 0 && (
+          <p className="map-page__empty">
+            No se encontraron lugares en esta categoría o búsqueda.
+          </p>
+        )}
 
         {filteredPlaces.map((place) => {
           const isSelected = place.id === selectedPlaceId;
@@ -151,7 +157,6 @@ function MapPage() {
                 left: place.position.left,
               }}
             >
-              {/* Miniatura previa sobre el pin si está seleccionado */}
               {isSelected && place.photo && (
                 <div className="map-page__bubble-preview">
                   <img src={place.photo} alt={place.name} />
@@ -169,7 +174,7 @@ function MapPage() {
         })}
       </main>
 
-      {/* Tarjeta inferior con el componente PlaceCard oficial */}
+      {/* Condicional Fase 4: PlaceCard solo si hay lugar seleccionado */}
       {selectedPlace && (
         <section
           className={`map-page__card-container map-page__card-container--${selectedPlace.badgeType}`}
