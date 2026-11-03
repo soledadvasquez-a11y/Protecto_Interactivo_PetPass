@@ -7,15 +7,19 @@ import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx'
 
 import './RegisterPetPage.css';
 
-function RegisterPetPage() {
+const EMPTY_FORM = {
+  name: '',
+  species: '',
+  breed: '',
+  age: '',
+};
+
+function RegisterPetPage({ onAddPet }) {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    species: '',
-    breed: '',
-    age: '',
-  });
+  const [formData, setFormData] = useState(
+    EMPTY_FORM
+  );
 
   const [error, setError] = useState('');
 
@@ -25,6 +29,10 @@ function RegisterPetPage() {
       [field]: event.target.value,
     }));
 
+    /*
+      Si el usuario comienza a corregir,
+      quitamos el mensaje anterior.
+    */
     setError('');
   };
 
@@ -39,10 +47,31 @@ function RegisterPetPage() {
       return;
     }
 
+    const newPet = {
+      id: Date.now(),
+
+      name: formData.name.trim(),
+      species: formData.species.trim(),
+      breed: formData.breed.trim(),
+      age: formData.age.trim(),
+
+      photo: null,
+      status: 'normal',
+    };
+
     /*
-      GUARDADO PROVISIONAL:
-      el registro real irá al backend después.
+      En Fase 5 App.jsx enviará realmente
+      onAddPet.
+
+      Por ahora dejamos preparado el contrato
+      entre la página y el futuro estado global.
     */
+    if (onAddPet) {
+      onAddPet(newPet);
+    }
+
+    setFormData(EMPTY_FORM);
+    setError('');
 
     navigate('/home');
   };
@@ -70,11 +99,11 @@ function RegisterPetPage() {
         </header>
 
         <div className="register-pet-page__avatar">
-          <span aria-hidden="true">🐾</span>
+          <span aria-hidden="true">
+            🐾
+          </span>
 
-          <p>
-            fotografía 
-          </p>
+          <p>Fotografía</p>
         </div>
 
         <div className="register-pet-page__form">

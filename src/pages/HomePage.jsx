@@ -12,9 +12,7 @@ function HomePage() {
   return (
     <main className="page home-page">
 
-      {/* Tarjeta de saludo */}
       <section className="home-page__welcome">
-
         <div className="home-page__welcome-text">
           <h1>Hola, Usuario!</h1>
         </div>
@@ -29,41 +27,19 @@ function HomePage() {
             width="90"
             height="90"
           >
-            <circle
-              cx="25"
-              cy="30"
-              r="11"
-            />
-
-            <circle
-              cx="48"
-              cy="18"
-              r="11"
-            />
-
-            <circle
-              cx="72"
-              cy="28"
-              r="11"
-            />
-
-            <circle
-              cx="88"
-              cy="50"
-              r="10"
-            />
+            <circle cx="25" cy="30" r="11" />
+            <circle cx="48" cy="18" r="11" />
+            <circle cx="72" cy="28" r="11" />
+            <circle cx="88" cy="50" r="10" />
 
             <path
               d="M 30 62 C 25 46, 75 46, 70 62 C 65 76, 35 76, 30 62 Z"
             />
           </svg>
         </div>
-
       </section>
 
-      {/* Mis Mascotas */}
       <section className="home-page__pets">
-
         <h2>Mis Mascotas</h2>
 
         {pets.map((pet) => (
@@ -83,7 +59,6 @@ function HomePage() {
           />
         ))}
 
-        {/* Agregar mascota siempre disponible */}
         <button
           type="button"
           className="home-page__register-btn"
@@ -91,7 +66,6 @@ function HomePage() {
             navigate('/mascotas/nueva')
           }
         >
-
           <div className="home-page__register-icon">
             <svg
               width="20"
@@ -119,7 +93,6 @@ function HomePage() {
           </div>
 
           <div className="home-page__register-text">
-
             <h3>
               Agregar mascota
             </h3>
@@ -127,11 +100,8 @@ function HomePage() {
             <p>
               Crea el PetPass de otra mascota
             </p>
-
           </div>
-
         </button>
-
       </section>
 
     </main>

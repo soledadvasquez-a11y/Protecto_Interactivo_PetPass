@@ -19,10 +19,6 @@ function PublicPetProfilePage() {
   const [isCalling, setIsCalling] =
     useState(false);
 
-  /*
-    Obtenemos la mascota desde pets.js
-    usando el id de la URL.
-  */
   const pet = pets.find(
     (item) => item.id === Number(id)
   );
@@ -39,16 +35,16 @@ function PublicPetProfilePage() {
     setModalType(null);
   };
 
-  /*
-    Protección para un id inexistente.
-  */
   if (!pet) {
     return (
       <div className="pet-profile-page">
+
         <DecorativeConfetti />
 
         <main className="pet-profile-page__card">
+
           <section className="pet-profile-page__info-box">
+
             <h1 className="pet-profile-page__title">
               Mascota no encontrada
             </h1>
@@ -56,8 +52,11 @@ function PublicPetProfilePage() {
             <p className="pet-profile-page__subtitle">
               El perfil solicitado no existe.
             </p>
+
           </section>
+
         </main>
+
       </div>
     );
   }
@@ -68,12 +67,11 @@ function PublicPetProfilePage() {
       <DecorativeConfetti />
 
       {isCalling ? (
-        /*
-          Pantalla provisional de llamada.
-        */
+
         <main className="pet-profile-page__call-card">
 
           <div className="pet-profile-page__call-avatar-wrapper">
+
             {pet.photo ? (
               <img
                 src={pet.photo}
@@ -85,6 +83,7 @@ function PublicPetProfilePage() {
                 🐾
               </span>
             )}
+
           </div>
 
           <h1 className="pet-profile-page__call-title">
@@ -101,7 +100,9 @@ function PublicPetProfilePage() {
                 🔊
               </span>
 
-              <span>Speaker</span>
+              <span>
+                Speaker
+              </span>
             </button>
 
             <button
@@ -112,7 +113,9 @@ function PublicPetProfilePage() {
                 🔇
               </span>
 
-              <span>Mute</span>
+              <span>
+                Mute
+              </span>
             </button>
 
             <button
@@ -123,7 +126,9 @@ function PublicPetProfilePage() {
                 ▦
               </span>
 
-              <span>Keypad</span>
+              <span>
+                Keypad
+              </span>
             </button>
 
           </div>
@@ -140,12 +145,9 @@ function PublicPetProfilePage() {
           </button>
 
         </main>
+
       ) : (
 
-        /*
-          Vista actual del perfil público.
-          normal/lost se implementará más adelante.
-        */
         <main className="pet-profile-page__card">
 
           <section className="pet-profile-page__info-box">
@@ -223,6 +225,7 @@ function PublicPetProfilePage() {
           </footer>
 
         </main>
+
       )}
 
       <AlertModal
@@ -234,9 +237,15 @@ function PublicPetProfilePage() {
         message=""
         actionLabel="Aceptar"
         secondaryLabel="Rechazar"
-        onAction={handleAcceptPermission}
-        onSecondary={handleCloseModal}
-        onClose={handleCloseModal}
+        onAction={
+          handleAcceptPermission
+        }
+        onSecondary={
+          handleCloseModal
+        }
+        onClose={
+          handleCloseModal
+        }
       />
 
       <AlertModal
@@ -247,8 +256,12 @@ function PublicPetProfilePage() {
         title="¡Alerta enviada!"
         message="El tutor ya tiene la ubicación, por favor quédate con la mascota unos minutos."
         actionLabel="Aceptar"
-        onAction={handleCloseModal}
-        onClose={handleCloseModal}
+        onAction={
+          handleCloseModal
+        }
+        onClose={
+          handleCloseModal
+        }
       />
 
     </div>
