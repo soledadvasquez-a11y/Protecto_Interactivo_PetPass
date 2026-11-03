@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 
 import Button from '../components/Button/Button.jsx';
 import AlertModal from '../components/AlertModal/AlertModal.jsx';
-
 import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx';
 
 import pets from '../data/pets.js';
@@ -87,8 +86,12 @@ function PublicPetProfilePage() {
           </div>
 
           <h1 className="pet-profile-page__call-title">
-            ¡Estoy perdido!
+            Llamada de emergencia
           </h1>
+
+          <p>
+            Contactando al tutor de {pet.name}
+          </p>
 
           <div className="pet-profile-page__call-controls">
 
@@ -169,11 +172,15 @@ function PublicPetProfilePage() {
             </div>
 
             <h1 className="pet-profile-page__title">
-              ¡Estoy perdido!
+              {pet.status === 'lost'
+                ? '¡Estoy perdido!'
+                : `Hola, soy ${pet.name}`}
             </h1>
 
             <p className="pet-profile-page__subtitle">
-              Ayúdame a volver a casa
+              {pet.status === 'lost'
+                ? 'Ayúdame a volver a casa'
+                : 'Este es mi perfil público de PetPass'}
             </p>
 
             <div className="pet-profile-page__data">
@@ -205,22 +212,35 @@ function PublicPetProfilePage() {
 
           <footer className="pet-profile-page__actions">
 
-            <Button
-              variant="danger"
-              onClick={handleOpenGpsModal}
-            >
-              Enviar Alerta GPS
-            </Button>
+            {pet.status === 'lost' ? (
 
-            <button
-              type="button"
-              className="pet-profile-page__call-action-btn"
-              onClick={() =>
-                setIsCalling(true)
-              }
-            >
-              Llamada de emergencia
-            </button>
+              <>
+                <Button
+                  variant="danger"
+                  onClick={handleOpenGpsModal}
+                >
+                  Enviar Alerta GPS
+                </Button>
+
+                <button
+                  type="button"
+                  className="pet-profile-page__call-action-btn"
+                  onClick={() =>
+                    setIsCalling(true)
+                  }
+                >
+                  Llamada de emergencia
+                </button>
+              </>
+
+            ) : (
+
+              <p className="pet-profile-page__safe-message">
+                Esta mascota no está reportada
+                como perdida.
+              </p>
+
+            )}
 
           </footer>
 
