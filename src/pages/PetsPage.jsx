@@ -6,30 +6,15 @@ import PetCard from '../components/PetCard/PetCard.jsx';
 import Button from '../components/Button/Button.jsx';
 import ConfirmationModal from '../components/ConfirmationModal/ConfirmationModal.jsx';
 
-import './PetsPage.css';
+import pets from '../data/pets.js';
 
-const pets = [
-  {
-    id: 1,
-    name: 'Toby',
-    species: 'Perro',
-    breed: 'Pug',
-    age: '5 años',
-  },
-  {
-    id: 2,
-    name: 'Mila',
-    species: 'Gato',
-    breed: 'Mestiza',
-    age: '3 años',
-  },
-];
+import './PetsPage.css';
 
 function PetsPage() {
   const navigate = useNavigate();
 
   const [selectedPetId, setSelectedPetId] =
-    useState(1);
+    useState(pets[0].id);
 
   const [deleteModalOpen, setDeleteModalOpen] =
     useState(false);
@@ -41,14 +26,14 @@ function PetsPage() {
 
   const handleDelete = () => {
     /*
-      Eliminación visual/provisional.
-      El backend manejará el borrado real.
+      La eliminación real se implementará
+      en la fase de estados.
     */
 
     setDeleteModalOpen(false);
 
     alert(
-      `La eliminación real de ${selectedPet.name} se conectará al backend.`
+      `La eliminación real de ${selectedPet.name} se implementará en la fase de estados.`
     );
   };
 
@@ -82,7 +67,8 @@ function PetsPage() {
             <PetSelector
               key={pet.id}
               name={pet.name}
-              state={
+              photo={pet.photo}
+              variant={
                 selectedPetId === pet.id
                   ? 'selected'
                   : 'default'
@@ -95,7 +81,7 @@ function PetsPage() {
 
           <PetSelector
             name="Agregar"
-            state="add"
+            variant="add"
             onClick={() =>
               navigate('/mascotas/nueva')
             }
@@ -109,6 +95,7 @@ function PetsPage() {
         <PetCard
           variant="detailed"
           name={selectedPet.name}
+          photo={selectedPet.photo}
           species={selectedPet.species}
           breed={selectedPet.breed}
           age={selectedPet.age}

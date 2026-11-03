@@ -1,46 +1,43 @@
 import { useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import FilterTab from '../components/FilterTab/FilterTab.jsx';
 import MedicalRecordCard from '../components/MedicalRecordCard/MedicalRecordCard.jsx';
 
+import medicalRecords from '../data/medicalRecords.js';
+
 import './MedicalHistoryPage.css';
 
-const records = [
-  {
-    id: 1,
-    type: 'vaccine',
-    title: 'Vacuna antirrábica',
-    date: '12/09/2026',
-    place: 'Veterinaria Central',
-    description: 'Aplicación anual de vacuna antirrábica.',
-  },
-  {
-    id: 2,
-    type: 'deworming',
-    title: 'Desparasitación interna',
-    date: '20/08/2026',
-    place: 'PetCare La Paz',
-    description: 'Control preventivo y antiparasitario.',
-  },
-  {
-    id: 3,
-    type: 'consultation',
-    title: 'Consulta general',
-    date: '05/10/2026',
-    place: 'Clínica Veterinaria Sur',
-    description: 'Control general. Mascota en buen estado.',
-  },
-];
-
 function MedicalHistoryPage() {
-  const [activeFilter, setActiveFilter] = useState('vaccine');
+  const { id } = useParams();
 
+  const [activeFilter, setActiveFilter] =
+    useState('vaccine');
+
+  const petId = Number(id);
+
+  /*
+    Primero obtenemos solamente los registros
+    pertenecientes a la mascota de la URL.
+  */
+  const petRecords = useMemo(
+    () =>
+      medicalRecords.filter(
+        (record) => record.petId === petId
+      ),
+    [petId]
+  );
+
+  /*
+    Después filtramos los registros de esa
+    mascota por vacuna, desparasitación o consulta.
+  */
   const visibleRecords = useMemo(
     () =>
-      records.filter(
+      petRecords.filter(
         (record) => record.type === activeFilter
       ),
-    [activeFilter]
+    [petRecords, activeFilter]
   );
 
   return (
@@ -57,19 +54,25 @@ function MedicalHistoryPage() {
         <FilterTab
           label="Vacunas"
           active={activeFilter === 'vaccine'}
-          onClick={() => setActiveFilter('vaccine')}
+          onClick={() =>
+            setActiveFilter('vaccine')
+          }
         />
 
         <FilterTab
           label="Desparasitación"
           active={activeFilter === 'deworming'}
-          onClick={() => setActiveFilter('deworming')}
+          onClick={() =>
+            setActiveFilter('deworming')
+          }
         />
 
         <FilterTab
           label="Consultas"
           active={activeFilter === 'consultation'}
-          onClick={() => setActiveFilter('consultation')}
+          onClick={() =>
+            setActiveFilter('consultation')
+          }
         />
       </div>
 
