@@ -9,10 +9,15 @@ import './HomePage.css';
 function HomePage() {
   const navigate = useNavigate();
 
+  const handleAddPet = () => {
+    navigate('/mascotas/nueva');
+  };
+
   return (
     <main className="page home-page">
 
       <section className="home-page__welcome">
+
         <div className="home-page__welcome-text">
           <h1>Hola, Usuario!</h1>
         </div>
@@ -37,71 +42,99 @@ function HomePage() {
             />
           </svg>
         </div>
+
       </section>
 
       <section className="home-page__pets">
+
         <h2>Mis Mascotas</h2>
 
-        {pets.map((pet) => (
-          <PetCard
-            key={pet.id}
-            variant="compact"
-            name={pet.name}
-            photo={pet.photo}
-            species={pet.species}
-            breed={pet.breed}
-            age={pet.age}
-            onClick={() =>
-              navigate(
-                `/mascotas/${pet.id}/carnet`
-              )
-            }
-          />
-        ))}
+        {pets.length === 0 ? (
 
-        <button
-          type="button"
-          className="home-page__register-btn"
-          onClick={() =>
-            navigate('/mascotas/nueva')
-          }
-        >
-          <div className="home-page__register-icon">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#E16E42"
-              strokeWidth="3.5"
-              strokeLinecap="round"
+          <div className="home-page__empty">
+
+            <div
+              className="home-page__empty-icon"
+              aria-hidden="true"
             >
-              <line
-                x1="12"
-                y1="5"
-                x2="12"
-                y2="19"
-              />
+              🐾
+            </div>
 
-              <line
-                x1="5"
-                y1="12"
-                x2="19"
-                y2="12"
-              />
-            </svg>
-          </div>
-
-          <div className="home-page__register-text">
             <h3>
-              Agregar mascota
+              Aún no tienes mascotas registradas
             </h3>
 
             <p>
-              Crea el PetPass de otra mascota
+              Puedes usar PetPass aunque todavía
+              no tengas una mascota. Cuando quieras,
+              puedes registrar una desde aquí.
             </p>
+
+            <button
+              type="button"
+              className="home-page__register-btn"
+              onClick={handleAddPet}
+            >
+              <div className="home-page__register-icon">
+                +
+              </div>
+
+              <div className="home-page__register-text">
+                <h3>
+                  Registrar mascota
+                </h3>
+
+                <p>
+                  Crea su identidad digital PetPass
+                </p>
+              </div>
+            </button>
+
           </div>
-        </button>
+
+        ) : (
+
+          <>
+            {pets.map((pet) => (
+              <PetCard
+                key={pet.id}
+                variant="compact"
+                name={pet.name}
+                photo={pet.photo}
+                species={pet.species}
+                breed={pet.breed}
+                age={pet.age}
+                onClick={() =>
+                  navigate(
+                    `/mascotas/${pet.id}/carnet`
+                  )
+                }
+              />
+            ))}
+
+            <button
+              type="button"
+              className="home-page__register-btn"
+              onClick={handleAddPet}
+            >
+              <div className="home-page__register-icon">
+                +
+              </div>
+
+              <div className="home-page__register-text">
+                <h3>
+                  Agregar mascota
+                </h3>
+
+                <p>
+                  Crea el PetPass de otra mascota
+                </p>
+              </div>
+            </button>
+          </>
+
+        )}
+
       </section>
 
     </main>

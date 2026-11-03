@@ -363,3 +363,19 @@
   padding: 0 24px;
   border-radius: 999px;
 }
+.pet-profile-page__safe-message {
+  margin: 0;
+
+  padding: 14px 16px;
+
+  border-radius: 20px;
+
+  background: var(--color-background);
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  text-align: center;
+
+  color: var(--color-text);
+}
