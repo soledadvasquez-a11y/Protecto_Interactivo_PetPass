@@ -14,6 +14,7 @@ function RegisterTutorPage() {
     email: '',
     phone: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [error, setError] = useState('');
@@ -26,12 +27,19 @@ function RegisterTutorPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.password) {
-      setError('Por favor completa todos los campos requeridos.');
+    const { name, email, password, confirmPassword } = formData;
+
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      setError('Por favor completa los campos obligatorios.');
       return;
     }
 
-    // Cumple 3.3: Navega directamente a /home
+    if (confirmPassword && password !== confirmPassword) {
+      setError('Las contraseñas no coinciden.');
+      return;
+    }
+
+    // Cumple Fase 3 (3.3): Navega a /home tras registrarse
     navigate('/home');
   };
 
@@ -83,7 +91,15 @@ function RegisterTutorPage() {
             placeholder="••••••••"
           />
 
-          {/* Condicional Fase 4: Mensaje de error de registro */}
+          <FormField
+            label="Confirmar contraseña"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange('confirmPassword')}
+            placeholder="Repite tu contraseña"
+          />
+
+          {/* Condicional Fase 4: Error de registro */}
           {error && (
             <p className="register-tutor-page__error" role="alert">
               {error}

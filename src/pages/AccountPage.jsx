@@ -6,11 +6,11 @@ import './AccountPage.css';
 
 function AccountPage() {
   const [formData, setFormData] = useState({
-    name: 'Usuario',
-    phone: '',
-    email: '',
-    password: '',
-    address: '',
+    name: 'Tutor PetPass',
+    email: 'tutor@petpass.com',
+    phone: '70000000',
+    zone: 'sopocachi',
+    emergencyContact: '',
   });
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -90,26 +90,18 @@ function AccountPage() {
             onChange={handleChange('email')}
           />
 
-          <FormField
-            label="Contraseña"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange('password')}
-          />
-
           <div className="account-page__address-container">
             <FormField
-              label="Direccion"
-              name="address"
-              value={formData.address}
-              onChange={handleChange('address')}
+              label="Zona"
+              name="zone"
+              value={formData.zone}
+              onChange={handleChange('zone')}
             />
             {/* Icono de edición cuadrado naranja de Figma */}
             <button
               type="button"
               className="account-page__edit-btn"
-              aria-label="Editar dirección"
+              aria-label="Editar zona"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -125,6 +117,13 @@ function AccountPage() {
               </svg>
             </button>
           </div>
+
+          <FormField
+            label="Contacto de emergencia (opcional)"
+            name="emergencyContact"
+            value={formData.emergencyContact}
+            onChange={handleChange('emergencyContact')}
+          />
         </div>
       </section>
 

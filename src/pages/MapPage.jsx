@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar/SearchBar.jsx';
 import FilterTab from '../components/FilterTab/FilterTab.jsx';
 import MapMarker from '../components/MapMarker/MapMarker.jsx';
@@ -83,22 +83,29 @@ function MapPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedPlaceId, setSelectedPlaceId] = useState(1);
 
-  // Filtrado de lugares
+  // Filtrado por categoría y búsqueda insensible a mayúsculas/minúsculas
   const filteredPlaces = PLACES.filter((place) => {
+    const matchesCategory = activeCategory === 'all' || place.category === activeCategory;
     const query = searchQuery.trim().toLowerCase();
     const matchesSearch =
       !query ||
       place.name.toLowerCase().includes(query) ||
       place.address.toLowerCase().includes(query);
 
-    const matchesCategory =
-      activeCategory === 'all' || place.category === activeCategory;
-
-    return matchesSearch && matchesCategory;
+    return matchesCategory && matchesSearch;
   });
 
-  // Verificar si el lugar seleccionado sigue existiendo en el filtro
-  const selectedPlace = filteredPlaces.find((place) => place.id === selectedPlaceId);
+  // Limpiar selección si el lugar seleccionado desaparece del filtro actual
+  useEffect(() => {
+    if (selectedPlaceId !== null) {
+      const exists = filteredPlaces.some((p) => p.id === selectedPlaceId);
+      if (!exists) {
+        setSelectedPlaceId(null);
+      }
+    }
+  }, [searchQuery, activeCategory, filteredPlaces, selectedPlaceId]);
+
+  const selectedPlace = PLACES.find((place) => place.id === selectedPlaceId);
 
   return (
     <div className="map-page">
@@ -150,7 +157,6 @@ function MapPage() {
                 left: place.position.left,
               }}
             >
-              {/* Condicional de miniatura preview si está seleccionado */}
               {isSelected && place.photo && (
                 <div className="map-page__bubble-preview">
                   <img src={place.photo} alt={place.name} />

@@ -47,10 +47,6 @@ function PetsPage({
   const handleSelectPet = (petId) => {
     setSelectedPetId(petId);
 
-    /*
-      Si cambia de mascota mientras editaba,
-      cerramos el modo edición.
-    */
     setIsEditingPet(false);
     setEditFormData(EMPTY_EDIT_FORM);
   };
@@ -60,10 +56,6 @@ function PetsPage({
       return;
     }
 
-    /*
-      Copiamos los datos actuales de la mascota
-      hacia el formulario.
-    */
     setEditFormData({
       name: selectedPet.name,
       species: selectedPet.species,
@@ -94,16 +86,12 @@ function PetsPage({
 
     const updatedPet = {
       ...selectedPet,
-
       name: editFormData.name.trim(),
       species: editFormData.species.trim(),
       breed: editFormData.breed.trim(),
       age: editFormData.age.trim(),
     };
 
-    /*
-      App.jsx recibirá este callback en Fase 5.
-    */
     if (onUpdatePet) {
       onUpdatePet(updatedPet);
     }
@@ -125,10 +113,6 @@ function PetsPage({
       return;
     }
 
-    /*
-      App.jsx eliminará realmente la mascota
-      en Fase 5.
-    */
     if (onDeletePet) {
       onDeletePet(selectedPet.id);
     }
@@ -137,40 +121,16 @@ function PetsPage({
     setIsEditingPet(false);
   };
 
-  if (!selectedPet) {
-    return (
-      <main className="page pets-page">
-        <header className="pets-page__heading">
-          <div>
-            <h1>Mis Mascotas</h1>
-
-            <p>
-              Todavía no tienes mascotas registradas.
-            </p>
-          </div>
-
-          <Button
-            variant="primary"
-            onClick={() =>
-              navigate('/mascotas/nueva')
-            }
-          >
-            Agregar mascota
-          </Button>
-        </header>
-      </main>
-    );
-  }
-
   return (
     <main className="page pets-page">
+
       <header className="pets-page__heading">
+
         <div>
           <h1>Mis Mascotas</h1>
 
           <p>
-            Selecciona una mascota para ver o
-            administrar su información.
+            Administra la información de tus mascotas.
           </p>
         </div>
 
@@ -182,161 +142,224 @@ function PetsPage({
         >
           Agregar mascota
         </Button>
+
       </header>
 
-      <section className="pets-page__selector-section">
-        <h2>Seleccionar mascota</h2>
+      {pets.length === 0 ? (
 
-        <div className="pets-page__selectors">
-          {pets.map((pet) => (
-            <PetSelector
-              key={pet.id}
-              name={pet.name}
-              photo={pet.photo}
-              variant={
-                selectedPetId === pet.id
-                  ? 'selected'
-                  : 'default'
-              }
-              onClick={() =>
-                handleSelectPet(pet.id)
-              }
-            />
-          ))}
+        <section className="pets-page__empty">
 
-          <PetSelector
-            name="Agregar"
-            variant="add"
+          <div
+            className="pets-page__empty-icon"
+            aria-hidden="true"
+          >
+            🐾
+          </div>
+
+          <h2>
+            Aún no tienes mascotas registradas
+          </h2>
+
+          <p>
+            Cuando quieras puedes registrar una
+            mascota y crear su identidad PetPass.
+          </p>
+
+          <Button
+            variant="primary"
             onClick={() =>
               navigate('/mascotas/nueva')
             }
+          >
+            Registrar mascota
+          </Button>
+
+        </section>
+
+      ) : (
+
+        <>
+          <section className="pets-page__selector-section">
+
+            <h2>
+              Seleccionar mascota
+            </h2>
+
+            <div className="pets-page__selectors">
+
+              {pets.map((pet) => (
+                <PetSelector
+                  key={pet.id}
+                  name={pet.name}
+                  photo={pet.photo}
+                  variant={
+                    selectedPetId === pet.id
+                      ? 'selected'
+                      : 'default'
+                  }
+                  onClick={() =>
+                    handleSelectPet(pet.id)
+                  }
+                />
+              ))}
+
+              <PetSelector
+                name="Agregar"
+                variant="add"
+                onClick={() =>
+                  navigate('/mascotas/nueva')
+                }
+              />
+
+            </div>
+
+          </section>
+
+          <section className="pets-page__detail">
+
+            <h2>
+              Información
+            </h2>
+
+            {isEditingPet ? (
+
+              <div className="pets-page__edit-panel">
+
+                <h3>
+                  Editar mascota
+                </h3>
+
+                <FormField
+                  label="Nombre"
+                  type="text"
+                  value={editFormData.name}
+                  onChange={
+                    handleEditChange('name')
+                  }
+                />
+
+                <FormField
+                  label="Especie"
+                  type="text"
+                  value={editFormData.species}
+                  onChange={
+                    handleEditChange(
+                      'species'
+                    )
+                  }
+                />
+
+                <FormField
+                  label="Raza"
+                  type="text"
+                  value={editFormData.breed}
+                  onChange={
+                    handleEditChange('breed')
+                  }
+                />
+
+                <FormField
+                  label="Edad"
+                  type="text"
+                  value={editFormData.age}
+                  onChange={
+                    handleEditChange('age')
+                  }
+                />
+
+                <div className="pets-page__edit-actions">
+
+                  <Button
+                    variant="primary"
+                    onClick={handleSaveEdit}
+                  >
+                    Guardar cambios
+                  </Button>
+
+                  <Button
+                    variant="secondary"
+                    onClick={handleCancelEdit}
+                  >
+                    Cancelar
+                  </Button>
+
+                </div>
+
+              </div>
+
+            ) : (
+
+              <>
+                <PetCard
+                  variant="detailed"
+                  name={selectedPet.name}
+                  photo={selectedPet.photo}
+                  species={selectedPet.species}
+                  breed={selectedPet.breed}
+                  age={selectedPet.age}
+                />
+
+                <div className="pets-page__actions">
+
+                  <Button
+                    variant="primary"
+                    onClick={() =>
+                      navigate(
+                        `/mascotas/${selectedPet.id}/carnet`
+                      )
+                    }
+                  >
+                    Ver carnet digital
+                  </Button>
+
+                  <Button
+                    variant="secondary"
+                    onClick={() =>
+                      navigate(
+                        `/mascotas/${selectedPet.id}/historial-medico`
+                      )
+                    }
+                  >
+                    Historial médico
+                  </Button>
+
+                  <Button
+                    variant="secondary"
+                    onClick={handleOpenEdit}
+                  >
+                    Editar mascota
+                  </Button>
+
+                  <Button
+                    variant="danger"
+                    onClick={handleOpenDelete}
+                  >
+                    Eliminar mascota
+                  </Button>
+
+                </div>
+              </>
+
+            )}
+
+          </section>
+
+          <ConfirmationModal
+            isOpen={deleteModalOpen}
+            variant="danger"
+            title="Eliminar mascota"
+            message={`¿Seguro que deseas eliminar a ${selectedPet.name}?`}
+            confirmLabel="Eliminar"
+            cancelLabel="Cancelar"
+            onConfirm={handleDelete}
+            onCancel={() =>
+              setDeleteModalOpen(false)
+            }
           />
-        </div>
-      </section>
+        </>
 
-      <section className="pets-page__detail">
-        <h2>Información</h2>
+      )}
 
-        {!isEditingPet ? (
-          <>
-            <PetCard
-              variant="detailed"
-              name={selectedPet.name}
-              photo={selectedPet.photo}
-              species={selectedPet.species}
-              breed={selectedPet.breed}
-              age={selectedPet.age}
-              onQrClick={() =>
-                navigate(
-                  `/mascotas/${selectedPet.id}/carnet`
-                )
-              }
-              onEdit={handleOpenEdit}
-            />
-
-            <div className="pets-page__actions">
-              <Button
-                variant="primary"
-                onClick={() =>
-                  navigate(
-                    `/mascotas/${selectedPet.id}/carnet`
-                  )
-                }
-              >
-                Ver carnet digital
-              </Button>
-
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  navigate(
-                    `/mascotas/${selectedPet.id}/historial-medico`
-                  )
-                }
-              >
-                Historial médico
-              </Button>
-
-              <Button
-                variant="secondary"
-                onClick={handleOpenEdit}
-              >
-                Editar mascota
-              </Button>
-
-              <Button
-                variant="danger"
-                onClick={handleOpenDelete}
-              >
-                Eliminar mascota
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="pets-page__edit-panel">
-            <h3>Editar mascota</h3>
-
-            <FormField
-              label="Nombre"
-              type="text"
-              value={editFormData.name}
-              onChange={handleEditChange('name')}
-            />
-
-            <FormField
-              label="Especie"
-              type="text"
-              value={editFormData.species}
-              onChange={handleEditChange(
-                'species'
-              )}
-            />
-
-            <FormField
-              label="Raza"
-              type="text"
-              value={editFormData.breed}
-              onChange={handleEditChange('breed')}
-            />
-
-            <FormField
-              label="Edad"
-              type="text"
-              value={editFormData.age}
-              onChange={handleEditChange('age')}
-            />
-
-            <div className="pets-page__edit-actions">
-              <Button
-                variant="primary"
-                onClick={handleSaveEdit}
-              >
-                Guardar cambios
-              </Button>
-
-              <Button
-                variant="secondary"
-                onClick={handleCancelEdit}
-              >
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        )}
-      </section>
-
-      <ConfirmationModal
-        isOpen={deleteModalOpen}
-        variant="danger"
-        title="Eliminar mascota"
-        message={`¿Seguro que deseas eliminar a ${selectedPet.name}?`}
-        confirmLabel="Eliminar"
-        cancelLabel="Cancelar"
-        onConfirm={handleDelete}
-        onCancel={() =>
-          setDeleteModalOpen(false)
-        }
-      />
     </main>
   );
 }

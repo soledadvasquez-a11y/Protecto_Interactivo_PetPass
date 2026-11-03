@@ -63,9 +63,6 @@ function MedicalHistoryPage({
     setEditingRecordId,
   ] = useState(null);
 
-  /*
-    Primero filtramos por mascota.
-  */
   const petRecords = useMemo(
     () =>
       medicalRecords.filter(
@@ -75,9 +72,6 @@ function MedicalHistoryPage({
     [medicalRecords, petId]
   );
 
-  /*
-    Después por categoría médica.
-  */
   const visibleRecords = useMemo(
     () =>
       petRecords.filter(
@@ -96,10 +90,6 @@ function MedicalHistoryPage({
     };
 
   const handleOpenNewRecord = () => {
-    /*
-      El formulario nuevo parte de la
-      categoría que el usuario está mirando.
-    */
     setMedicalFormData({
       ...EMPTY_MEDICAL_FORM,
       type: activeFilter,
@@ -125,9 +115,11 @@ function MedicalHistoryPage({
 
   const handleCloseMedicalForm = () => {
     setMedicalFormOpen(false);
+
     setMedicalFormData(
       EMPTY_MEDICAL_FORM
     );
+
     setEditingRecordId(null);
   };
 
@@ -139,10 +131,6 @@ function MedicalHistoryPage({
       return;
     }
 
-    /*
-      Si editingRecordId tiene valor,
-      estamos editando.
-    */
     if (editingRecordId !== null) {
       const updatedRecord = {
         id: editingRecordId,
@@ -156,9 +144,6 @@ function MedicalHistoryPage({
         );
       }
     } else {
-      /*
-        Si es null, creamos uno nuevo.
-      */
       const newRecord = {
         id: Date.now(),
         petId,
@@ -166,14 +151,12 @@ function MedicalHistoryPage({
       };
 
       if (onAddMedicalRecord) {
-        onAddMedicalRecord(newRecord);
+        onAddMedicalRecord(
+          newRecord
+        );
       }
     }
 
-    /*
-      Dejamos el filtro en el mismo tipo
-      que acabamos de guardar.
-    */
     setActiveFilter(
       medicalFormData.type
     );
@@ -183,9 +166,13 @@ function MedicalHistoryPage({
 
   return (
     <main className="page medical-history-page">
+
       <header className="medical-history-page__heading">
+
         <div>
-          <h1>Historial médico</h1>
+          <h1>
+            Historial médico
+          </h1>
 
           <p>
             Consulta y administra los registros
@@ -199,9 +186,11 @@ function MedicalHistoryPage({
         >
           Agregar registro
         </Button>
+
       </header>
 
       <div className="medical-history-page__filters">
+
         <FilterTab
           label="Vacunas"
           active={
@@ -231,10 +220,13 @@ function MedicalHistoryPage({
             setActiveFilter('consultation')
           }
         />
+
       </div>
 
       {medicalFormOpen && (
+
         <section className="medical-history-page__form">
+
           <h2>
             {editingRecordId !== null
               ? 'Editar registro'
@@ -246,9 +238,9 @@ function MedicalHistoryPage({
             type="select"
             value={medicalFormData.type}
             options={TYPE_OPTIONS}
-            onChange={handleMedicalChange(
-              'type'
-            )}
+            onChange={
+              handleMedicalChange('type')
+            }
           />
 
           <FormField
@@ -256,18 +248,18 @@ function MedicalHistoryPage({
             type="text"
             value={medicalFormData.title}
             placeholder="Ej. Vacuna antirrábica"
-            onChange={handleMedicalChange(
-              'title'
-            )}
+            onChange={
+              handleMedicalChange('title')
+            }
           />
 
           <FormField
             label="Fecha"
             type="date"
             value={medicalFormData.date}
-            onChange={handleMedicalChange(
-              'date'
-            )}
+            onChange={
+              handleMedicalChange('date')
+            }
           />
 
           <FormField
@@ -276,9 +268,11 @@ function MedicalHistoryPage({
             value={
               medicalFormData.nextDate
             }
-            onChange={handleMedicalChange(
-              'nextDate'
-            )}
+            onChange={
+              handleMedicalChange(
+                'nextDate'
+              )
+            }
           />
 
           <FormField
@@ -286,9 +280,9 @@ function MedicalHistoryPage({
             type="text"
             value={medicalFormData.place}
             placeholder="Ej. Veterinaria Central"
-            onChange={handleMedicalChange(
-              'place'
-            )}
+            onChange={
+              handleMedicalChange('place')
+            }
           />
 
           <FormField
@@ -298,12 +292,15 @@ function MedicalHistoryPage({
               medicalFormData.description
             }
             placeholder="Descripción del registro"
-            onChange={handleMedicalChange(
-              'description'
-            )}
+            onChange={
+              handleMedicalChange(
+                'description'
+              )
+            }
           />
 
           <div className="medical-history-page__form-actions">
+
             <Button
               variant="primary"
               onClick={
@@ -323,11 +320,36 @@ function MedicalHistoryPage({
             >
               Cancelar
             </Button>
+
           </div>
+
         </section>
+
       )}
 
       <section className="medical-history-page__records">
+
+        {visibleRecords.length === 0 && (
+
+          <div className="medical-history-page__empty">
+
+            <span aria-hidden="true">
+              🩺
+            </span>
+
+            <h3>
+              No hay registros en esta categoría
+            </h3>
+
+            <p>
+              Puedes agregar el primer registro
+              médico de esta categoría.
+            </p>
+
+          </div>
+
+        )}
+
         {visibleRecords.map(
           (record) => (
             <MedicalRecordCard
@@ -347,7 +369,9 @@ function MedicalHistoryPage({
             />
           )
         )}
+
       </section>
+
     </main>
   );
 }
