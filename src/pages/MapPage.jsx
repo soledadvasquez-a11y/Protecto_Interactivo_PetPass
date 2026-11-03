@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar/SearchBar.jsx';
 import FilterTab from '../components/FilterTab/FilterTab.jsx';
 import MapMarker from '../components/MapMarker/MapMarker.jsx';
@@ -83,17 +83,26 @@ function MapPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedPlaceId, setSelectedPlaceId] = useState(1);
 
-  // Filtrado reactivo por texto y categoría
+  // Filtrado por categoría y búsqueda insensible a mayúsculas/minúsculas
   const filteredPlaces = PLACES.filter((place) => {
+    const matchesCategory = activeCategory === 'all' || place.category === activeCategory;
+    const query = searchQuery.trim().toLowerCase();
     const matchesSearch =
-      place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      place.address.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesCategory =
-      activeCategory === 'all' || place.category === activeCategory;
-
-    return matchesSearch && matchesCategory;
+      !query ||
+      place.name.toLowerCase().includes(query) ||
+      place.address.toLowerCase().includes(query);
+    return matchesCategory && matchesSearch;
   });
+
+  // Limpiar selección si el lugar seleccionado desaparece del filtro actual
+  useEffect(() => {
+    if (selectedPlaceId !== null) {
+      const exists = filteredPlaces.some((p) => p.id === selectedPlaceId);
+      if (!exists) {
+        setSelectedPlaceId(null);
+      }
+    }
+  }, [searchQuery, activeCategory, filteredPlaces, selectedPlaceId]);
 
   const selectedPlace = PLACES.find((place) => place.id === selectedPlaceId);
 

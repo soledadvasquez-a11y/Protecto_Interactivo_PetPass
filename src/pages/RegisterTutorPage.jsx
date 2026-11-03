@@ -29,13 +29,10 @@ function RegisterTutorPage() {
     setError('');
   };
 
-  const handleRegister = () => {
-    const {
-      name,
-      email,
-      password,
-      confirmPassword,
-    } = formData;
+  const handleRegister = (e) => {
+    if (e) e.preventDefault();
+
+    const { name, email, password, confirmPassword } = formData;
 
     if (
       !name.trim() ||
@@ -43,16 +40,12 @@ function RegisterTutorPage() {
       !password.trim() ||
       !confirmPassword.trim()
     ) {
-      setError(
-        'Completa los campos obligatorios.'
-      );
+      setError('Completa los campos obligatorios.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError(
-        'Las contraseñas no coinciden.'
-      );
+      setError('Las contraseñas no coinciden.');
       return;
     }
 
@@ -79,19 +72,16 @@ function RegisterTutorPage() {
         </button>
 
         <header className="register-tutor-page__heading">
-          <span className="register-tutor-page__brand">
-            PetPass
-          </span>
+          <span className="register-tutor-page__brand">PetPass</span>
 
           <h1>Crea tu cuenta</h1>
 
           <p>
-            Registra tus datos para comenzar a
-            cuidar a tus mascotas con PetPass.
+            Registra tus datos para comenzar a cuidar a tus mascotas con PetPass.
           </p>
         </header>
 
-        <div className="register-tutor-page__form">
+        <form className="register-tutor-page__form" onSubmit={handleRegister}>
           <FormField
             label="Nombre completo"
             type="text"
@@ -129,24 +119,16 @@ function RegisterTutorPage() {
             type="password"
             value={formData.confirmPassword}
             placeholder="Repite tu contraseña"
-            onChange={handleChange(
-              'confirmPassword'
-            )}
+            onChange={handleChange('confirmPassword')}
           />
 
           {error && (
-            <p
-              className="register-tutor-page__error"
-              role="alert"
-            >
+            <p className="register-tutor-page__error" role="alert">
               {error}
             </p>
           )}
 
-          <Button
-            variant="primary"
-            onClick={handleRegister}
-          >
+          <Button type="submit" variant="primary">
             Crear cuenta
           </Button>
 
@@ -157,7 +139,7 @@ function RegisterTutorPage() {
           >
             ¿Ya tienes una cuenta? Inicia sesión
           </button>
-        </div>
+        </form>
       </section>
     </main>
   );

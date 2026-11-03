@@ -1,11 +1,8 @@
-
 import { useState } from 'react';
 
 import AlertCard from '../components/AlertCard/AlertCard.jsx';
 import FormField from '../components/FormField/FormField.jsx';
 import Button from '../components/Button/Button.jsx';
-
-// Componente decorativo reutilizable
 import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx';
 
 import posterLost from '../assets/poster-lost.svg';
@@ -13,12 +10,20 @@ import posterEmergency from '../assets/poster-emergency.svg';
 
 import './AlertsPage.css';
 
-const FILTERS = [
-  'Todos',
-  'Perdidos',
-  'En Adopción',
-  'Emergencias'
+const FILTERS = ['Todos', 'Perdidos', 'En Adopción', 'Emergencias'];
+
+const REPORT_TYPES = [
+  { label: 'Perdidos', value: 'lost' },
+  { label: 'En Adopción', value: 'adoption' },
+  { label: 'Emergencias', value: 'emergency' },
 ];
+
+const filterToType = {
+  'Todos': 'all',
+  'Perdidos': 'lost',
+  'En Adopción': 'adoption',
+  'Emergencias': 'emergency',
+};
 
 const ZONAS = [
   { value: 'sopocachi', label: 'Sopocachi' },
@@ -34,31 +39,33 @@ const INITIAL_ALERTS = [
     type: 'lost',
     petName: 'Perdido',
     photo: posterLost,
+    zone: 'sopocachi',
     location: 'Sopocachi, La Paz',
     date: 'Ayer',
-    description:
-      'Visto por última vez cerca de Plaza Abaroa.',
+    description: 'Visto por última vez cerca de Plaza Abaroa.',
+    status: 'active',
   },
   {
     id: 2,
     type: 'emergency',
     petName: 'Emergencia',
     photo: posterEmergency,
+    zone: 'miraflores',
     location: 'Miraflores, La Paz',
     date: 'Hoy',
-    description:
-      'Se busca donante canino urgente para transfusión.',
+    description: 'Se busca donante canino urgente para transfusión.',
+    status: 'active',
   },
 ];
 
 function AlertsPage() {
+  const [alertsList, setAlertsList] = useState(INITIAL_ALERTS);
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [selectedZone, setSelectedZone] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Formulario de Nuevo Reporte
-  const [reportType, setReportType] = useState('Perdidos');
-
+  const [reportType, setReportType] = useState('lost');
   const [formData, setFormData] = useState({
     petName: '',
     zone: '',
@@ -73,23 +80,60 @@ function AlertsPage() {
     }));
   };
 
+  // Filtrado real de la lista por tipo y zona
+  const filteredAlerts = alertsList.filter((alert) => {
+    const targetType = filterToType[activeFilter];
+    const matchesType = activeFilter === 'Todos' || alert.type === targetType;
+    const matchesZone = !selectedZone || alert.zone === selectedZone;
+    return matchesType && matchesZone;
+  });
+
+  // Construcción e inserción de nueva alerta
   const handleSubmitReport = (e) => {
     e.preventDefault();
+
+    const selectedZoneObj = ZONAS.find((z) => z.value === formData.zone);
+    const zoneLabel = selectedZoneObj ? selectedZoneObj.label : formData.zone;
+    const defaultPhoto = reportType === 'emergency' ? posterEmergency : posterLost;
+
+    const newAlert = {
+      id: Date.now(),
+      type: reportType,
+      petName: formData.petName || 'Mascota',
+      photo: defaultPhoto,
+      zone: formData.zone,
+      location: zoneLabel ? `${zoneLabel}, La Paz` : 'La Paz',
+      date: 'Hoy',
+      description: formData.description || '',
+      contact: formData.contact || '',
+      status: 'active',
+    };
+
+    setAlertsList([newAlert, ...alertsList]);
+    setFormData({ petName: '', zone: '', description: '', contact: '' });
     setIsModalOpen(false);
+  };
+
+  // Alternar entre active y resolved
+  const toggleAlertStatus = (id) => {
+    setAlertsList((prev) =>
+      prev.map((alert) =>
+        alert.id === id
+          ? { ...alert, status: alert.status === 'active' ? 'resolved' : 'active' }
+          : alert
+      )
+    );
   };
 
   return (
     <div className="alerts-page">
-
       {/* Fondo decorativo reutilizable */}
       <DecorativeConfetti />
 
       {/* Cabecera: Título + Botón Nuevo Reporte */}
       <header className="alerts-page__header">
-
         <div className="alerts-page__title-box">
           <span className="alerts-page__highlight" />
-
           <h1 className="alerts-page__title">
             Comunidad y<br />alertas
           </h1>
@@ -106,31 +150,22 @@ function AlertsPage() {
       </header>
 
       {/* Barra de filtros */}
-      <nav
-        className="alerts-page__filters-bar"
-        aria-label="Filtrar alertas"
-      >
+      <nav className="alerts-page__filters-bar" aria-label="Filtrar alertas">
         <div className="alerts-page__tags">
-
           {FILTERS.map((filter) => (
             <button
               key={filter}
               type="button"
-              className={`
-                alerts-page__tag
-                alerts-page__tag--${filter.toLowerCase().replace(/\s+/g, '-')}
-                ${
-                  activeFilter === filter
-                    ? 'alerts-page__tag--active'
-                    : ''
-                }
-              `}
+              className={`alerts-page__tag alerts-page__tag--${filter
+                .toLowerCase()
+                .replace(/\s+/g, '-')} ${
+                activeFilter === filter ? 'alerts-page__tag--active' : ''
+              }`}
               onClick={() => setActiveFilter(filter)}
             >
               {filter}
             </button>
           ))}
-
         </div>
 
         <div className="alerts-page__zone-select">
@@ -138,10 +173,8 @@ function AlertsPage() {
             type="select"
             name="filterZone"
             value={selectedZone}
-            options={ZONAS}
-            onChange={(e) =>
-              setSelectedZone(e.target.value)
-            }
+            options={[{ value: '', label: 'Todas las zonas' }, ...ZONAS]}
+            onChange={(e) => setSelectedZone(e.target.value)}
             placeholder="Zona"
           />
         </div>
@@ -149,49 +182,42 @@ function AlertsPage() {
 
       {/* Grid de tarjetas de alerta */}
       <main className="alerts-page__grid">
+        {filteredAlerts.length > 0 ? (
+          filteredAlerts.map((alert) => (
+            <div
+              key={alert.id}
+              className={`alerts-page__card-col alerts-page__card-col--${alert.type}`}
+            >
+              <h2 className="alerts-page__col-label">{alert.petName}</h2>
 
-        {INITIAL_ALERTS.map((alert) => (
-          <div
-            key={alert.id}
-            className={`
-              alerts-page__card-col
-              alerts-page__card-col--${alert.type}
-            `}
-          >
-            <h2 className="alerts-page__col-label">
-              {alert.petName}
-            </h2>
-
-            <AlertCard
-              type={alert.type}
-              petName={alert.petName}
-              photo={alert.photo}
-              location={alert.location}
-              date={alert.date}
-              description={alert.description}
-            />
-          </div>
-        ))}
-
+              <AlertCard
+                type={alert.type}
+                petName={alert.petName}
+                photo={alert.photo}
+                location={alert.location}
+                date={alert.date}
+                description={alert.description}
+                status={alert.status}
+                onToggleStatus={() => toggleAlertStatus(alert.id)}
+              />
+            </div>
+          ))
+        ) : (
+          <p className="alerts-page__empty">No se encontraron alertas en esta categoría o zona.</p>
+        )}
       </main>
 
       {/* Modal: Nuevo Reporte */}
       {isModalOpen && (
         <div className="alerts-modal__overlay">
-
           <section
             className="alerts-modal__card"
             role="dialog"
             aria-modal="true"
             aria-labelledby="alerts-modal-title"
           >
-
             <header className="alerts-modal__header">
-
-              <h2
-                id="alerts-modal-title"
-                className="alerts-modal__title"
-              >
+              <h2 id="alerts-modal-title" className="alerts-modal__title">
                 Nuevo Reporte
               </h2>
 
@@ -205,13 +231,8 @@ function AlertsPage() {
               </button>
             </header>
 
-            <form
-              onSubmit={handleSubmitReport}
-              className="alerts-modal__form"
-            >
-
+            <form onSubmit={handleSubmitReport} className="alerts-modal__form">
               <div className="alerts-modal__type-section">
-
                 <span className="alerts-modal__label">
                   Tipo de{' '}
                   <span className="alerts-modal__tag-alert">
@@ -220,26 +241,18 @@ function AlertsPage() {
                 </span>
 
                 <div className="alerts-page__tags">
-
-                  {FILTERS.map((filter) => (
+                  {REPORT_TYPES.map((type) => (
                     <button
-                      key={filter}
+                      key={type.value}
                       type="button"
-                      className={`
-                        alerts-page__tag
-                        alerts-page__tag--${filter.toLowerCase().replace(/\s+/g, '-')}
-                        ${
-                          reportType === filter
-                            ? 'alerts-page__tag--active'
-                            : ''
-                        }
-                      `}
-                      onClick={() => setReportType(filter)}
+                      className={`alerts-page__tag alerts-page__tag--${type.value} ${
+                        reportType === type.value ? 'alerts-page__tag--active' : ''
+                      }`}
+                      onClick={() => setReportType(type.value)}
                     >
-                      {filter}
+                      {type.label}
                     </button>
                   ))}
-
                 </div>
               </div>
 
@@ -274,19 +287,14 @@ function AlertsPage() {
               />
 
               <div className="alerts-modal__actions">
-                <Button
-                  variant="danger"
-                  type="submit"
-                >
+                <Button variant="danger" type="submit">
                   Publicar Alerta
                 </Button>
               </div>
-
             </form>
           </section>
         </div>
       )}
-
     </div>
   );
 }
