@@ -1,106 +1,331 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* =========================================
+   OVERLAY
+========================================= */
 
 .side-menu__overlay {
   position: fixed;
+
   inset: 0;
+
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.45);
+
   display: flex;
   justify-content: flex-start;
-  animation: fadeInOverlay 0.2s ease-out;
+
+  background:
+    rgba(37, 36, 34, 0.48);
+
+  backdrop-filter:
+    blur(2px);
+
+  animation:
+    sideMenuFadeIn
+    0.18s
+    ease-out;
 }
 
+/* =========================================
+   PANEL
+========================================= */
+
 .side-menu {
-  width: 78%;
-  max-width: 320px;
-  height: 100vh;
+  width: min(
+    82vw,
+    330px
+  );
+
+  height: 100dvh;
+
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
-  padding: 48px 24px 36px 28px;
-  background-color: #5e5a57; /* Fondo gris grafito oficial Figma */
+  padding:
+    28px
+    20px
+    24px;
+
+  background:
+    var(--color-text);
+
   color: #ffffff;
 
-  font-family: 'Poppins', sans-serif;
-  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.3);
-  animation: slideMenuLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family:
+    'Poppins',
+    sans-serif;
+
+  box-shadow:
+    12px
+    0
+    32px
+    rgba(0, 0, 0, 0.28);
+
+  animation:
+    sideMenuSlideIn
+    0.24s
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
 }
+
+/* =========================================
+   HEADER
+========================================= */
+
+.side-menu__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 30px;
+}
+
+.side-menu__eyebrow {
+  display: block;
+
+  margin-bottom: 2px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 1.4px;
+
+  text-transform: uppercase;
+
+  color:
+    var(--color-accent);
+}
+
+.side-menu__title {
+  margin: 0;
+
+  font-family:
+    'MuseoModerno',
+    sans-serif;
+
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 800;
+
+  color: #ffffff;
+}
+
+.side-menu__close {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  color: #ffffff;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.side-menu__close:hover {
+  background:
+    rgba(255, 255, 255, 0.16);
+
+  transform:
+    rotate(4deg);
+}
+
+/* =========================================
+   NAVEGACIÓN
+========================================= */
 
 .side-menu__navigation {
   display: flex;
   flex-direction: column;
-  gap: 24px; /* Separación vertical exacta entre opciones */
-  margin-top: 10px;
+
+  gap: 8px;
 }
 
 .side-menu__option {
   width: 100%;
+  min-height: 52px;
+
   display: flex;
   align-items: center;
-  gap: 18px;
 
-  padding: 6px 4px;
+  gap: 14px;
+
+  padding:
+    8px
+    12px;
+
   border: none;
-  background: transparent;
-  color: #ffffff;
+  border-radius: 18px;
 
-  font-family: 'Poppins', sans-serif;
-  font-size: 15.5px;
+  background:
+    transparent;
+
+  color:
+    rgba(255, 255, 255, 0.88);
+
+  font-family:
+    'Poppins',
+    sans-serif;
+
+  font-size: 14px;
   font-weight: 500;
+
   text-align: left;
+
   cursor: pointer;
-  border-radius: 8px;
-  transition: transform 0.1s ease, opacity 0.15s ease;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .side-menu__option:hover {
-  opacity: 0.85;
-  transform: translateX(2px);
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  transform:
+    translateX(2px);
+}
+
+.side-menu__option--active {
+  background:
+    var(--color-primary);
+
+  color: #ffffff;
+
+  font-weight: 700;
 }
 
 .side-menu__option-icon {
-  width: 30px;
-  height: 30px;
-  color: #f7d79a; /* Amarillo suave/dorado oficial de Figma */
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  color:
+    var(--color-accent);
+}
+
+.side-menu__option--active
+.side-menu__option-icon {
+  color: #ffffff;
+
+  background:
+    rgba(255, 255, 255, 0.1);
 }
 
 .side-menu__option-label {
-  letter-spacing: 0.15px;
   line-height: 1.25;
 }
 
-.side-menu__logout {
-  background: transparent;
-  border: none;
-  color: #ffffff;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  width: 100%;
+/* =========================================
+   FOOTER / LOGOUT
+========================================= */
+
+.side-menu__footer {
+  margin-top: auto;
+
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  transition: opacity 0.2s ease;
+
+  border-top:
+    1px
+    solid
+    rgba(255, 255, 255, 0.12);
+}
+
+.side-menu__logout {
+  width: 100%;
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border:
+    1px
+    solid
+    rgba(223, 109, 65, 0.55);
+
+  border-radius: 18px;
+
+  background:
+    rgba(223, 109, 65, 0.08);
+
+  color:
+    #f3a083;
+
+  font-family:
+    'Poppins',
+    sans-serif;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease;
 }
 
 .side-menu__logout:hover {
-  opacity: 0.75;
+  background:
+    rgba(223, 109, 65, 0.16);
 }
 
-@keyframes fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* =========================================
+   ANIMACIONES
+========================================= */
+
+@keyframes sideMenuFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-@keyframes slideMenuLeft {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+@keyframes sideMenuSlideIn {
+  from {
+    transform:
+      translateX(-100%);
+  }
+
+  to {
+    transform:
+      translateX(0);
+  }
 }
