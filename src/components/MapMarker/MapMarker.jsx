@@ -1,6 +1,11 @@
 import './MapMarker.css';
 
 const markerConfig = {
+  park: {
+    label: 'Parque',
+    icon: '🌳',
+  },
+
   veterinary: {
     label: 'Veterinaria',
     icon: '✚',
@@ -19,7 +24,8 @@ function MapMarker({
   onClick,
 }) {
   const config =
-    markerConfig[type] || markerConfig.veterinary;
+    markerConfig[type] ||
+    markerConfig.veterinary;
 
   const accessibleLabel =
     label || config.label;
@@ -28,7 +34,9 @@ function MapMarker({
     <button
       type="button"
       className={`map-marker map-marker--${type} ${
-        selected ? 'map-marker--selected' : ''
+        selected
+          ? 'map-marker--selected'
+          : ''
       }`}
       onClick={onClick}
       aria-label={accessibleLabel}
