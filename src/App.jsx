@@ -25,11 +25,13 @@ import PublicPetProfilePage from './pages/PublicPetProfilePage.jsx';
 
 import initialPets from './data/pets.js';
 import initialMedicalRecords from './data/medicalRecords.js';
+import initialAlerts from './data/alerts.js';
 
 function App() {
   const [pets, setPets] = useState(initialPets);
   const [medicalRecords, setMedicalRecords] =
     useState(initialMedicalRecords);
+  const [alerts, setAlerts] = useState(initialAlerts);
 
   const addPet = (newPet) => {
     setPets((currentPets) => [
@@ -43,6 +45,19 @@ function App() {
       currentPets.map((pet) =>
         pet.id === updatedPet.id
           ? updatedPet
+          : pet
+      )
+    );
+  };
+
+  const updatePetStatus = (petId, status) => {
+    setPets((currentPets) =>
+      currentPets.map((pet) =>
+        pet.id === petId
+          ? {
+              ...pet,
+              status,
+            }
           : pet
       )
     );
@@ -77,6 +92,61 @@ function App() {
           : record
       )
     );
+  };
+
+  const addAlert = (newAlert) => {
+    setAlerts((currentAlerts) => [
+      newAlert,
+      ...currentAlerts,
+    ]);
+
+    if (
+      newAlert.type === 'lost' &&
+      newAlert.petId !== null
+    ) {
+      updatePetStatus(newAlert.petId, 'lost');
+    }
+  };
+
+  const resolveAlert = (alertId) => {
+    const alertToResolve = alerts.find(
+      (alert) => alert.id === alertId
+    );
+
+    if (!alertToResolve) {
+      return;
+    }
+
+    setAlerts((currentAlerts) =>
+      currentAlerts.map((alert) =>
+        alert.id === alertId
+          ? {
+              ...alert,
+              status: 'resolved',
+            }
+          : alert
+      )
+    );
+
+    if (
+      alertToResolve.type === 'lost' &&
+      alertToResolve.petId !== null
+    ) {
+      const hasAnotherActiveLostAlert = alerts.some(
+        (alert) =>
+          alert.id !== alertId &&
+          alert.type === 'lost' &&
+          alert.petId === alertToResolve.petId &&
+          alert.status === 'active'
+      );
+
+      if (!hasAnotherActiveLostAlert) {
+        updatePetStatus(
+          alertToResolve.petId,
+          'normal'
+        );
+      }
+    }
   };
 
   return (
@@ -133,7 +203,17 @@ function App() {
             />
           }
         />
-        <Route path="/alertas" element={<AlertsPage />} />
+        <Route
+          path="/alertas"
+          element={
+            <AlertsPage
+              alerts={alerts}
+              pets={pets}
+              onAddAlert={addAlert}
+              onResolveAlert={resolveAlert}
+            />
+          }
+        />
         <Route path="/mapa" element={<MapPage />} />
       </Route>
 

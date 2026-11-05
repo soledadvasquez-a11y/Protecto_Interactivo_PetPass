@@ -1,27 +1,23 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import AlertCard from '../components/AlertCard/AlertCard.jsx';
 import FormField from '../components/FormField/FormField.jsx';
 import Button from '../components/Button/Button.jsx';
 import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx';
 
-import posterLost from '../assets/poster-lost.svg';
-import posterEmergency from '../assets/poster-emergency.svg';
-
 import './AlertsPage.css';
 
-const FILTERS = ['Todos', 'Perdidos', 'En Adopción', 'Emergencias'];
-
-const REPORT_TYPES = [
-  { label: 'Perdidos', value: 'lost' },
-  { label: 'En Adopción', value: 'adoption' },
-  { label: 'Emergencias', value: 'emergency' },
+const FILTERS = [
+  'Todos',
+  'Perdidos',
+  'En Adopción',
+  'Emergencias',
 ];
 
-const filterToType = {
-  'Perdidos': 'lost',
+const FILTER_TO_TYPE = {
+  Perdidos: 'lost',
   'En Adopción': 'adoption',
-  'Emergencias': 'emergency',
+  Emergencias: 'emergency',
 };
 
 const ZONAS = [
@@ -32,95 +28,122 @@ const ZONAS = [
   { value: 'centro', label: 'Centro' },
 ];
 
-const INITIAL_ALERTS = [
-  {
-    id: 1,
-    type: 'lost',
-    petName: 'Perdido',
-    photo: posterLost,
-    location: 'Sopocachi, La Paz',
-    zone: 'sopocachi',
-    date: 'Ayer',
-    status: 'active',
-    description: 'Visto por última vez cerca de Plaza Abaroa.',
-  },
-  {
-    id: 2,
-    type: 'emergency',
-    petName: 'Emergencia',
-    photo: posterEmergency,
-    location: 'Miraflores, La Paz',
-    zone: 'miraflores',
-    date: 'Hoy',
-    status: 'active',
-    description: 'Se busca donante canino urgente para transfusión.',
-  },
-];
+const EMPTY_FORM = {
+  petId: '',
+  petName: '',
+  zone: '',
+  description: '',
+  contact: '',
+};
 
-function AlertsPage() {
-  const [alertsList, setAlertsList] = useState(INITIAL_ALERTS);
-  const [activeFilter, setActiveFilter] = useState('Todos');
-  const [selectedZone, setSelectedZone] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [reportType, setReportType] = useState('lost');
+function AlertsPage({
+  alerts,
+  pets,
+  onAddAlert,
+  onResolveAlert,
+}) {
+  const [activeFilter, setActiveFilter] =
+    useState('Todos');
+  const [selectedZone, setSelectedZone] =
+    useState('');
+  const [isModalOpen, setIsModalOpen] =
+    useState(false);
+  const [reportType, setReportType] =
+    useState('Perdidos');
+  const [formData, setFormData] = useState(
+    EMPTY_FORM
+  );
 
-  const [formData, setFormData] = useState({
-    petName: '',
-    zone: '',
-    description: '',
-    contact: '',
-  });
+  const petOptions = pets.map((pet) => ({
+    value: String(pet.id),
+    label: pet.name,
+  }));
 
-  const handleInputChange = (field) => (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
+  const filteredAlerts = useMemo(() => {
+    return alerts.filter((alert) => {
+      const selectedType =
+        FILTER_TO_TYPE[activeFilter];
+
+      const matchesType =
+        activeFilter === 'Todos' ||
+        alert.type === selectedType;
+
+      const matchesZone =
+        !selectedZone ||
+        alert.zone === selectedZone;
+
+      return matchesType && matchesZone;
+    });
+  }, [alerts, activeFilter, selectedZone]);
+
+  const handleInputChange =
+    (field) => (event) => {
+      setFormData((current) => ({
+        ...current,
+        [field]: event.target.value,
+      }));
+    };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setReportType('Perdidos');
+    setFormData(EMPTY_FORM);
   };
 
-  // Filtrado real de la lista por tipo y zona
-  const filteredAlerts = alertsList.filter((alert) => {
-    const targetType = filterToType[activeFilter];
-    const matchesType = activeFilter === 'Todos' || alert.type === targetType;
-    const matchesZone = !selectedZone || alert.zone === selectedZone;
-    return matchesType && matchesZone;
-  });
+  const handleSubmitReport = (event) => {
+    event.preventDefault();
 
-  // Construcción e inserción de nueva alerta
-  const handleSubmitReport = (e) => {
-    e.preventDefault();
+    if (
+      !formData.zone ||
+      !formData.description.trim()
+    ) {
+      return;
+    }
 
-    const selectedZoneObj = ZONAS.find((z) => z.value === formData.zone);
-    const zoneLabel = selectedZoneObj ? selectedZoneObj.label : formData.zone;
-    const defaultPhoto = reportType === 'emergency' ? posterEmergency : posterLost;
+    const type =
+      FILTER_TO_TYPE[reportType] || 'lost';
+
+    const selectedPet = pets.find(
+      (pet) =>
+        pet.id === Number(formData.petId)
+    );
+
+    const selectedZoneData = ZONAS.find(
+      (zone) => zone.value === formData.zone
+    );
 
     const newAlert = {
       id: Date.now(),
-      type: reportType,
-      petName: formData.petName || 'Mascota',
-      photo: defaultPhoto,
+      type,
+      petId:
+        type === 'lost' && selectedPet
+          ? selectedPet.id
+          : null,
+      petName:
+        type === 'lost'
+          ? selectedPet?.name ||
+            formData.petName.trim() ||
+            'Mascota perdida'
+          : type === 'adoption'
+            ? formData.petName.trim() ||
+              'En adopción'
+            : 'Emergencia',
+      photo:
+        type === 'lost'
+          ? selectedPet?.photo || null
+          : null,
       zone: formData.zone,
-      location: zoneLabel ? `${zoneLabel}, La Paz` : 'La Paz',
-      date: 'Hoy',
-      description: formData.description || '',
-      contact: formData.contact || '',
+      location: selectedZoneData
+        ? `${selectedZoneData.label}, La Paz`
+        : 'La Paz',
+      date: 'Ahora',
+      description: formData.description.trim(),
+      contact: formData.contact.trim(),
       status: 'active',
     };
 
-    setAlertsList([newAlert, ...alertsList]);
-    setFormData({ petName: '', zone: '', description: '', contact: '' });
-    setIsModalOpen(false);
-  };
-
-  // Alternar estado activa/resuelta
-  const toggleAlertStatus = (id) => {
-    setAlertsList((prev) =>
-      prev.map((alert) =>
-        alert.id === id
-          ? { ...alert, status: alert.status === 'active' ? 'resolved' : 'active' }
-          : alert
-      )
-    );
+    onAddAlert(newAlert);
+    handleCloseModal();
   };
 
   return (
@@ -145,18 +168,26 @@ function AlertsPage() {
         </button>
       </header>
 
-      <nav className="alerts-page__filters-bar" aria-label="Filtrar alertas">
+      <nav
+        className="alerts-page__filters-bar"
+        aria-label="Filtrar alertas"
+      >
         <div className="alerts-page__tags">
           {FILTERS.map((filter) => (
             <button
               key={filter}
               type="button"
-              className={`alerts-page__tag alerts-page__tag--${filter
-                .toLowerCase()
-                .replace(/\s+/g, '-')} ${
-                activeFilter === filter ? 'alerts-page__tag--active' : ''
-              }`}
-              onClick={() => setActiveFilter(filter)}
+              className={`
+                alerts-page__tag
+                ${
+                  activeFilter === filter
+                    ? 'alerts-page__tag--active'
+                    : ''
+                }
+              `}
+              onClick={() =>
+                setActiveFilter(filter)
+              }
             >
               {filter}
             </button>
@@ -168,8 +199,10 @@ function AlertsPage() {
             type="select"
             name="filterZone"
             value={selectedZone}
-            options={[{ value: '', label: 'Todas las zonas' }, ...ZONAS]}
-            onChange={(e) => setSelectedZone(e.target.value)}
+            options={ZONAS}
+            onChange={(event) =>
+              setSelectedZone(event.target.value)
+            }
             placeholder="Zona"
           />
         </div>
@@ -178,16 +211,26 @@ function AlertsPage() {
       <main className="alerts-page__grid">
         {filteredAlerts.length === 0 && (
           <p className="alerts-page__empty">
-            No se encontraron alertas con los filtros seleccionados.
+            No hay alertas para estos filtros.
           </p>
         )}
 
         {filteredAlerts.map((alert) => (
           <div
             key={alert.id}
-            className={`alerts-page__card-col alerts-page__card-col--${alert.type}`}
+            className={`
+              alerts-page__card-col
+              alerts-page__card-col--${alert.type}
+              ${
+                alert.status === 'resolved'
+                  ? 'alerts-page__card-col--resolved'
+                  : ''
+              }
+            `}
           >
-            <h2 className="alerts-page__col-label">{alert.petName}</h2>
+            <h2 className="alerts-page__col-label">
+              {alert.petName}
+            </h2>
 
             <AlertCard
               type={alert.type}
@@ -196,14 +239,30 @@ function AlertsPage() {
               location={alert.location}
               date={alert.date}
               description={alert.description}
-              status={alert.status}
-              onToggleStatus={() => toggleAlertStatus(alert.id)}
             />
+
+            <div className="alerts-page__status-row">
+              <span>
+                {alert.status === 'resolved'
+                  ? 'Resuelta'
+                  : 'Activa'}
+              </span>
+
+              {alert.status === 'active' && (
+                <Button
+                  variant="secondary"
+                  onClick={() =>
+                    onResolveAlert(alert.id)
+                  }
+                >
+                  Marcar resuelta
+                </Button>
+              )}
+            </div>
           </div>
         ))}
       </main>
 
-      {/* Condicional Fase 4: Modal de nuevo reporte */}
       {isModalOpen && (
         <div className="alerts-modal__overlay">
           <section
@@ -213,48 +272,80 @@ function AlertsPage() {
             aria-labelledby="alerts-modal-title"
           >
             <header className="alerts-modal__header">
-              <h2 id="alerts-modal-title" className="alerts-modal__title">
+              <h2
+                id="alerts-modal-title"
+                className="alerts-modal__title"
+              >
                 Nuevo Reporte
               </h2>
 
               <button
                 type="button"
                 className="alerts-modal__close-btn"
-                onClick={() => setIsModalOpen(false)}
+                onClick={handleCloseModal}
                 aria-label="Cerrar modal"
               >
                 ✕
               </button>
             </header>
 
-            <form onSubmit={handleSubmitReport} className="alerts-modal__form">
+            <form
+              onSubmit={handleSubmitReport}
+              className="alerts-modal__form"
+            >
               <div className="alerts-modal__type-section">
                 <span className="alerts-modal__label">
-                  Tipo de{' '}
-                  <span className="alerts-modal__tag-alert">Alerta</span>
+                  Tipo de Alerta
                 </span>
 
                 <div className="alerts-page__tags">
-                  {REPORT_TYPES.map((type) => (
-                    <button
-                      key={type.value}
-                      type="button"
-                      className={`alerts-page__tag alerts-page__tag--${type.value} ${
-                        reportType === type.value ? 'alerts-page__tag--active' : ''
-                      }`}
-                      onClick={() => setReportType(type.value)}
-                    >
-                      {type.label}
-                    </button>
-                  ))}
+                  {FILTERS
+                    .filter(
+                      (filter) => filter !== 'Todos'
+                    )
+                    .map((filter) => (
+                      <button
+                        key={filter}
+                        type="button"
+                        className={`
+                          alerts-page__tag
+                          ${
+                            reportType === filter
+                              ? 'alerts-page__tag--active'
+                              : ''
+                          }
+                        `}
+                        onClick={() =>
+                          setReportType(filter)
+                        }
+                      >
+                        {filter}
+                      </button>
+                    ))}
                 </div>
               </div>
+
+              {reportType === 'Perdidos' &&
+                pets.length > 0 && (
+                  <FormField
+                    label="Mascota registrada"
+                    type="select"
+                    name="petId"
+                    value={formData.petId}
+                    options={petOptions}
+                    onChange={handleInputChange(
+                      'petId'
+                    )}
+                  />
+                )}
 
               <FormField
                 label="Nombre de la mascota"
                 name="petName"
                 value={formData.petName}
-                onChange={handleInputChange('petName')}
+                onChange={handleInputChange(
+                  'petName'
+                )}
               />
 
               <FormField
@@ -270,18 +361,25 @@ function AlertsPage() {
                 label="Descripción detallada"
                 name="description"
                 value={formData.description}
-                onChange={handleInputChange('description')}
+                onChange={handleInputChange(
+                  'description'
+                )}
               />
 
               <FormField
                 label="Datos de contacto"
                 name="contact"
                 value={formData.contact}
-                onChange={handleInputChange('contact')}
+                onChange={handleInputChange(
+                  'contact'
+                )}
               />
 
               <div className="alerts-modal__actions">
-                <Button variant="danger" type="submit">
+                <Button
+                  variant="danger"
+                  type="submit"
+                >
                   Publicar Alerta
                 </Button>
               </div>
