@@ -141,15 +141,15 @@
 
 /* Colores de fondo de la tarjeta según el tipo en Figma */
 .map-page__card-container--park {
-  background-color: #a49e49;
+  background-color: var(--color-primary);
 }
 
-.map-page__card-container--vet {
-  background-color: #8da7cc;
+.map-page__card-container--veterinary {
+  background-color: var(--color-info-bg);
 }
 
-.map-page__card-container--cafe {
-  background-color: #55524e;
+.map-page__card-container--petFriendly {
+  background-color: var(--color-text);
 }
 
 /* Pastilla verde de normativa */
@@ -208,4 +208,48 @@
   font-size: 11.5px;
   line-height: 1.45;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.map-page__empty {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  z-index: 12;
+
+  width: calc(100% - 48px);
+  max-width: 320px;
+
+  padding: 18px;
+
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  box-shadow:
+    0 6px 20px
+    rgba(94, 90, 87, 0.16);
+
+  text-align: center;
+
+  font-family: 'Poppins', sans-serif;
+  color: var(--color-text);
+}
+
+.map-page__empty span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 28px;
+}
+
+.map-page__empty p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
 }

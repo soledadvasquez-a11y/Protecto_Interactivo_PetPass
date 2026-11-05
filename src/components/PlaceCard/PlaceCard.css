@@ -20,15 +20,27 @@
 .place-card:hover {
   transform: translateY(-2px);
 
-  box-shadow: 0 8px 20px rgba(94, 90, 87, 0.12);
+  box-shadow:
+    0 8px 20px
+    rgba(94, 90, 87, 0.12);
 }
 
+/* Parque */
+.place-card--park {
+  border-left:
+    6px solid var(--color-primary);
+}
+
+/* Veterinaria */
 .place-card--veterinary {
-  border-left: 6px solid var(--color-info-bg);
+  border-left:
+    6px solid var(--color-info-bg);
 }
 
+/* Lugar Pet Friendly */
 .place-card--petFriendly {
-  border-left: 6px solid var(--color-primary);
+  border-left:
+    6px solid var(--color-danger);
 }
 
 .place-card__header {
@@ -55,8 +67,16 @@
   text-transform: uppercase;
 }
 
-.place-card--petFriendly .place-card__type {
+.place-card--park .place-card__type {
   color: var(--color-primary);
+}
+
+.place-card--veterinary .place-card__type {
+  color: var(--color-info-border);
+}
+
+.place-card--petFriendly .place-card__type {
+  color: var(--color-danger);
 }
 
 .place-card__icon {

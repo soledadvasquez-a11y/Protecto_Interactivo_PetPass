@@ -1,15 +1,18 @@
 .header {
   position: sticky;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+
   width: 100%;
-  max-width: 430px; /* Mismo ancho estándar que la barra inferior */
-  height: 98px;     /* Marco 430 x 101 */
+  max-width: 430px;
+  height: 98px;
+
+  margin: 0 auto;
   padding: 0 24px;
+
   box-sizing: border-box;
 
-  background-color: #8da7cc; /* Azul grisáceo Figma */
+  background-color: #8da7cc;
+
   border-bottom-left-radius: 38px;
   border-bottom-right-radius: 38px;
 
@@ -18,34 +21,48 @@
   justify-content: space-between;
 
   z-index: 100;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+
+  box-shadow:
+    0 4px 18px
+    rgba(0, 0, 0, 0.08);
 }
 
 .header__logo {
-  height: 56px;       /* Tamaño ampliado para destacar el logotipo */
+  height: 56px;
   max-width: 220px;
   width: auto;
+
   object-fit: contain;
+
   display: block;
 }
 
 .header__menu {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 8px 4px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   gap: 5.5px;
+
+  padding: 8px 4px;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
 }
 
 .header__menu span {
   display: block;
+
   width: 32px;
   height: 4.5px;
+
   background-color: #ffffff;
+
   border-radius: 999px;
+
   transition: transform 0.2s ease;
 }
 

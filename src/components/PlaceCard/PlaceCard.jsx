@@ -1,6 +1,11 @@
 import './PlaceCard.css';
 
 const placeConfig = {
+  park: {
+    label: 'Parque',
+    icon: '🌳',
+  },
+
   veterinary: {
     label: 'Veterinaria',
     icon: '✚',
@@ -23,7 +28,8 @@ function PlaceCard({
   onAction,
 }) {
   const config =
-    placeConfig[type] || placeConfig.veterinary;
+    placeConfig[type] ||
+    placeConfig.veterinary;
 
   return (
     <article
@@ -31,7 +37,9 @@ function PlaceCard({
       onClick={onClick}
     >
       <div className="place-card__header">
+
         <div className="place-card__type">
+
           <span
             className="place-card__icon"
             aria-hidden="true"
@@ -42,6 +50,7 @@ function PlaceCard({
           <span>
             {config.label}
           </span>
+
         </div>
 
         {distance && (
@@ -49,6 +58,7 @@ function PlaceCard({
             {distance}
           </span>
         )}
+
       </div>
 
       <h3 className="place-card__name">
@@ -69,7 +79,8 @@ function PlaceCard({
 
       {schedule && (
         <p className="place-card__schedule">
-          <strong>Horario:</strong> {schedule}
+          <strong>Horario:</strong>{' '}
+          {schedule}
         </p>
       )}
 
@@ -85,6 +96,7 @@ function PlaceCard({
           Ver lugar
         </button>
       )}
+
     </article>
   );
 }

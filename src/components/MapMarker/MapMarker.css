@@ -49,10 +49,22 @@
   transform: rotate(45deg);
 }
 
-.map-marker--petFriendly .map-marker__pin {
+/* Parque */
+.map-marker--park .map-marker__pin {
   background: var(--color-primary);
 }
 
+/* Veterinaria */
+.map-marker--veterinary .map-marker__pin {
+  background: var(--color-info-bg);
+}
+
+/* Lugar Pet Friendly */
+.map-marker--petFriendly .map-marker__pin {
+  background: var(--color-danger);
+}
+
+/* Estado seleccionado */
 .map-marker--selected .map-marker__pin {
   transform: rotate(-45deg) scale(1.15);
 
