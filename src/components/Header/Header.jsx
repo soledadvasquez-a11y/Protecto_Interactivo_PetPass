@@ -1,12 +1,12 @@
 import './Header.css';
-import logoPetPass from '/src/assets/logo-petpass.svg';
+import Logo from '/src/assets/Logo.svg';
 
 function Header({ onMenuClick }) {
   return (
     <header className="header">
       <img
         className="header__logo"
-        src={logoPetPass}
+        src={Logo}
         alt="PetPass"
       />
 

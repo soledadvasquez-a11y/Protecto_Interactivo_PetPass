@@ -1,120 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@700&family=Poppins:wght@400;500;600&display=swap');
+
 .alert-modal__overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 24px;
-
-  background: rgba(94, 90, 87, 0.45);
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.45);
+  animation: fadeInAlert 0.2s ease-out;
 }
 
 .alert-modal {
   position: relative;
-
   width: 100%;
-  max-width: 380px;
+  max-width: 280px; /* Proporción del frame 246 x 358 */
+  box-sizing: border-box;
 
-  padding: 32px 24px 26px;
-
-  background: var(--color-surface);
-
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-
-  font-family: 'Poppins', sans-serif;
-
-  text-align: center;
-
-  box-shadow: 0 12px 32px rgba(94, 90, 87, 0.18);
-}
-
-.alert-modal__close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-
-  width: 36px;
-  height: 36px;
+  padding: 22px 18px 24px;
+  border-radius: 32px; /* Radio oficial Figma */
+  border: none;
 
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  color: #ffffff;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  animation: popInAlert 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Verde oliva oficial de Figma */
+.alert-modal--olive {
+  background-color: #aaa648;
+}
+
+/* Terracota para emergencias */
+.alert-modal--danger {
+  background-color: #df683e;
+}
+
+.alert-modal__close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 26px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.alert-modal__header-title {
+  margin: 0 0 14px;
+  font-family: 'MuseoModerno', cursive, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.alert-modal__card-body {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 12px;
+  box-sizing: border-box;
+  color: #3b3936;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.alert-modal__poster-img {
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  display: block;
+}
+
+.alert-modal__poster-placeholder {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+}
 
+.alert-modal__poster-badge {
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #df683e;
+}
+
+.alert-modal__poster-info {
+  margin: 0;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  color: #6a6764;
+}
+
+.alert-modal__footer-text {
+  margin: 14px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.alert-modal__action-button {
+  margin-top: 14px;
+  width: 100%;
+  min-height: 42px;
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: #3b3936;
   border: none;
-  border-radius: 50%;
-
-  background: var(--color-accent);
-  color: var(--color-text);
-
-  font-size: 22px;
-
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
 }
 
-.alert-modal__icon {
-  width: 64px;
-  height: 64px;
-
-  margin: 0 auto 18px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  font-size: 28px;
-  font-weight: 700;
+@keyframes fadeInAlert {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.alert-modal--permission .alert-modal__icon {
-  background: var(--color-info-bg);
-  color: var(--color-surface);
-}
-
-.alert-modal--success .alert-modal__icon {
-  background: var(--color-success);
-  color: var(--color-surface);
-}
-
-.alert-modal__title {
-  margin: 0;
-
-  font-family: 'MuseoModerno', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-
-  color: var(--color-text);
-}
-
-.alert-modal__message {
-  margin: 12px 0 0;
-
-  font-size: 14px;
-  line-height: 1.5;
-
-  color: var(--color-muted);
-}
-
-.alert-modal__actions {
-  display: flex;
-  justify-content: center;
-
-  gap: 12px;
-
-  margin-top: 24px;
-}
-
-@media (max-width: 480px) {
-  .alert-modal__actions {
-    flex-direction: column;
+@keyframes popInAlert {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
   }
-
-  .alert-modal__actions .button {
-    width: 100%;
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }

@@ -1,133 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
 .side-menu__overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-
-  background: rgba(94, 90, 87, 0.45);
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: flex-start;
+  animation: fadeInOverlay 0.2s ease-out;
 }
 
 .side-menu {
-  width: min(82%, 320px);
-  height: 100%;
+  width: 78%;
+  max-width: 320px;
+  height: 100vh;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
-
-  padding: 28px 20px;
-
-  background: var(--color-surface);
-
-  font-family: 'Poppins', sans-serif;
-
-  box-shadow: 8px 0 28px rgba(94, 90, 87, 0.18);
-}
-
-.side-menu__header {
-  display: flex;
-  align-items: flex-start;
   justify-content: space-between;
 
-  padding-bottom: 24px;
+  padding: 48px 24px 36px 28px;
+  background-color: #5e5a57; /* Fondo gris grafito oficial Figma */
+  color: #ffffff;
 
-  border-bottom: 1px solid var(--color-border);
-}
-
-.side-menu__greeting {
-  margin: 0 0 2px;
-
-  font-size: 13px;
-
-  color: var(--color-muted);
-}
-
-.side-menu__user {
-  margin: 0;
-
-  font-family: 'MuseoModerno', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-
-  color: var(--color-text);
-}
-
-.side-menu__close {
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  border-radius: 50%;
-
-  background: var(--color-accent);
-  color: var(--color-text);
-
-  font-size: 26px;
-  line-height: 1;
-
-  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.3);
+  animation: slideMenuLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .side-menu__navigation {
   display: flex;
   flex-direction: column;
-
-  gap: 8px;
-
-  margin-top: 24px;
+  gap: 24px; /* Separación vertical exacta entre opciones */
+  margin-top: 10px;
 }
 
 .side-menu__option {
   width: 100%;
-
   display: flex;
   align-items: center;
+  gap: 18px;
 
-  gap: 12px;
-
-  padding: 14px 16px;
-
+  padding: 6px 4px;
   border: none;
-  border-radius: 18px;
-
   background: transparent;
-  color: var(--color-text);
+  color: #ffffff;
 
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-
+  font-size: 15.5px;
+  font-weight: 500;
   text-align: left;
-
   cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.1s ease, opacity 0.15s ease;
 }
 
 .side-menu__option:hover {
-  background: var(--color-accent);
-}
-
-.side-menu__option--danger {
-  color: var(--color-danger);
-}
-
-.side-menu__option--danger:hover {
-  background: var(--color-danger-bg);
+  opacity: 0.85;
+  transform: translateX(2px);
 }
 
 .side-menu__option-icon {
-  width: 24px;
-
+  width: 30px;
+  height: 30px;
+  color: #f7d79a; /* Amarillo suave/dorado oficial de Figma */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 18px;
+  flex-shrink: 0;
 }
 
-@media (max-width: 480px) {
-  .side-menu {
-    width: 85%;
-  }
+.side-menu__option-label {
+  letter-spacing: 0.15px;
+  line-height: 1.25;
+}
+
+.side-menu__logout {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  transition: opacity 0.2s ease;
+}
+
+.side-menu__logout:hover {
+  opacity: 0.75;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideMenuLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }

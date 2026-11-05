@@ -1,72 +1,69 @@
 import './MedicalRecordCard.css';
 
-const recordConfig = {
-  vaccine: {
-    label: 'Vacuna',
-    icon: '💉',
-  },
+// 1. Icono Check (Verde oliva / Vacunas)
+function IconCheck() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
 
-  deworming: {
-    label: 'Desparasitación',
-    icon: '✚',
-  },
+// 2. Icono Reloj (Naranja / Desparasitación)
+function IconClock() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <polyline points="12 7 12 12 15 15" />
+    </svg>
+  );
+}
 
-  consultation: {
-    label: 'Consulta',
-    icon: '🩺',
+// 3. Icono Estetoscopio (Amarillo suave / Consultas)
+function IconStethoscope() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 3v6a5.5 5.5 0 0011 0V3" />
+      <circle cx="4.5" cy="3" r="1.5" fill="currentColor" />
+      <circle cx="15.5" cy="3" r="1.5" fill="currentColor" />
+      <path d="M10 14.5v3.5a3 3 0 003 3h3a2.5 2.5 0 002.5-2.5v-1" />
+      <circle cx="18.5" cy="16.5" r="2" fill="currentColor" />
+    </svg>
+  );
+}
+
+const variantConfig = {
+  vacunas: {
+    icon: <IconCheck />,
+    badgeClass: 'medical-card__badge--vaccine',
+  },
+  desparasitacion: {
+    icon: <IconClock />,
+    badgeClass: 'medical-card__badge--deworming',
+  },
+  consultas: {
+    icon: <IconStethoscope />,
+    badgeClass: 'medical-card__badge--consultation',
   },
 };
 
 function MedicalRecordCard({
-  type = 'consultation',
-  title,
-  date,
-  place,
-  description,
+  title = 'Title',
+  date = 'date',
+  variant = 'vacunas',
   onClick,
 }) {
-  const config =
-    recordConfig[type] || recordConfig.consultation;
+  const config = variantConfig[variant] || variantConfig.vacunas;
 
   return (
-    <article
-      className={`medical-record-card medical-record-card--${type}`}
-      onClick={onClick}
-    >
-      <div className="medical-record-card__icon">
-        <span aria-hidden="true">
-          {config.icon}
-        </span>
+    <article className="medical-record-card" onClick={onClick}>
+      <div className={`medical-card__badge ${config.badgeClass}`} aria-hidden="true">
+        {config.icon}
       </div>
 
-      <div className="medical-record-card__content">
-        <span className="medical-record-card__type">
-          {config.label}
-        </span>
-
-        <h3 className="medical-record-card__title">
-          {title}
-        </h3>
-
-        <div className="medical-record-card__meta">
-          {date && (
-            <span>
-              {date}
-            </span>
-          )}
-
-          {place && (
-            <span>
-              {place}
-            </span>
-          )}
-        </div>
-
-        {description && (
-          <p className="medical-record-card__description">
-            {description}
-          </p>
-        )}
+      <div className="medical-card__content">
+        <h4 className="medical-card__title">{title}</h4>
+        <span className="medical-card__date">{date}</span>
       </div>
     </article>
   );

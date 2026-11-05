@@ -1,70 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap');
+
 .confirmation-modal__overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 24px;
-
-  background: rgba(94, 90, 87, 0.45);
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.45);
+  animation: fadeInModal 0.2s ease-out;
 }
 
 .confirmation-modal {
   width: 100%;
-  max-width: 380px;
+  max-width: 342px; /* Ancho exacto Figma */
+  min-height: 311px; /* Alto exacto Figma */
+  box-sizing: border-box;
 
-  padding: 28px 24px;
+  padding: 26px 22px 24px;
+  background-color: #8da7cc; /* Azul grisáceo Figma */
+  border-radius: 32px;        /* Bordes redondeados oficiales */
+  border: none;
 
-  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-
-  font-family: 'Poppins', sans-serif;
-
-  box-shadow: 0 12px 32px rgba(94, 90, 87, 0.18);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+  animation: popInModal 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.confirmation-modal--danger {
-  background: var(--color-danger-bg);
+/* Insignia circular blanca central */
+.confirmation-modal__badge {
+  width: 72px;
+  height: 72px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #df683e; /* Naranja/terracota */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 14px;
+  flex-shrink: 0;
 }
 
 .confirmation-modal__title {
-  margin: 0 0 12px;
-
-  font-family: 'MuseoModerno', sans-serif;
-  font-size: 22px;
+  margin: 0 0 10px;
+  font-family: 'MuseoModerno', cursive, sans-serif;
+  font-size: 23px;
   font-weight: 700;
-
-  color: var(--color-text);
+  color: #2b2826;
+  letter-spacing: 0.2px;
 }
 
 .confirmation-modal__message {
-  margin: 0;
-
-  font-size: 15px;
-  line-height: 1.5;
-
-  color: var(--color-muted);
+  margin: 0 0 24px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #3b3936;
+  padding: 0 8px;
 }
 
 .confirmation-modal__actions {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
-
-  margin-top: 24px;
+  width: 100%;
+  margin-top: auto;
 }
 
-@media (max-width: 480px) {
-  .confirmation-modal__actions {
-    flex-direction: column;
-  }
+/* Botones con forma de píldora idénticos al frame */
+.confirmation-modal__btn {
+  flex: 1;
+  min-height: 46px;
+  border-radius: 999px;
+  font-family: 'MuseoModerno', cursive, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
 
-  .confirmation-modal__actions .button {
-    width: 100%;
+.confirmation-modal__btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.confirmation-modal__btn:active {
+  transform: translateY(0);
+}
+
+/* Botón Cancelar blanco con borde y texto naranja */
+.confirmation-modal__btn--cancel {
+  background-color: #ffffff;
+  color: #df683e;
+  border-color: #df683e;
+}
+
+/* Botón Confirmar / Eliminar naranja sólido */
+.confirmation-modal__btn--confirm {
+  background-color: #df683e;
+  color: #ffffff;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popInModal {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }
