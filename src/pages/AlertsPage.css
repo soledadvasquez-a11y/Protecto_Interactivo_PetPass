@@ -429,3 +429,26 @@
 
   font-size: 19px;
 }
+.alerts-page__empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.alerts-page__status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.alerts-page__card-col--resolved {
+  opacity: 0.65;
+}
+
+.alerts-page__card-col--resolved .alert-card {
+  filter: grayscale(0.2);
+}
