@@ -5,11 +5,9 @@ import {
 
 import Button from '../components/Button/Button.jsx';
 
-import pets from '../data/pets.js';
-
 import './DigitalCardPage.css';
 
-function DigitalCardPage() {
+function DigitalCardPage({ pets }) {
   const navigate = useNavigate();
 
   const { id } = useParams();

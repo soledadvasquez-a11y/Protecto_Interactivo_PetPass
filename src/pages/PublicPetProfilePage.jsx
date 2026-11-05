@@ -5,11 +5,9 @@ import Button from '../components/Button/Button.jsx';
 import AlertModal from '../components/AlertModal/AlertModal.jsx';
 import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx';
 
-import pets from '../data/pets.js';
-
 import './PublicPetProfilePage.css';
 
-function PublicPetProfilePage() {
+function PublicPetProfilePage({pets}) {
   const { id } = useParams();
 
   const [modalType, setModalType] =
