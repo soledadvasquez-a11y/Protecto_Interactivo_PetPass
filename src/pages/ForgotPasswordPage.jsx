@@ -13,58 +13,65 @@ function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
 
   const handleSend = () => {
-    /*
-      Simulación de interfaz.
-      El correo real se enviará cuando exista backend.
-    */
     setSent(true);
   };
 
   return (
     <main className="forgot-page">
+      <div className="forgot-page__bg-blob" aria-hidden="true" />
+
       <section className="forgot-page__card">
-        <button
-          type="button"
-          className="forgot-page__back"
-          onClick={() => navigate('/login')}
-        >
-          ← Volver
-        </button>
+        <div className="forgot-page__brand">
+          <span className="forgot-page__brand-mark">
+            PetPass
+          </span>
+        </div>
 
-        <h1>Recuperar contraseña</h1>
+        <div className="forgot-page__box">
+          <h1>¿Olvidó su contraseña?</h1>
 
-        <p className="forgot-page__description">
-          Ingresa tu correo para continuar con la recuperación.
-        </p>
+          <p className="forgot-page__description">
+            Escribe tu dirección de correo electrónico y te enviaremos las instrucciones para restablecer la contraseña.
+          </p>
 
-        <div className="forgot-page__form">
-          <FormField
-            label="Correo electrónico"
-            type="email"
-            value={email}
-            placeholder="correo@ejemplo.com"
-            onChange={(event) => {
-              setEmail(event.target.value);
-              setSent(false);
-            }}
-          />
+          <div className="forgot-page__form">
+            <FormField
+              label=""
+              type="email"
+              value={email}
+              placeholder="Correo"
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setSent(false);
+              }}
+            />
 
-          <Button
-            variant="primary"
-            disabled={!email.trim()}
-            onClick={handleSend}
-          >
-            Enviar instrucciones
-          </Button>
-
-          {sent && (
-            <p
-              className="forgot-page__success"
-              role="status"
+            <Button
+              variant="primary"
+              disabled={!email.trim()}
+              onClick={handleSend}
             >
-              Solicitud preparada. El envío real se conectará al backend.
-            </p>
-          )}
+              Continuar
+            </Button>
+
+            <button
+              type="button"
+              className="forgot-page__back"
+              onClick={() => navigate('/login')}
+            >
+              Volver al LOGIN
+            </button>
+
+            {/* Condicional Fase 4: Mensaje de confirmación */}
+            {sent && (
+              <p
+                className="forgot-page__success"
+                role="status"
+              >
+                Solicitud preparada. El envío real se conectará al backend.
+              </p>
+            )}
+          </div>
         </div>
       </section>
     </main>

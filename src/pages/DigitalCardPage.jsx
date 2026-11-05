@@ -1,38 +1,55 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 
 import Button from '../components/Button/Button.jsx';
+
+import pets from '../data/pets.js';
 
 import './DigitalCardPage.css';
 
 function DigitalCardPage() {
   const navigate = useNavigate();
+
   const { id } = useParams();
 
-  /*
-    Datos provisionales.
-    Posteriormente vendrán del backend según el id.
-  */
-  const pet = {
-    id,
-    name: 'Toby',
-    species: 'Perro',
-    breed: 'Pug',
-    age: '5 años',
-    tutor: 'Usuario PetPass',
-  };
+  const pet = pets.find(
+    (item) => item.id === Number(id)
+  );
 
   const handlePrint = () => {
-    /*
-      Solución preliminar.
-      El PDF/descarga definitiva pertenece
-      a la etapa de integración.
-    */
-
     window.print();
   };
 
+  if (!pet) {
+    return (
+      <main className="page digital-card-page">
+        <header className="digital-card-page__heading">
+          <h1>Carnet digital</h1>
+        </header>
+
+        <p>
+          Mascota no encontrada.
+        </p>
+
+        <div className="digital-card-page__actions">
+          <Button
+            variant="secondary"
+            onClick={() =>
+              navigate('/mascotas')
+            }
+          >
+            Volver a Mis Mascotas
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="page digital-card-page">
+
       <header className="digital-card-page__heading">
         <h1>Carnet digital</h1>
 
@@ -42,18 +59,29 @@ function DigitalCardPage() {
       </header>
 
       <section className="digital-card-page__card">
+
         <div className="digital-card-page__brand">
           <span>PetPass</span>
 
-          <small>Identidad de mascota</small>
+          <small>
+            Identidad de mascota
+          </small>
         </div>
 
         <div className="digital-card-page__pet">
+
           <div
             className="digital-card-page__photo"
             aria-hidden="true"
           >
-            🐾
+            {pet.photo ? (
+              <img
+                src={pet.photo}
+                alt=""
+              />
+            ) : (
+              '🐾'
+            )}
           </div>
 
           <div>
@@ -63,23 +91,35 @@ function DigitalCardPage() {
               {pet.species} · {pet.breed}
             </p>
 
-            <p>{pet.age}</p>
+            <p>
+              {pet.age}
+            </p>
           </div>
+
         </div>
 
         <div className="digital-card-page__info">
+
           <div>
             <span>Tutor</span>
-            <strong>{pet.tutor}</strong>
+
+            <strong>
+              Usuario PetPass
+            </strong>
           </div>
 
           <div>
             <span>ID PetPass</span>
-            <strong>PP-{pet.id}</strong>
+
+            <strong>
+              PP-{pet.id}
+            </strong>
           </div>
+
         </div>
 
         <div className="digital-card-page__qr">
+
           <div
             className="digital-card-page__qr-placeholder"
             aria-label="Código QR provisional"
@@ -90,10 +130,13 @@ function DigitalCardPage() {
           <p>
             Escanea para ver el perfil público
           </p>
+
         </div>
+
       </section>
 
       <div className="digital-card-page__actions">
+
         <Button
           variant="primary"
           onClick={() =>
@@ -111,7 +154,9 @@ function DigitalCardPage() {
         >
           Descargar carnet
         </Button>
+
       </div>
+
     </main>
   );
 }
