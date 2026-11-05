@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Routes,
   Route,
@@ -19,84 +21,121 @@ import DigitalCardPage from './pages/DigitalCardPage.jsx';
 import MedicalHistoryPage from './pages/MedicalHistoryPage.jsx';
 import AlertsPage from './pages/AlertsPage.jsx';
 import MapPage from './pages/MapPage.jsx';
-
 import PublicPetProfilePage from './pages/PublicPetProfilePage.jsx';
 
+import initialPets from './data/pets.js';
+import initialMedicalRecords from './data/medicalRecords.js';
+
 function App() {
+  const [pets, setPets] = useState(initialPets);
+  const [medicalRecords, setMedicalRecords] =
+    useState(initialMedicalRecords);
+
+  const addPet = (newPet) => {
+    setPets((currentPets) => [
+      ...currentPets,
+      newPet,
+    ]);
+  };
+
+  const updatePet = (updatedPet) => {
+    setPets((currentPets) =>
+      currentPets.map((pet) =>
+        pet.id === updatedPet.id
+          ? updatedPet
+          : pet
+      )
+    );
+  };
+
+  const deletePet = (petId) => {
+    setPets((currentPets) =>
+      currentPets.filter(
+        (pet) => pet.id !== petId
+      )
+    );
+
+    setMedicalRecords((currentRecords) =>
+      currentRecords.filter(
+        (record) => record.petId !== petId
+      )
+    );
+  };
+
+  const addMedicalRecord = (newRecord) => {
+    setMedicalRecords((currentRecords) => [
+      ...currentRecords,
+      newRecord,
+    ]);
+  };
+
+  const updateMedicalRecord = (updatedRecord) => {
+    setMedicalRecords((currentRecords) =>
+      currentRecords.map((record) =>
+        record.id === updatedRecord.id
+          ? updatedRecord
+          : record
+      )
+    );
+  };
+
   return (
     <Routes>
-      {/* Páginas públicas */}
-
-      <Route
-        path="/"
-        element={<OnboardingPage />}
-      />
-
-      <Route
-        path="/login"
-        element={<LoginPage />}
-      />
-
+      <Route path="/" element={<OnboardingPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route
         path="/recuperar-contrasena"
         element={<ForgotPasswordPage />}
       />
-
       <Route
         path="/registro-tutor"
         element={<RegisterTutorPage />}
       />
-
       <Route
         path="/mascotas/nueva"
-        element={<RegisterPetPage />}
+        element={<RegisterPetPage onAddPet={addPet} />}
       />
-
       <Route
         path="/mascotas/:id/perfil-publico"
-        element={<PublicPetProfilePage />}
+        element={<PublicPetProfilePage pets={pets} />}
       />
-
-      {/* Páginas internas */}
 
       <Route element={<MainLayout />}>
         <Route
           path="/home"
-          element={<HomePage />}
+          element={<HomePage pets={pets} />}
         />
-
         <Route
           path="/cuenta"
           element={<AccountPage />}
         />
-
         <Route
           path="/mascotas"
-          element={<PetsPage />}
+          element={
+            <PetsPage
+              pets={pets}
+              onUpdatePet={updatePet}
+              onDeletePet={deletePet}
+            />
+          }
         />
-
         <Route
           path="/mascotas/:id/carnet"
-          element={<DigitalCardPage />}
+          element={<DigitalCardPage pets={pets} />}
         />
-
         <Route
           path="/mascotas/:id/historial-medico"
-          element={<MedicalHistoryPage />}
+          element={
+            <MedicalHistoryPage
+              medicalRecords={medicalRecords}
+              onAddMedicalRecord={addMedicalRecord}
+              onUpdateMedicalRecord={updateMedicalRecord}
+            />
+          }
         />
-
-        <Route
-          path="/alertas"
-          element={<AlertsPage />}
-        />
-
-        <Route
-          path="/mapa"
-          element={<MapPage />}
-        />
+        <Route path="/alertas" element={<AlertsPage />} />
+        <Route path="/mapa" element={<MapPage />} />
       </Route>
-
-      {/* URL inexistente */}
 
       <Route
         path="*"

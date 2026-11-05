@@ -2,11 +2,9 @@ import { useNavigate } from 'react-router-dom';
 
 import PetCard from '../components/PetCard/PetCard.jsx';
 
-import pets from '../data/pets.js';
-
 import './HomePage.css';
 
-function HomePage() {
+function HomePage({pets}) {
   const navigate = useNavigate();
 
   const handleAddPet = () => {

@@ -10,7 +10,6 @@ import MedicalRecordCard from '../components/MedicalRecordCard/MedicalRecordCard
 import FormField from '../components/FormField/FormField.jsx';
 import Button from '../components/Button/Button.jsx';
 
-import initialMedicalRecords from '../data/medicalRecords.js';
 
 import './MedicalHistoryPage.css';
 
@@ -39,7 +38,7 @@ const TYPE_OPTIONS = [
 ];
 
 function MedicalHistoryPage({
-  medicalRecords = initialMedicalRecords,
+  medicalRecords,
   onAddMedicalRecord,
   onUpdateMedicalRecord,
 }) {

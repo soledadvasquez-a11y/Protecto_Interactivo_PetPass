@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import PetSelector from '../components/PetSelector/PetSelector.jsx';
@@ -6,8 +6,6 @@ import PetCard from '../components/PetCard/PetCard.jsx';
 import FormField from '../components/FormField/FormField.jsx';
 import Button from '../components/Button/Button.jsx';
 import ConfirmationModal from '../components/ConfirmationModal/ConfirmationModal.jsx';
-
-import initialPets from '../data/pets.js';
 
 import './PetsPage.css';
 
@@ -19,7 +17,7 @@ const EMPTY_EDIT_FORM = {
 };
 
 function PetsPage({
-  pets = initialPets,
+  pets,
   onUpdatePet,
   onDeletePet,
 }) {
@@ -36,6 +34,27 @@ function PetsPage({
 
   const [editFormData, setEditFormData] =
     useState(EMPTY_EDIT_FORM);
+
+
+    useEffect(() => {
+  if (pets.length === 0) {
+    if (selectedPetId !== null) {
+      setSelectedPetId(null);
+    }
+    setIsEditingPet(false);
+    return;
+  }
+
+  const selectedStillExists = pets.some(
+    (pet) => pet.id === selectedPetId
+  );
+
+  if (!selectedStillExists) {
+    setSelectedPetId(pets[0].id);
+    setIsEditingPet(false);
+  }
+}, [pets, selectedPetId]);
+
 
   const selectedPet =
     pets.find(
