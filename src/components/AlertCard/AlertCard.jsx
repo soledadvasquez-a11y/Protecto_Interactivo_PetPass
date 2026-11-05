@@ -6,6 +6,11 @@ const alertConfig = {
     icon: '🐾',
   },
 
+  adoption: {
+    label: 'En adopción',
+    icon: '♥',
+  },
+
   emergency: {
     label: 'Emergencia',
     icon: '!',
@@ -19,27 +24,55 @@ function AlertCard({
   location,
   date,
   description,
+  contact,
   onClick,
 }) {
   const config =
-    alertConfig[type] || alertConfig.lost;
+    alertConfig[type] ||
+    alertConfig.lost;
 
   return (
     <article
-      className={`alert-card alert-card--${type}`}
+      className={`
+        alert-card
+        alert-card--${type}
+        ${
+          !photo
+            ? 'alert-card--no-photo'
+            : ''
+        }
+        ${
+          onClick
+            ? 'alert-card--clickable'
+            : ''
+        }
+      `}
       onClick={onClick}
     >
-      {photo && (
+
+      {photo ? (
         <img
           className="alert-card__photo"
           src={photo}
           alt={`Foto de ${petName}`}
         />
+      ) : (
+        <div
+          className="alert-card__photo-placeholder"
+          aria-hidden="true"
+        >
+          <span>
+            {config.icon}
+          </span>
+        </div>
       )}
 
       <div className="alert-card__content">
+
         <div className="alert-card__top">
+
           <span className="alert-card__type">
+
             <span
               className="alert-card__icon"
               aria-hidden="true"
@@ -48,6 +81,7 @@ function AlertCard({
             </span>
 
             {config.label}
+
           </span>
 
           {date && (
@@ -55,6 +89,7 @@ function AlertCard({
               {date}
             </span>
           )}
+
         </div>
 
         <h3 className="alert-card__name">
@@ -72,7 +107,18 @@ function AlertCard({
             {description}
           </p>
         )}
+
+        {contact && (
+          <p className="alert-card__contact">
+            <strong>
+              Contacto:
+            </strong>{' '}
+            {contact}
+          </p>
+        )}
+
       </div>
+
     </article>
   );
 }

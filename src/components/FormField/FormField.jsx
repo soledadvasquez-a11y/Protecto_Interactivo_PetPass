@@ -11,7 +11,12 @@ function FormField({
 }) {
   return (
     <label className="form-field">
-      <span className="form-field__label">{label}</span>
+
+      {label && (
+        <span className="form-field__label">
+          {label}
+        </span>
+      )}
 
       {type === 'select' ? (
         <select
@@ -20,13 +25,20 @@ function FormField({
           value={value}
           onChange={onChange}
         >
-          <option value="">Seleccionar</option>
+          <option value="">
+            {placeholder ||
+              'Seleccionar'}
+          </option>
 
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option
+              key={option.value}
+              value={option.value}
+            >
               {option.label}
             </option>
           ))}
+
         </select>
       ) : (
         <input
@@ -38,6 +50,7 @@ function FormField({
           onChange={onChange}
         />
       )}
+
     </label>
   );
 }

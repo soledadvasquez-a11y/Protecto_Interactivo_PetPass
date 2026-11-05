@@ -7,7 +7,9 @@ import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx'
 
 import './PublicPetProfilePage.css';
 
-function PublicPetProfilePage({pets}) {
+function PublicPetProfilePage({
+  pets = [],
+}) {
   const { id } = useParams();
 
   const [modalType, setModalType] =
@@ -17,7 +19,8 @@ function PublicPetProfilePage({pets}) {
     useState(false);
 
   const pet = pets.find(
-    (item) => item.id === Number(id)
+    (item) =>
+      item.id === Number(id)
   );
 
   const handleOpenGpsModal = () => {
@@ -41,6 +44,10 @@ function PublicPetProfilePage({pets}) {
         <main className="pet-profile-page__card">
 
           <section className="pet-profile-page__info-box">
+
+            <div className="pet-profile-page__missing-icon">
+              🐾
+            </div>
 
             <h1 className="pet-profile-page__title">
               Mascota no encontrada
@@ -76,9 +83,12 @@ function PublicPetProfilePage({pets}) {
                 className="pet-profile-page__call-avatar"
               />
             ) : (
-              <span aria-hidden="true">
+              <div
+                className="pet-profile-page__call-placeholder"
+                aria-hidden="true"
+              >
                 🐾
-              </span>
+              </div>
             )}
 
           </div>
@@ -87,8 +97,11 @@ function PublicPetProfilePage({pets}) {
             Llamada de emergencia
           </h1>
 
-          <p>
-            Contactando al tutor de {pet.name}
+          <p className="pet-profile-page__call-subtitle">
+            Contactando al tutor de{' '}
+            <strong>
+              {pet.name}
+            </strong>
           </p>
 
           <div className="pet-profile-page__call-controls">
@@ -162,23 +175,36 @@ function PublicPetProfilePage({pets}) {
                   className="pet-profile-page__pet-photo"
                 />
               ) : (
-                <span aria-hidden="true">
-                  🐾
-                </span>
+                <div
+                  className="pet-profile-page__photo-placeholder"
+                  aria-hidden="true"
+                >
+                  <span>
+                    🐾
+                  </span>
+
+                  <small>
+                    Sin fotografía
+                  </small>
+                </div>
               )}
 
             </div>
 
             <h1 className="pet-profile-page__title">
+
               {pet.status === 'lost'
                 ? '¡Estoy perdido!'
                 : `Hola, soy ${pet.name}`}
+
             </h1>
 
             <p className="pet-profile-page__subtitle">
+
               {pet.status === 'lost'
                 ? 'Ayúdame a volver a casa'
                 : 'Este es mi perfil público de PetPass'}
+
             </p>
 
             <div className="pet-profile-page__data">
@@ -215,7 +241,9 @@ function PublicPetProfilePage({pets}) {
               <>
                 <Button
                   variant="danger"
-                  onClick={handleOpenGpsModal}
+                  onClick={
+                    handleOpenGpsModal
+                  }
                 >
                   Enviar Alerta GPS
                 </Button>
@@ -233,10 +261,21 @@ function PublicPetProfilePage({pets}) {
 
             ) : (
 
-              <p className="pet-profile-page__safe-message">
-                Esta mascota no está reportada
-                como perdida.
-              </p>
+              <div className="pet-profile-page__safe-message">
+
+                <span
+                  aria-hidden="true"
+                  className="pet-profile-page__safe-icon"
+                >
+                  ✓
+                </span>
+
+                <p>
+                  Esta mascota no está
+                  reportada como perdida.
+                </p>
+
+              </div>
 
             )}
 
