@@ -184,9 +184,11 @@ function App() {
           element={
             <PetsPage
               pets={pets}
+              onPetsLoaded={setPets}
               onUpdatePet={updatePet}
               onDeletePet={deletePet}
             />
+            
           }
         />
         <Route

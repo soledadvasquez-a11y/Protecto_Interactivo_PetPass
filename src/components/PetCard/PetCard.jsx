@@ -1,74 +1,116 @@
 import './PetCard.css';
 
-function IconQR() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm-2 12h8v8H2v-8zm2 2v4h4v-4H4zm12-16h8v8h-8V2zm2 2v4h4V4h-4zm0 10h2v2h-2v-2zm-2 2h2v4h-2v-4zm4 0h2v4h-2v-4zm0-4h4v2h-4v-2zm-2 4v2h-2v-2h2z" />
-    </svg>
-  );
-}
-
-function IconEdit() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-    </svg>
-  );
-}
-
-function PawPrintBackground() {
-  return (
-    <svg className="pet-card__paw-bg" viewBox="0 0 320 300" fill="none" aria-hidden="true">
-      <g transform="rotate(22 170 140)">
-        <ellipse cx="65" cy="78" rx="28" ry="38" transform="rotate(-15 65 78)" fill="rgba(255, 255, 255, 0.32)" />
-        <ellipse cx="128" cy="48" rx="29" ry="42" transform="rotate(-3 128 48)" fill="rgba(255, 255, 255, 0.32)" />
-        <ellipse cx="196" cy="56" rx="29" ry="42" transform="rotate(12 196 56)" fill="rgba(255, 255, 255, 0.32)" />
-        <ellipse cx="254" cy="95" rx="27" ry="38" transform="rotate(26 254 95)" fill="rgba(255, 255, 255, 0.32)" />
-        <path
-          d="M95 130 C65 140 55 175 80 208 C105 238 160 248 190 220 C225 190 210 142 180 130 C155 120 120 120 95 130 Z"
-          fill="rgba(255, 255, 255, 0.28)"
-        />
-      </g>
-    </svg>
-  );
-}
-
 function PetCard({
-  name = 'Nombre',
-  species = 'Perro',
-  breed = 'Pug',
-  age = '5 años',
-  weight = '7 kg',
+  variant = 'detailed',
+  name,
   photo,
-  variant = 'detailed', // 'detailed' | 'compact'
-  onClick,
+  species,
+  breed,
+  age,
+  weight,
   onEdit,
-  onQrClick,
+  onQrClick
 }) {
-  const isCompact = variant === 'compact';
+  if (variant === 'compact') {
+    return (
+      <div className="pet-card pet-card--compact">
+        <div className="pet-card__photo-container">
+          {photo ? (
+            <img src={photo} alt={name} className="pet-card__photo-img" />
+          ) : (
+            <div className="pet-card__photo-fallback" />
+          )}
+        </div>
+        <div className="pet-card__info-group">
+          <span className="pet-card__field-title">{name}</span>
+          <span className="pet-card__field-value">
+            {species} {breed ? `· ${breed}` : ''}
+          </span>
+        </div>
+        {weight && <div className="pet-card__weight-badge">{weight}</div>}
+      </div>
+    );
+  }
 
+  // Variante Detailed (Tarjeta azul de información)
   return (
-    <article
-      className={`pet-card ${isCompact ? 'pet-card--compact' : 'pet-card--detailed'}`}
-      onClick={onClick}
-    >
-      {!isCompact && <PawPrintBackground />}
+    <div className="pet-card pet-card--detailed">
+      {/* Fondo vectorial de huella */}
+      <svg
+        className="pet-card__paw-bg"
+        viewBox="0 0 200 200"
+        fill="rgba(255, 255, 255, 0.18)"
+      >
+        <circle cx="50" cy="50" r="25" />
+        <circle cx="100" cy="30" r="25" />
+        <circle cx="150" cy="50" r="25" />
+        <circle cx="170" cy="100" r="20" />
+        <path d="M 50 120 C 40 90, 160 90, 150 120 C 140 150, 60 150, 50 120 Z" />
+      </svg>
 
-      {!isCompact && (
-        <button
-          type="button"
-          className="pet-card__btn-edit"
-          onClick={(e) => {
-            e.stopPropagation();
-            onEdit?.();
-          }}
-          aria-label={`Editar información de ${name}`}
+      {/* Botón del Lápiz (Ahora funcional mediante onEdit) */}
+      <button
+        type="button"
+        className="pet-card__btn-edit"
+        onClick={onEdit}
+        aria-label="Editar mascota"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <IconEdit />
-        </button>
-      )}
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+        </svg>
+      </button>
 
-      {/* Foto circular */}
+      {/* Bloque vertical con Nombre, Raza y Edad */}
+      <div className="pet-card__info-group">
+        <div className="pet-card__field">
+          <span className="pet-card__field-label">Nombre</span>
+          <span className="pet-card__field-val">{name}</span>
+        </div>
+        <div className="pet-card__field">
+          <span className="pet-card__field-label">Raza</span>
+          <span className="pet-card__field-val">{breed || species}</span>
+        </div>
+        <div className="pet-card__field">
+          <span className="pet-card__field-label">Edad</span>
+          <span className="pet-card__field-val">{age}</span>
+        </div>
+      </div>
+
+      {/* Ícono de QR inferior */}
+      <button
+        type="button"
+        className="pet-card__btn-qr"
+        onClick={onQrClick}
+        aria-label="Ver QR"
+      >
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+      </button>
+
+      {/* Foto circular recortada */}
       <div className="pet-card__photo-container">
         {photo ? (
           <img src={photo} alt={name} className="pet-card__photo-img" />
@@ -76,44 +118,7 @@ function PetCard({
           <div className="pet-card__photo-fallback" />
         )}
       </div>
-
-      {/* Contenido textual */}
-      <div className="pet-card__info-group">
-        <div className="pet-card__field">
-          <span className="pet-card__field-title">{name}</span>
-          <span className="pet-card__field-value">
-            {isCompact ? `${breed} · ${age}` : breed || species}
-          </span>
-        </div>
-
-        {!isCompact && (
-          <div className="pet-card__field">
-            <span className="pet-card__field-title">Edad</span>
-            <span className="pet-card__field-value">{age}</span>
-          </div>
-        )}
-      </div>
-
-      {isCompact && weight && (
-        <div className="pet-card__weight-badge">
-          {weight}
-        </div>
-      )}
-
-      {!isCompact && (
-        <button
-          type="button"
-          className="pet-card__btn-qr"
-          onClick={(e) => {
-            e.stopPropagation();
-            onQrClick?.();
-          }}
-          aria-label="Ver código QR"
-        >
-          <IconQR />
-        </button>
-      )}
-    </article>
+    </div>
   );
 }
 
