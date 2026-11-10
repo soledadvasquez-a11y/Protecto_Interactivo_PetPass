@@ -1,10 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@700;800&family=Poppins:wght@400;500;600&display=swap');
+
+/* Contenedor General */
 .home-page {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  padding: 24px 20px 100px;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  background-color: #FAF8F2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezado Azul */
+.home-header {
+  background-color: #8DA6CC;
+  padding: 20px 24px;
+  border-bottom-left-radius: 36px;
+  border-bottom-right-radius: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+}
+
+.home-header__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.home-header__menu-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.home-content {
+  padding: 24px 20px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
 /* Tarjeta Saludo */
@@ -39,7 +81,6 @@
 
 /* Sección Mis Mascotas */
 .home-page__pets {
-  margin-top: 28px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -101,20 +142,17 @@
   color: #ffffff;
   font-weight: 400;
 }
+
+/* Estado sin mascotas */
 .home-page__empty {
   display: flex;
   flex-direction: column;
   align-items: center;
-
   gap: 12px;
-
   padding: 28px 20px;
-
-  border: 1px solid var(--color-border);
+  border: 1px solid #E5E7EB;
   border-radius: 28px;
-
-  background: var(--color-surface);
-
+  background: #ffffff;
   text-align: center;
 }
 
@@ -124,20 +162,15 @@
 
 .home-page__empty h3 {
   margin: 0;
-
   font-family: 'MuseoModerno', sans-serif;
   font-size: 19px;
-
-  color: var(--color-text);
+  color: #333333;
 }
 
 .home-page__empty p {
   margin: 0;
-
   max-width: 360px;
-
   font-size: 13px;
   line-height: 1.5;
-
-  color: var(--color-muted);
+  color: #6B7280;
 }

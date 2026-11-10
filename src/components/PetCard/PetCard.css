@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@700;800&family=Poppins:wght@400;500;600&display=swap');
 
+/* Base común */
 .pet-card {
   position: relative;
   width: 100%;
@@ -10,6 +11,85 @@
   transition: transform 0.15s ease;
 }
 
+/* =========================================
+   VARIANTE COMPACTA (Naranja - Home)
+   ========================================= */
+.pet-card--compact {
+  max-width: 100%;
+  min-height: 86px;
+  padding: 14px 18px;
+  background-color: #E17753; /* Naranja idéntico al diseño */
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(225, 119, 83, 0.2);
+}
+
+/* Círculo de la foto compacto (64px) */
+.pet-card--compact .pet-card__photo-container {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #EFEFEA;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.pet-card--compact .pet-card__info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+/* Nombre oscuro para resaltar en naranja */
+.pet-card--compact .pet-card__field-title {
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #2D241E;
+  line-height: 1.1;
+}
+
+.pet-card--compact .pet-card__field-value {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* Ícono y texto de "Ver mas" */
+.pet-card__see-more {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #A5D8FF; /* Color celeste */
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Pastilla de peso redonda */
+.pet-card__weight-badge {
+  background-color: #D4D1B0; /* Beige verdoso del diseño */
+  color: #2D241E;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 14px;
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   VARIANTE DETALLADA (Azul - Carnet)
+   ========================================= */
 .pet-card--detailed {
   max-width: 384px;
   min-height: 300px;
@@ -49,12 +129,6 @@
   color: #ffffff;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease, background-color 0.15s ease;
-}
-
-.pet-card--detailed .pet-card__btn-edit:hover {
-  transform: scale(1.05);
-  background-color: #938d40;
 }
 
 .pet-card--detailed .pet-card__info-group {
@@ -96,14 +170,8 @@
   padding: 0;
   margin-top: 14px;
   width: fit-content;
-  transition: transform 0.15s ease;
 }
 
-.pet-card--detailed .pet-card__btn-qr:hover {
-  transform: scale(1.1);
-}
-
-/* Foto ligeramente más grande (165px) y centrada */
 .pet-card--detailed .pet-card__photo-container {
   position: absolute;
   right: 12px;
@@ -120,11 +188,15 @@
   justify-content: center;
 }
 
+
+/* =========================================
+   REGLAS GLOBALES DE FOTOGRAFÍA 
+   ========================================= */
 .pet-card__photo-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 35%; /* Centrado perfecto en la cara del perro */
+  object-fit: cover; /* Esto evita que la foto se deforme o estire */
+  object-position: center;
   border-radius: 50%;
   display: block;
 }
