@@ -24,13 +24,10 @@ import MapPage from './pages/MapPage.jsx';
 import PublicPetProfilePage from './pages/PublicPetProfilePage.jsx';
 
 import initialPets from './data/pets.js';
-import initialMedicalRecords from './data/medicalRecords.js';
 import initialAlerts from './data/alerts.js';
 
 function App() {
   const [pets, setPets] = useState(initialPets);
-  const [medicalRecords, setMedicalRecords] =
-    useState(initialMedicalRecords);
   const [alerts, setAlerts] = useState(initialAlerts);
 
   const addPet = (newPet) => {
@@ -67,29 +64,6 @@ function App() {
     setPets((currentPets) =>
       currentPets.filter(
         (pet) => pet.id !== petId
-      )
-    );
-
-    setMedicalRecords((currentRecords) =>
-      currentRecords.filter(
-        (record) => record.petId !== petId
-      )
-    );
-  };
-
-  const addMedicalRecord = (newRecord) => {
-    setMedicalRecords((currentRecords) => [
-      ...currentRecords,
-      newRecord,
-    ]);
-  };
-
-  const updateMedicalRecord = (updatedRecord) => {
-    setMedicalRecords((currentRecords) =>
-      currentRecords.map((record) =>
-        record.id === updatedRecord.id
-          ? updatedRecord
-          : record
       )
     );
   };
@@ -188,7 +162,6 @@ function App() {
               onUpdatePet={updatePet}
               onDeletePet={deletePet}
             />
-            
           }
         />
         <Route
@@ -197,13 +170,7 @@ function App() {
         />
         <Route
           path="/mascotas/:id/historial-medico"
-          element={
-            <MedicalHistoryPage
-              medicalRecords={medicalRecords}
-              onAddMedicalRecord={addMedicalRecord}
-              onUpdateMedicalRecord={updateMedicalRecord}
-            />
-          }
+          element={<MedicalHistoryPage />}
         />
         <Route
           path="/alertas"
