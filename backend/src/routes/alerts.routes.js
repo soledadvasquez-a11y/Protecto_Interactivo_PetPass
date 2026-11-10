@@ -1,12 +1,17 @@
-import { Router } from 'express'
+import { Router } from 'express';
+
 import {
+  createAlert,
   getAlerts,
   getAlertById,
-} from '../controllers/alerts.controller.js'
+  updateAlert,
+} from '../controllers/alerts.controller.js';
 
-const router = Router()
+const router = Router();
 
-router.get('/', getAlerts)
-router.get('/:id', getAlertById)
+router.get('/', getAlerts);
+router.post('/', createAlert);
+router.get('/:id', getAlertById);
+router.put('/:id', updateAlert);
 
-export default router
+export default router;

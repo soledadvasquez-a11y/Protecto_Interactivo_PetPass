@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -61,12 +62,25 @@ const EMPTY_FORM = {
   contact: '',
 };
 
-function AlertsPage({
-  alerts = [],
-  pets = [],
-  onAddAlert,
-  onResolveAlert,
-}) {
+function AlertsPage() {
+  const [alerts, setAlerts] =
+    useState([]);
+
+  const [pets, setPets] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState('');
+
+  const [actionError, setActionError] =
+    useState('');
+
+  const [saving, setSaving] =
+    useState(false);
+
   const [activeFilter, setActiveFilter] =
     useState('Todos');
 
@@ -85,6 +99,54 @@ function AlertsPage({
 
   const [formData, setFormData] =
     useState(EMPTY_FORM);
+
+  useEffect(() => {
+    async function loadAlertsAndPets() {
+      setLoading(true);
+      setError('');
+
+      try {
+        const [alertsResponse, petsResponse] =
+          await Promise.all([
+            fetch('/api/alertas'),
+            fetch('/api/mascotas'),
+          ]);
+
+        const [alertsData, petsData] =
+          await Promise.all([
+            alertsResponse.json(),
+            petsResponse.json(),
+          ]);
+
+        if (!alertsResponse.ok) {
+          setError(
+            alertsData.error ||
+              'No se pudieron cargar las alertas.'
+          );
+          return;
+        }
+
+        if (!petsResponse.ok) {
+          setError(
+            petsData.error ||
+              'No se pudieron cargar las mascotas.'
+          );
+          return;
+        }
+
+        setAlerts(alertsData);
+        setPets(petsData);
+      } catch {
+        setError(
+          'No se pudo conectar con la API. ¿Está encendida?'
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadAlertsAndPets();
+  }, []);
 
   const petOptions = pets.map((pet) => ({
     value: String(pet.id),
@@ -129,6 +191,7 @@ function AlertsPage({
         ...current,
         [field]: event.target.value,
       }));
+      setActionError('');
     };
 
   const handleReportTypeChange = (
@@ -150,9 +213,10 @@ function AlertsPage({
     setIsModalOpen(false);
     setReportType('Perdidos');
     setFormData(EMPTY_FORM);
+    setActionError('');
   };
 
-  const handleSubmitReport = (
+  const handleSubmitReport = async (
     event
   ) => {
     event.preventDefault();
@@ -161,6 +225,9 @@ function AlertsPage({
       !formData.zone ||
       !formData.description.trim()
     ) {
+      setActionError(
+        'Completa la zona y la descripción.'
+      );
       return;
     }
 
@@ -182,17 +249,12 @@ function AlertsPage({
           formData.zone
       );
 
-    const newAlert = {
-      id: Date.now(),
-
+    const payload = {
       type,
-
       petId:
-        type === 'lost' &&
-        selectedPet
+        type === 'lost' && selectedPet
           ? selectedPet.id
           : null,
-
       petName:
         type === 'lost'
           ? (
@@ -206,33 +268,102 @@ function AlertsPage({
                 'En adopción'
               )
             : 'Emergencia',
-
       photo:
         type === 'lost'
           ? selectedPet?.photo || null
           : null,
-
       zone: formData.zone,
-
       location:
         selectedZoneData
           ? `${selectedZoneData.label}, La Paz`
           : 'La Paz',
-
-      date: 'Ahora',
-
       description:
         formData.description.trim(),
-
       contact:
         formData.contact.trim(),
-
-      status: 'active',
     };
 
-    onAddAlert?.(newAlert);
+    setSaving(true);
+    setActionError('');
 
-    handleCloseModal();
+    try {
+      const response = await fetch(
+        '/api/alertas',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setActionError(
+          data.error ||
+            'No se pudo publicar la alerta.'
+        );
+        return;
+      }
+
+      setAlerts((currentAlerts) => [
+        data,
+        ...currentAlerts,
+      ]);
+
+      handleCloseModal();
+    } catch {
+      setActionError(
+        'No se pudo conectar con la API. ¿Está encendida?'
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleResolveAlert = async (
+    alertId
+  ) => {
+    setActionError('');
+
+    try {
+      const response = await fetch(
+        `/api/alertas/${alertId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'resolved',
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setActionError(
+          data.error ||
+            'No se pudo actualizar la alerta.'
+        );
+        return;
+      }
+
+      setAlerts((currentAlerts) =>
+        currentAlerts.map((alert) =>
+          alert.id === data.id
+            ? data
+            : alert
+        )
+      );
+    } catch {
+      setActionError(
+        'No se pudo conectar con la API. ¿Está encendida?'
+      );
+    }
   };
 
   return (
@@ -329,7 +460,28 @@ function AlertsPage({
 
       <main className="alerts-page__grid">
 
-        {filteredAlerts.length === 0 && (
+        {loading && (
+          <section className="alerts-page__empty">
+            <p>Cargando alertas…</p>
+          </section>
+        )}
+
+        {!loading && error && (
+          <section className="alerts-page__empty">
+            <h2>No se pudo cargar</h2>
+            <p role="alert">{error}</p>
+          </section>
+        )}
+
+        {!loading && actionError && (
+          <section className="alerts-page__empty">
+            <p role="alert">{actionError}</p>
+          </section>
+        )}
+
+        {!loading &&
+          !error &&
+          filteredAlerts.length === 0 && (
           <section className="alerts-page__empty">
 
             <span aria-hidden="true">
@@ -348,7 +500,9 @@ function AlertsPage({
           </section>
         )}
 
-        {filteredAlerts.map((alert) => (
+        {!loading &&
+          !error &&
+          filteredAlerts.map((alert) => (
 
           <article
             key={alert.id}
@@ -392,7 +546,7 @@ function AlertsPage({
                 <Button
                   variant="secondary"
                   onClick={() =>
-                    onResolveAlert?.(
+                    handleResolveAlert(
                       alert.id
                     )
                   }
@@ -589,13 +743,22 @@ function AlertsPage({
                 }
               />
 
+              {actionError && (
+                <p role="alert">
+                  {actionError}
+                </p>
+              )}
+
               <div className="alerts-modal__actions">
 
                 <Button
                   variant="danger"
                   type="submit"
+                  disabled={saving}
                 >
-                  Publicar alerta
+                  {saving
+                    ? 'Publicando…'
+                    : 'Publicar alerta'}
                 </Button>
 
                 <Button
