@@ -1,5 +1,5 @@
 import {
-  useMemo,
+  useEffect,
   useState,
 } from 'react';
 
@@ -7,8 +7,6 @@ import SearchBar from '../components/SearchBar/SearchBar.jsx';
 import FilterTab from '../components/FilterTab/FilterTab.jsx';
 import MapMarker from '../components/MapMarker/MapMarker.jsx';
 import PlaceCard from '../components/PlaceCard/PlaceCard.jsx';
-
-import places from '../data/places.js';
 
 import mapBackground from '../assets/map-background.svg';
 
@@ -40,6 +38,15 @@ const PLACE_BADGES = {
 };
 
 function MapPage() {
+  const [places, setPlaces] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState('');
+
   const [searchQuery, setSearchQuery] =
     useState('');
 
@@ -51,57 +58,65 @@ function MapPage() {
   const [
     selectedPlaceId,
     setSelectedPlaceId,
-  ] = useState(
-    places[0]?.id ?? null
-  );
+  ] = useState(null);
 
-  /*
-    Filtra por:
-    1. categoría
-    2. nombre
-    3. dirección
-  */
-  const filteredPlaces = useMemo(() => {
-    const query =
-      searchQuery
-        .trim()
-        .toLowerCase();
+  useEffect(() => {
+    async function loadPlaces() {
+      setLoading(true);
+      setError('');
 
-    return places.filter((place) => {
-      const matchesCategory =
-        activeCategory === 'all' ||
-        place.category === activeCategory;
+      const params = new URLSearchParams();
 
-      const matchesSearch =
-        !query ||
-        place.name
-          .toLowerCase()
-          .includes(query) ||
-        place.address
-          .toLowerCase()
-          .includes(query);
+      if (activeCategory !== 'all') {
+        params.set('category', activeCategory);
+      }
 
-      return (
-        matchesCategory &&
-        matchesSearch
-      );
-    });
-  }, [
-    activeCategory,
-    searchQuery,
-  ]);
+      if (searchQuery.trim()) {
+        params.set('q', searchQuery.trim());
+      }
 
+      const queryString = params.toString();
+      const url = queryString
+        ? `/api/lugares?${queryString}`
+        : '/api/lugares';
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (response.ok) {
+          setPlaces(data);
+        } else {
+          setError(
+            data.error ||
+              'No se pudieron cargar los lugares.'
+          );
+        }
+      } catch {
+        setError(
+          'No se pudo conectar con la API. ¿Está encendida?'
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPlaces();
+  }, [activeCategory, searchQuery]);
 
   const selectedPlace =
-  filteredPlaces.find(
-    (place) =>
-      place.id === selectedPlaceId
-  ) ?? null;
+    places.find(
+      (place) =>
+        place.id === selectedPlaceId
+    ) ??
+    places[0] ??
+    null;
 
   const handleCategoryChange = (
     categoryId
   ) => {
     setActiveCategory(categoryId);
+    setSelectedPlaceId(null);
   };
 
   const handlePlaceSelect = (
@@ -112,6 +127,7 @@ function MapPage() {
 
   const handleClearSearch = () => {
     setSearchQuery('');
+    setSelectedPlaceId(null);
   };
 
   return (
@@ -122,11 +138,12 @@ function MapPage() {
         <SearchBar
           value={searchQuery}
           placeholder="Buscar por nombre o dirección..."
-          onChange={(event) =>
+          onChange={(event) => {
             setSearchQuery(
               event.target.value
-            )
-          }
+            );
+            setSelectedPlaceId(null);
+          }}
           onClear={handleClearSearch}
         />
 
@@ -164,7 +181,24 @@ function MapPage() {
           className="map-page__map-img"
         />
 
-        {filteredPlaces.length === 0 && (
+        {loading && (
+          <div className="map-page__empty">
+            <p>Cargando lugares…</p>
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="map-page__empty">
+            <span aria-hidden="true">
+              ⚠️
+            </span>
+            <p role="alert">{error}</p>
+          </div>
+        )}
+
+        {!loading &&
+          !error &&
+          places.length === 0 && (
           <div className="map-page__empty">
 
             <span aria-hidden="true">
@@ -179,10 +213,12 @@ function MapPage() {
           </div>
         )}
 
-        {filteredPlaces.map((place) => {
+        {!loading &&
+          !error &&
+          places.map((place) => {
           const isSelected =
             place.id ===
-            selectedPlaceId;
+            selectedPlace?.id;
 
           return (
             <div
@@ -227,7 +263,9 @@ function MapPage() {
 
       </main>
 
-      {selectedPlace && (
+      {!loading &&
+        !error &&
+        selectedPlace && (
         <section
           className={`map-page__card-container map-page__card-container--${selectedPlace.type}`}
         >
