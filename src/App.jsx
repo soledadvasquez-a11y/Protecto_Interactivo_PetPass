@@ -192,9 +192,9 @@ function App() {
           }
         />
         <Route
-          path="/mascotas/:id/carnet"
-          element={<DigitalCardPage pets={pets} />}
-        />
+  path="/mascotas/:id/carnet"
+  element={<DigitalCardPage />}
+/>
         <Route
           path="/mascotas/:id/historial-medico"
           element={
