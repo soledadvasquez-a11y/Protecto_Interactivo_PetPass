@@ -16,22 +16,21 @@ const EMPTY_EDIT_FORM = {
   age: '',
 };
 
-function PetsPage({
-  pets = [],
-  onPetsLoaded,
-  onUpdatePet,
-  onDeletePet,
-}) {
+function PetsPage() {
   const navigate = useNavigate();
 
-  // Estados nuevos para la petición a la API
+  // Datos que ahora pertenecen a esta página
+  const [pets, setPets] = useState([]);
+
+  // Estados de la API
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  // Estados que ya tenía PetsPage
-  const [selectedPetId, setSelectedPetId] = useState(
-    pets[0]?.id ?? null
-  );
+  // Estados de interacción
+  const [selectedPetId, setSelectedPetId] =
+    useState(null);
 
   const [deleteModalOpen, setDeleteModalOpen] =
     useState(false);
@@ -42,23 +41,19 @@ function PetsPage({
   const [editFormData, setEditFormData] =
     useState(EMPTY_EDIT_FORM);
 
-  // Cargar las mascotas desde el backend
+  // GET /api/mascotas
   useEffect(() => {
     async function loadPets() {
       setLoading(true);
       setError('');
 
       try {
-        const response = await fetch(
-          '/api/mascotas'
-        );
+        const response = await fetch('/api/mascotas');
 
         const data = await response.json();
 
         if (response.ok) {
-          if (onPetsLoaded) {
-            onPetsLoaded(data);
-          }
+          setPets(data);
         } else {
           setError(
             data.error ||
@@ -75,21 +70,20 @@ function PetsPage({
     }
 
     loadPets();
-  }, [onPetsLoaded]);
-
-;
+  }, []);
 
   const selectedPet =
-  pets.find(
-    (pet) => pet.id === selectedPetId
-  ) ??
-  pets[0] ??
-  null;
+    pets.find(
+      (pet) => pet.id === selectedPetId
+    ) ??
+    pets[0] ??
+    null;
 
   const handleSelectPet = (petId) => {
     setSelectedPetId(petId);
     setIsEditingPet(false);
     setEditFormData(EMPTY_EDIT_FORM);
+    setActionError('');
   };
 
   const handleOpenEdit = () => {
@@ -104,6 +98,7 @@ function PetsPage({
       age: selectedPet.age,
     });
 
+    setActionError('');
     setIsEditingPet(true);
   };
 
@@ -113,32 +108,85 @@ function PetsPage({
         ...current,
         [field]: event.target.value,
       }));
+
+      setActionError('');
     };
 
   const handleCancelEdit = () => {
     setIsEditingPet(false);
     setEditFormData(EMPTY_EDIT_FORM);
+    setActionError('');
   };
 
-  const handleSaveEdit = () => {
+  // PUT /api/mascotas/:id
+  const handleSaveEdit = async () => {
     if (!selectedPet) {
       return;
     }
 
-    const updatedPet = {
+    if (
+      !editFormData.name.trim() ||
+      !editFormData.species.trim()
+    ) {
+      setActionError(
+        'El nombre y la especie son obligatorios.'
+      );
+      return;
+    }
+
+    const payload = {
       ...selectedPet,
+
       name: editFormData.name.trim(),
       species: editFormData.species.trim(),
       breed: editFormData.breed.trim(),
       age: editFormData.age.trim(),
     };
 
-    if (onUpdatePet) {
-      onUpdatePet(updatedPet);
-    }
+    setSaving(true);
+    setActionError('');
 
-    setIsEditingPet(false);
-    setEditFormData(EMPTY_EDIT_FORM);
+    try {
+      const response = await fetch(
+        `/api/mascotas/${selectedPet.id}`,
+        {
+          method: 'PUT',
+
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setActionError(
+          data.error ||
+            'No se pudo actualizar la mascota.'
+        );
+        return;
+      }
+
+      setPets((currentPets) =>
+        currentPets.map((pet) =>
+          pet.id === data.id
+            ? data
+            : pet
+        )
+      );
+
+      setIsEditingPet(false);
+      setEditFormData(EMPTY_EDIT_FORM);
+    } catch {
+      setActionError(
+        'No se pudo conectar con la API. ¿Está encendida?'
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleOpenDelete = () => {
@@ -146,28 +194,59 @@ function PetsPage({
       return;
     }
 
+    setActionError('');
     setDeleteModalOpen(true);
   };
 
-  const handleDelete = () => {
-  if (!selectedPet) return;
+  // DELETE /api/mascotas/:id
+  const handleDelete = async () => {
+    if (!selectedPet) {
+      return;
+    }
 
-  const remainingPets = pets.filter(
-    (pet) => pet.id !== selectedPet.id
-  );
+    setSaving(true);
+    setActionError('');
 
-  if (onDeletePet) {
-    onDeletePet(selectedPet.id);
-  }
+    try {
+      const response = await fetch(
+        `/api/mascotas/${selectedPet.id}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
-  setSelectedPetId(
-    remainingPets[0]?.id ?? null
-  );
+      if (!response.ok) {
+        const data = await response.json();
 
-  setDeleteModalOpen(false);
-  setIsEditingPet(false);
-  setEditFormData(EMPTY_EDIT_FORM);
-};
+        setActionError(
+          data.error ||
+            'No se pudo eliminar la mascota.'
+        );
+
+        return;
+      }
+
+      const remainingPets = pets.filter(
+        (pet) => pet.id !== selectedPet.id
+      );
+
+      setPets(remainingPets);
+
+      setSelectedPetId(
+        remainingPets[0]?.id ?? null
+      );
+
+      setDeleteModalOpen(false);
+      setIsEditingPet(false);
+      setEditFormData(EMPTY_EDIT_FORM);
+    } catch {
+      setActionError(
+        'No se pudo conectar con la API. ¿Está encendida?'
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <main className="page pets-page">
@@ -175,7 +254,6 @@ function PetsPage({
         <h1>Mis Mascotas</h1>
       </header>
 
-      {/* Mientras espera la respuesta del backend */}
       {loading && (
         <section className="pets-page__empty">
           <div
@@ -193,7 +271,6 @@ function PetsPage({
         </section>
       )}
 
-      {/* Si fetch falla o la API responde con error */}
       {!loading && error && (
         <section
           className="pets-page__empty"
@@ -212,8 +289,14 @@ function PetsPage({
         </section>
       )}
 
-      {/* La API respondió correctamente,
-          pero no existen mascotas */}
+      {!loading &&
+        !error &&
+        actionError && (
+          <p role="alert">
+            {actionError}
+          </p>
+        )}
+
       {!loading &&
         !error &&
         pets.length === 0 && (
@@ -245,7 +328,6 @@ function PetsPage({
           </section>
         )}
 
-      {/* La API respondió y existen mascotas */}
       {!loading &&
         !error &&
         pets.length > 0 && (
@@ -259,7 +341,11 @@ function PetsPage({
                     key={pet.id}
                     name={pet.name}
                     photo={pet.photo}
-                    variant={selectedPet?.id === pet.id ? 'selected' : 'default'}
+                    variant={
+                      selectedPet?.id === pet.id
+                        ? 'selected'
+                        : 'default'
+                    }
                     onClick={() =>
                       handleSelectPet(pet.id)
                     }
@@ -324,9 +410,12 @@ function PetsPage({
                   <div className="pets-page__edit-actions">
                     <Button
                       variant="primary"
+                      disabled={saving}
                       onClick={handleSaveEdit}
                     >
-                      Guardar cambios
+                      {saving
+                        ? 'Guardando…'
+                        : 'Guardar cambios'}
                     </Button>
 
                     <Button
@@ -402,7 +491,11 @@ function PetsPage({
               variant="danger"
               title="Eliminar mascota"
               message={`¿Seguro que deseas eliminar a ${selectedPet?.name}?`}
-              confirmLabel="Eliminar"
+              confirmLabel={
+                saving
+                  ? 'Eliminando…'
+                  : 'Eliminar'
+              }
               cancelLabel="Cancelar"
               onConfirm={handleDelete}
               onCancel={() =>

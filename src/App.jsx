@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
   Routes,
   Route,
@@ -23,95 +21,84 @@ import AlertsPage from './pages/AlertsPage.jsx';
 import MapPage from './pages/MapPage.jsx';
 import PublicPetProfilePage from './pages/PublicPetProfilePage.jsx';
 
-import initialPets from './data/pets.js';
-
 function App() {
-  const [pets, setPets] = useState(initialPets);
-
-  const addPet = (newPet) => {
-    setPets((currentPets) => [
-      ...currentPets,
-      newPet,
-    ]);
-  };
-
-  const updatePet = (updatedPet) => {
-    setPets((currentPets) =>
-      currentPets.map((pet) =>
-        pet.id === updatedPet.id
-          ? updatedPet
-          : pet
-      )
-    );
-  };
-
-  const deletePet = (petId) => {
-    setPets((currentPets) =>
-      currentPets.filter(
-        (pet) => pet.id !== petId
-      )
-    );
-  };
-
   return (
     <Routes>
-      <Route path="/" element={<OnboardingPage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/"
+        element={<OnboardingPage />}
+      />
+
+      <Route
+        path="/login"
+        element={<LoginPage />}
+      />
+
       <Route
         path="/recuperar-contrasena"
         element={<ForgotPasswordPage />}
       />
+
       <Route
         path="/registro-tutor"
         element={<RegisterTutorPage />}
       />
+
       <Route
         path="/mascotas/nueva"
-        element={<RegisterPetPage onAddPet={addPet} />}
+        element={<RegisterPetPage />}
       />
+
       <Route
         path="/mascotas/:id/perfil-publico"
-        element={<PublicPetProfilePage pets={pets} />}
+        element={<PublicPetProfilePage />}
       />
 
       <Route element={<MainLayout />}>
         <Route
           path="/home"
-          element={<HomePage pets={pets} />}
+          element={<HomePage />}
         />
+
         <Route
           path="/cuenta"
           element={<AccountPage />}
         />
+
         <Route
           path="/mascotas"
-          element={
-            <PetsPage
-              pets={pets}
-              onPetsLoaded={setPets}
-              onUpdatePet={updatePet}
-              onDeletePet={deletePet}
-            />
-          }
+          element={<PetsPage />}
         />
+
         <Route
           path="/mascotas/:id/carnet"
           element={<DigitalCardPage />}
         />
+
         <Route
           path="/mascotas/:id/historial-medico"
           element={<MedicalHistoryPage />}
         />
+
         <Route
           path="/alertas"
           element={<AlertsPage />}
         />
-        <Route path="/mapa" element={<MapPage />} />
+
+        <Route
+          path="/mapa"
+          element={<MapPage />}
+        />
       </Route>
 
       <Route
         path="*"
-        element={<Navigate to="/" replace />}
+        element={
+          <Navigate
+            to="/"
+            replace
+          />
+        }
       />
     </Routes>
   );

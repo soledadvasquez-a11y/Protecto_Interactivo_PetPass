@@ -14,7 +14,7 @@ const EMPTY_FORM = {
   age: '',
 };
 
-function RegisterPetPage({ onAddPet }) {
+function RegisterPetPage() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState(
@@ -22,6 +22,7 @@ function RegisterPetPage({ onAddPet }) {
   );
 
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (field) => (event) => {
     setFormData((current) => ({
@@ -29,14 +30,10 @@ function RegisterPetPage({ onAddPet }) {
       [field]: event.target.value,
     }));
 
-    /*
-      Si el usuario comienza a corregir,
-      quitamos el mensaje anterior.
-    */
     setError('');
   };
 
-  const handleSavePet = () => {
+  const handleSavePet = async () => {
     if (
       !formData.name.trim() ||
       !formData.species.trim()
@@ -47,33 +44,50 @@ function RegisterPetPage({ onAddPet }) {
       return;
     }
 
-    const newPet = {
-      id: Date.now(),
-
-      name: formData.name.trim(),
-      species: formData.species.trim(),
-      breed: formData.breed.trim(),
-      age: formData.age.trim(),
-
-      photo: null,
-      status: 'normal',
-    };
-
-    /*
-      En Fase 5 App.jsx enviará realmente
-      onAddPet.
-
-      Por ahora dejamos preparado el contrato
-      entre la página y el futuro estado global.
-    */
-    if (onAddPet) {
-      onAddPet(newPet);
-    }
-
-    setFormData(EMPTY_FORM);
+    setSaving(true);
     setError('');
 
-    navigate('/home');
+    try {
+      const response = await fetch(
+        '/api/mascotas',
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify({
+            name: formData.name.trim(),
+            species: formData.species.trim(),
+            breed: formData.breed.trim(),
+            age: formData.age.trim(),
+            photo: null,
+            status: 'normal',
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(
+          data.error ||
+            'No se pudo registrar la mascota.'
+        );
+        return;
+      }
+
+      setFormData(EMPTY_FORM);
+
+      navigate('/mascotas');
+    } catch {
+      setError(
+        'No se pudo conectar con la API. ¿Está encendida?'
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -150,9 +164,12 @@ function RegisterPetPage({ onAddPet }) {
 
           <Button
             variant="primary"
+            disabled={saving}
             onClick={handleSavePet}
           >
-            Guardar mascota
+            {saving
+              ? 'Guardando…'
+              : 'Guardar mascota'}
           </Button>
         </div>
       </section>

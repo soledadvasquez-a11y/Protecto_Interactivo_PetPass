@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import Button from '../components/Button/Button.jsx';
@@ -7,10 +7,12 @@ import DecorativeConfetti from '../components/decorative/DecorativeConfetti.jsx'
 
 import './PublicPetProfilePage.css';
 
-function PublicPetProfilePage({
-  pets = [],
-}) {
+function PublicPetProfilePage() {
   const { id } = useParams();
+
+  const [pet, setPet] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const [modalType, setModalType] =
     useState(null);
@@ -18,10 +20,41 @@ function PublicPetProfilePage({
   const [isCalling, setIsCalling] =
     useState(false);
 
-  const pet = pets.find(
-    (item) =>
-      item.id === Number(id)
-  );
+  useEffect(() => {
+    async function loadPet() {
+      setLoading(true);
+      setError('');
+
+      try {
+        const response = await fetch(
+          `/api/mascotas/${id}`
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setPet(data);
+        } else {
+          setPet(null);
+
+          setError(
+            data.error ||
+              'No se pudo cargar la mascota.'
+          );
+        }
+      } catch {
+        setPet(null);
+
+        setError(
+          'No se pudo conectar con la API. ¿Está encendida?'
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPet();
+  }, [id]);
 
   const handleOpenGpsModal = () => {
     setModalType('permission');
@@ -35,16 +68,56 @@ function PublicPetProfilePage({
     setModalType(null);
   };
 
-  if (!pet) {
+  if (loading) {
     return (
       <div className="pet-profile-page">
-
         <DecorativeConfetti />
 
         <main className="pet-profile-page__card">
-
           <section className="pet-profile-page__info-box">
+            <p>
+              Cargando mascota…
+            </p>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
+  if (error) {
+    return (
+      <div className="pet-profile-page">
+        <DecorativeConfetti />
+
+        <main className="pet-profile-page__card">
+          <section className="pet-profile-page__info-box">
+            <div className="pet-profile-page__missing-icon">
+              🐾
+            </div>
+
+            <h1 className="pet-profile-page__title">
+              No se pudo cargar
+            </h1>
+
+            <p
+              className="pet-profile-page__subtitle"
+              role="alert"
+            >
+              {error}
+            </p>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (!pet) {
+    return (
+      <div className="pet-profile-page">
+        <DecorativeConfetti />
+
+        <main className="pet-profile-page__card">
+          <section className="pet-profile-page__info-box">
             <div className="pet-profile-page__missing-icon">
               🐾
             </div>
@@ -56,26 +129,19 @@ function PublicPetProfilePage({
             <p className="pet-profile-page__subtitle">
               El perfil solicitado no existe.
             </p>
-
           </section>
-
         </main>
-
       </div>
     );
   }
 
   return (
     <div className="pet-profile-page">
-
       <DecorativeConfetti />
 
       {isCalling ? (
-
         <main className="pet-profile-page__call-card">
-
           <div className="pet-profile-page__call-avatar-wrapper">
-
             {pet.photo ? (
               <img
                 src={pet.photo}
@@ -90,7 +156,6 @@ function PublicPetProfilePage({
                 🐾
               </div>
             )}
-
           </div>
 
           <h1 className="pet-profile-page__call-title">
@@ -105,7 +170,6 @@ function PublicPetProfilePage({
           </p>
 
           <div className="pet-profile-page__call-controls">
-
             <button
               type="button"
               className="pet-profile-page__call-circle-btn"
@@ -144,7 +208,6 @@ function PublicPetProfilePage({
                 Keypad
               </span>
             </button>
-
           </div>
 
           <button
@@ -157,17 +220,11 @@ function PublicPetProfilePage({
           >
             🕽
           </button>
-
         </main>
-
       ) : (
-
         <main className="pet-profile-page__card">
-
           <section className="pet-profile-page__info-box">
-
             <div className="pet-profile-page__photo-container">
-
               {pet.photo ? (
                 <img
                   src={pet.photo}
@@ -188,27 +245,21 @@ function PublicPetProfilePage({
                   </small>
                 </div>
               )}
-
             </div>
 
             <h1 className="pet-profile-page__title">
-
               {pet.status === 'lost'
                 ? '¡Estoy perdido!'
                 : `Hola, soy ${pet.name}`}
-
             </h1>
 
             <p className="pet-profile-page__subtitle">
-
               {pet.status === 'lost'
                 ? 'Ayúdame a volver a casa'
                 : 'Este es mi perfil público de PetPass'}
-
             </p>
 
             <div className="pet-profile-page__data">
-
               <p>
                 <strong>
                   Nombre:
@@ -229,15 +280,11 @@ function PublicPetProfilePage({
                 </strong>{' '}
                 {pet.breed}
               </p>
-
             </div>
-
           </section>
 
           <footer className="pet-profile-page__actions">
-
             {pet.status === 'lost' ? (
-
               <>
                 <Button
                   variant="danger"
@@ -258,11 +305,8 @@ function PublicPetProfilePage({
                   Llamada de emergencia
                 </button>
               </>
-
             ) : (
-
               <div className="pet-profile-page__safe-message">
-
                 <span
                   aria-hidden="true"
                   className="pet-profile-page__safe-icon"
@@ -274,15 +318,10 @@ function PublicPetProfilePage({
                   Esta mascota no está
                   reportada como perdida.
                 </p>
-
               </div>
-
             )}
-
           </footer>
-
         </main>
-
       )}
 
       <AlertModal
@@ -320,7 +359,6 @@ function PublicPetProfilePage({
           handleCloseModal
         }
       />
-
     </div>
   );
 }
