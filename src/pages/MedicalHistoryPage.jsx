@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -37,14 +38,23 @@ const TYPE_OPTIONS = [
   },
 ];
 
-function MedicalHistoryPage({
-  medicalRecords,
-  onAddMedicalRecord,
-  onUpdateMedicalRecord,
-}) {
+function MedicalHistoryPage() {
   const { id } = useParams();
 
-  const petId = Number(id);
+  const [medicalRecords, setMedicalRecords] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState('');
+
+  const [formError, setFormError] =
+    useState('');
+
+  const [saving, setSaving] =
+    useState(false);
 
   const [activeFilter, setActiveFilter] =
     useState('vaccine');
@@ -62,22 +72,45 @@ function MedicalHistoryPage({
     setEditingRecordId,
   ] = useState(null);
 
-  const petRecords = useMemo(
-    () =>
-      medicalRecords.filter(
-        (record) =>
-          record.petId === petId
-      ),
-    [medicalRecords, petId]
-  );
+  useEffect(() => {
+    async function loadMedicalRecords() {
+      setLoading(true);
+      setError('');
+
+      try {
+        const response = await fetch(
+          `/api/mascotas/${id}/historial`
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setMedicalRecords(data);
+        } else {
+          setError(
+            data.error ||
+              'No se pudo cargar el historial médico.'
+          );
+        }
+      } catch {
+        setError(
+          'No se pudo conectar con la API. ¿Está encendida?'
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadMedicalRecords();
+  }, [id]);
 
   const visibleRecords = useMemo(
     () =>
-      petRecords.filter(
+      medicalRecords.filter(
         (record) =>
           record.type === activeFilter
       ),
-    [petRecords, activeFilter]
+    [medicalRecords, activeFilter]
   );
 
   const handleMedicalChange =
@@ -86,6 +119,7 @@ function MedicalHistoryPage({
         ...current,
         [field]: event.target.value,
       }));
+      setFormError('');
     };
 
   const handleOpenNewRecord = () => {
@@ -95,6 +129,7 @@ function MedicalHistoryPage({
     });
 
     setEditingRecordId(null);
+    setFormError('');
     setMedicalFormOpen(true);
   };
 
@@ -109,6 +144,7 @@ function MedicalHistoryPage({
     });
 
     setEditingRecordId(record.id);
+    setFormError('');
     setMedicalFormOpen(true);
   };
 
@@ -120,47 +156,73 @@ function MedicalHistoryPage({
     );
 
     setEditingRecordId(null);
+    setFormError('');
   };
 
-  const handleSaveMedicalRecord = () => {
+  const handleSaveMedicalRecord = async () => {
     if (
       !medicalFormData.title.trim() ||
       !medicalFormData.date
     ) {
+      setFormError(
+        'Completa al menos el título y la fecha.'
+      );
       return;
     }
 
-    if (editingRecordId !== null) {
-      const updatedRecord = {
-        id: editingRecordId,
-        petId,
-        ...medicalFormData,
-      };
+    setSaving(true);
+    setFormError('');
 
-      if (onUpdateMedicalRecord) {
-        onUpdateMedicalRecord(
-          updatedRecord
-        );
-      }
-    } else {
-      const newRecord = {
-        id: Date.now(),
-        petId,
-        ...medicalFormData,
-      };
+    try {
+      const isEditing =
+        editingRecordId !== null;
 
-      if (onAddMedicalRecord) {
-        onAddMedicalRecord(
-          newRecord
+      const url = isEditing
+        ? `/api/historial/${editingRecordId}`
+        : `/api/mascotas/${id}/historial`;
+
+      const response = await fetch(url, {
+        method: isEditing ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(medicalFormData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setFormError(
+          data.error ||
+            'No se pudo guardar el registro.'
         );
+        return;
       }
+
+      if (isEditing) {
+        setMedicalRecords((currentRecords) =>
+          currentRecords.map((record) =>
+            record.id === data.id
+              ? data
+              : record
+          )
+        );
+      } else {
+        setMedicalRecords((currentRecords) => [
+          ...currentRecords,
+          data,
+        ]);
+      }
+
+      setActiveFilter(data.type);
+      handleCloseMedicalForm();
+    } catch {
+      setFormError(
+        'No se pudo conectar con la API. ¿Está encendida?'
+      );
+    } finally {
+      setSaving(false);
     }
-
-    setActiveFilter(
-      medicalFormData.type
-    );
-
-    handleCloseMedicalForm();
   };
 
   return (
@@ -298,17 +360,26 @@ function MedicalHistoryPage({
             }
           />
 
+          {formError && (
+            <p role="alert">
+              {formError}
+            </p>
+          )}
+
           <div className="medical-history-page__form-actions">
 
             <Button
               variant="primary"
+              disabled={saving}
               onClick={
                 handleSaveMedicalRecord
               }
             >
-              {editingRecordId !== null
-                ? 'Guardar cambios'
-                : 'Guardar registro'}
+              {saving
+                ? 'Guardando…'
+                : editingRecordId !== null
+                  ? 'Guardar cambios'
+                  : 'Guardar registro'}
             </Button>
 
             <Button
@@ -328,7 +399,22 @@ function MedicalHistoryPage({
 
       <section className="medical-history-page__records">
 
-        {visibleRecords.length === 0 && (
+        {loading && (
+          <div className="medical-history-page__empty">
+            <p>Cargando historial médico…</p>
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="medical-history-page__empty">
+            <h3>No se pudo cargar</h3>
+            <p role="alert">{error}</p>
+          </div>
+        )}
+
+        {!loading &&
+          !error &&
+          visibleRecords.length === 0 && (
 
           <div className="medical-history-page__empty">
 
@@ -349,7 +435,9 @@ function MedicalHistoryPage({
 
         )}
 
-        {visibleRecords.map(
+        {!loading &&
+          !error &&
+          visibleRecords.map(
           (record) => (
             <MedicalRecordCard
               key={record.id}
