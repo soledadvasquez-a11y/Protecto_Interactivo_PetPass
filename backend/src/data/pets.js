@@ -2,7 +2,7 @@ const pets = [
   {
     id: 1,
     name: 'Toby',
-    photo: '/src/assets/pug-photo.svg',
+    photo: '/pets/pug-photo.svg',
     species: 'Perro',
     breed: 'Pug',
     age: '5 años',

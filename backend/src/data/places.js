@@ -8,7 +8,7 @@ const places = [
     schedule: 'Lunes a Domingo: 07:00 – 19:00',
     description:
       'Área verde cercada con zonas de agilidad, bebederos caninos y dispensadores de bolsas biodegradables. Entrada libre con correa obligatoria.',
-    photo: '/src/assets/place-snoopy.svg',
+    photo: '/places/place-snoopy.svg',
     position: {
       top: '38%',
       left: '32%',
@@ -23,7 +23,7 @@ const places = [
     schedule: 'Lunes a Domingo: 24 horas',
     description:
       'Clínica veterinaria integral con servicio de urgencias, laboratorio clínico, rayos X y farmacia especializada.',
-    photo: '/src/assets/place-sanjorge.svg',
+    photo: '/places/place-sanjorge.svg',
     position: {
       top: '28%',
       left: '68%',
@@ -38,7 +38,7 @@ const places = [
     schedule: 'Lunes a Sábado: 08:30 – 19:30',
     description:
       'Centro de salud animal especializado en medicina preventiva, vacunación, desparasitación y cirugías menores.',
-    photo: '/src/assets/place-apolo.svg',
+    photo: '/places/place-apolo.svg',
     position: {
       top: '48%',
       left: '24%',
@@ -53,7 +53,7 @@ const places = [
     schedule: 'Martes a Domingo: 08:30 – 21:00',
     description:
       'Café con terraza al aire libre adaptada para mascotas, bebederos y espacio cómodo para compartir.',
-    photo: '/src/assets/place-paladrar.svg',
+    photo: '/places/place-paladrar.svg',
     position: {
       top: '44%',
       left: '60%',
