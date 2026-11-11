@@ -7,9 +7,10 @@ const alerts = [
     photo: '/alerts/poster-lost.svg',
     zone: 'sopocachi',
     location: 'Sopocachi, La Paz',
-    date: 'Ayer',
-    description: 'Visto por última vez cerca de Plaza Abaroa.',
-    contact: '',
+    date: '2026-11-09',
+    description:
+      'Visto por última vez cerca de Plaza Abaroa.',
+    contact: 'Contacto mediante PetPass',
     status: 'active',
   },
   {
@@ -20,24 +21,68 @@ const alerts = [
     photo: '/alerts/poster-emergency.svg',
     zone: 'miraflores',
     location: 'Miraflores, La Paz',
-    date: 'Hoy',
-    description: 'Se busca donante canino urgente para transfusión.',
-    contact: '',
+    date: '2026-11-10',
+    description:
+      'Se busca donante canino urgente para transfusión.',
+    contact: 'Contacto mediante PetPass',
     status: 'active',
   },
   {
     id: 3,
     type: 'adoption',
     petId: null,
-    petName: 'Luna',
+    petName: 'Kira',
     photo: null,
     zone: 'zona-sur',
     location: 'Zona Sur, La Paz',
-    date: 'Hoy',
-    description: 'Luna busca una familia responsable. Es cariñosa y sociable.',
+    date: '2026-11-10',
+    description:
+      'Kira busca una familia responsable. Es cariñosa y sociable.',
     contact: 'Contacto mediante PetPass',
     status: 'active',
   },
-]
+  {
+    id: 4,
+    type: 'lost',
+    petId: null,
+    petName: 'Max',
+    photo: null,
+    zone: 'el-alto',
+    location: 'Ciudad Satélite, El Alto',
+    date: '2026-11-08',
+    description:
+      'Perro mestizo visto por última vez cerca de una plaza de la zona.',
+    contact: 'Contacto mediante PetPass',
+    status: 'active',
+  },
+  {
+    id: 5,
+    type: 'adoption',
+    petId: null,
+    petName: 'Mochi',
+    photo: null,
+    zone: 'centro',
+    location: 'Centro, La Paz',
+    date: '2026-11-06',
+    description:
+      'Gato joven en adopción. Convive bien con personas y busca un hogar responsable.',
+    contact: 'Contacto mediante PetPass',
+    status: 'active',
+  },
+  {
+    id: 6,
+    type: 'emergency',
+    petId: null,
+    petName: 'Emergencia felina',
+    photo: null,
+    zone: 'sopocachi',
+    location: 'Sopocachi, La Paz',
+    date: '2026-11-10',
+    description:
+      'Se requiere donante felino compatible para atención veterinaria urgente.',
+    contact: 'Contacto mediante PetPass',
+    status: 'active',
+  },
+];
 
-export default alerts
+export default alerts;
