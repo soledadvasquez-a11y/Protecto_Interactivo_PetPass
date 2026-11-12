@@ -7,7 +7,8 @@ const medicalRecords = [
     date: '2026-09-12',
     nextDate: '2027-09-12',
     place: 'Veterinaria Central',
-    description: 'Aplicación anual de vacuna antirrábica.',
+    description:
+      'Aplicación anual de vacuna antirrábica.',
   },
   {
     id: 2,
@@ -17,7 +18,8 @@ const medicalRecords = [
     date: '2026-08-20',
     nextDate: '2026-11-20',
     place: 'PetCare La Paz',
-    description: 'Control preventivo con antiparasitario interno.',
+    description:
+      'Control preventivo con antiparasitario interno.',
   },
   {
     id: 3,
@@ -27,7 +29,8 @@ const medicalRecords = [
     date: '2026-10-05',
     nextDate: '',
     place: 'Clínica Veterinaria Sur',
-    description: 'Control general. Mascota en buen estado.',
+    description:
+      'Control general. Mascota en buen estado.',
   },
   {
     id: 4,
@@ -37,7 +40,8 @@ const medicalRecords = [
     date: '2026-07-18',
     nextDate: '2027-07-18',
     place: 'Veterinaria Central',
-    description: 'Refuerzo anual de vacuna triple felina.',
+    description:
+      'Refuerzo anual de vacuna triple felina.',
   },
   {
     id: 5,
@@ -47,7 +51,8 @@ const medicalRecords = [
     date: '2026-09-29',
     nextDate: '2027-03-29',
     place: 'Mundo Animal',
-    description: 'Revisión dental preventiva sin hallazgos importantes.',
+    description:
+      'Revisión dental preventiva sin hallazgos importantes.',
   },
   {
     id: 6,
@@ -57,7 +62,8 @@ const medicalRecords = [
     date: '2026-06-11',
     nextDate: '2027-06-11',
     place: 'Veterinaria San Jorge',
-    description: 'Vacunación anual completa.',
+    description:
+      'Vacunación anual completa.',
   },
   {
     id: 7,
@@ -67,7 +73,8 @@ const medicalRecords = [
     date: '2026-10-01',
     nextDate: '2027-01-01',
     place: 'Veterinaria San Jorge',
-    description: 'Aplicación preventiva contra pulgas y garrapatas.',
+    description:
+      'Aplicación preventiva contra pulgas y garrapatas.',
   },
   {
     id: 8,
@@ -77,7 +84,8 @@ const medicalRecords = [
     date: '2026-08-09',
     nextDate: '2027-02-09',
     place: 'Centro Felino La Paz',
-    description: 'Ajuste de porciones y seguimiento de peso.',
+    description:
+      'Ajuste de porciones y seguimiento de peso.',
   },
   {
     id: 9,
@@ -87,7 +95,8 @@ const medicalRecords = [
     date: '2026-05-22',
     nextDate: '2027-05-22',
     place: 'PetCare La Paz',
-    description: 'Refuerzo anual aplicado sin reacciones adversas.',
+    description:
+      'Refuerzo anual aplicado sin reacciones adversas.',
   },
   {
     id: 10,
@@ -97,7 +106,41 @@ const medicalRecords = [
     date: '2026-10-18',
     nextDate: '2027-01-18',
     place: 'Mundo Animal',
-    description: 'Primera desparasitación registrada en PetPass.',
+    description:
+      'Primera desparasitación registrada en PetPass.',
+  },
+  {
+    id: 11,
+    petId: 4,
+    type: 'vaccine',
+    title: 'Refuerzo triple felina',
+    date: '2026-10-12',
+    nextDate: '2027-10-12',
+    place: 'Centro Felino La Paz',
+    description:
+      'Refuerzo preventivo anual aplicado sin complicaciones.',
+  },
+  {
+    id: 12,
+    petId: 5,
+    type: 'deworming',
+    title: 'Control antiparasitario',
+    date: '2026-09-02',
+    nextDate: '2026-12-02',
+    place: 'PetCare La Paz',
+    description:
+      'Desparasitación preventiva de seguimiento.',
+  },
+  {
+    id: 13,
+    petId: 6,
+    type: 'consultation',
+    title: 'Control de crecimiento',
+    date: '2026-10-28',
+    nextDate: '2027-01-28',
+    place: 'Mundo Animal',
+    description:
+      'Control general de peso, alimentación y crecimiento.',
   },
 ];
 
