@@ -6,7 +6,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 
-import Header from '../components/header/Header.jsx';
+import Header from '../components/Header/Header.jsx';
 import SideMenu from '../components/SideMenu/SideMenu.jsx';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation.jsx';
 
