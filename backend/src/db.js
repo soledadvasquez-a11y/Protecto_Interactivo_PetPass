@@ -1,15 +1,15 @@
 import { DatabaseSync } from 'node:sqlite'
 import pets from './data/pets.js'
+import medicalRecords from './data/medicalRecords.js'
+import places from './data/places.js'
 
 const db = new DatabaseSync('petpass.db')
 
-// SQLite no aplica claves foráneas automáticamente.
-// Las activamos desde el inicio para las tablas que se
-// agregarán en las siguientes ramas.
 db.exec('PRAGMA foreign_keys = ON')
 
-// Tabla pets: conserva los nombres y formatos que ya usa
-// la API actual de PetPass.
+// =====================================================
+// TABLA PETS
+// =====================================================
 db.exec(`
   CREATE TABLE IF NOT EXISTS pets (
     id INTEGER PRIMARY KEY,
@@ -26,7 +26,48 @@ db.exec(`
   )
 `)
 
-// Seed inicial: solo se ejecuta si la tabla está vacía.
+// =====================================================
+// TABLA MEDICAL_RECORDS
+// Si se elimina una mascota, su historial médico
+// también debe eliminarse.
+// =====================================================
+db.exec(`
+  CREATE TABLE IF NOT EXISTS medical_records (
+    id INTEGER PRIMARY KEY,
+    petId INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    date TEXT NOT NULL,
+    nextDate TEXT,
+    place TEXT,
+    description TEXT,
+    FOREIGN KEY (petId)
+      REFERENCES pets(id)
+      ON DELETE CASCADE
+  )
+`)
+
+// =====================================================
+// TABLA PLACES
+// position se almacena como texto JSON.
+// =====================================================
+db.exec(`
+  CREATE TABLE IF NOT EXISTS places (
+    id INTEGER PRIMARY KEY,
+    category TEXT NOT NULL,
+    type TEXT NOT NULL,
+    name TEXT NOT NULL,
+    address TEXT NOT NULL,
+    schedule TEXT,
+    description TEXT,
+    photo TEXT,
+    position TEXT NOT NULL
+  )
+`)
+
+// =====================================================
+// SEED PETS
+// =====================================================
 const { total: totalPets } = db
   .prepare('SELECT COUNT(*) AS total FROM pets')
   .get()
@@ -71,6 +112,100 @@ if (totalPets === 0) {
 } else {
   console.log(
     `Seed pets omitido: la tabla ya tiene ${totalPets} mascotas`
+  )
+}
+
+// =====================================================
+// SEED MEDICAL_RECORDS
+// Se ejecuta después de pets porque petId es FK.
+// =====================================================
+const { total: totalMedicalRecords } = db
+  .prepare(
+    'SELECT COUNT(*) AS total FROM medical_records'
+  )
+  .get()
+
+if (totalMedicalRecords === 0) {
+  const insertMedicalRecord = db.prepare(`
+    INSERT INTO medical_records (
+      id,
+      petId,
+      type,
+      title,
+      date,
+      nextDate,
+      place,
+      description
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `)
+
+  for (const record of medicalRecords) {
+    insertMedicalRecord.run(
+      record.id,
+      record.petId,
+      record.type,
+      record.title,
+      record.date,
+      record.nextDate,
+      record.place,
+      record.description
+    )
+  }
+
+  console.log(
+    `Seed medical_records: ${medicalRecords.length} registros cargados`
+  )
+} else {
+  console.log(
+    `Seed medical_records omitido: la tabla ya tiene ${totalMedicalRecords} registros`
+  )
+}
+
+// =====================================================
+// SEED PLACES
+// position es un objeto JS y se convierte a texto JSON.
+// =====================================================
+const { total: totalPlaces } = db
+  .prepare('SELECT COUNT(*) AS total FROM places')
+  .get()
+
+if (totalPlaces === 0) {
+  const insertPlace = db.prepare(`
+    INSERT INTO places (
+      id,
+      category,
+      type,
+      name,
+      address,
+      schedule,
+      description,
+      photo,
+      position
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `)
+
+  for (const place of places) {
+    insertPlace.run(
+      place.id,
+      place.category,
+      place.type,
+      place.name,
+      place.address,
+      place.schedule,
+      place.description,
+      place.photo,
+      JSON.stringify(place.position)
+    )
+  }
+
+  console.log(
+    `Seed places: ${places.length} lugares cargados`
+  )
+} else {
+  console.log(
+    `Seed places omitido: la tabla ya tiene ${totalPlaces} lugares`
   )
 }
 
