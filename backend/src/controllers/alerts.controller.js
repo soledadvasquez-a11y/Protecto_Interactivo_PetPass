@@ -1,5 +1,4 @@
-import alerts from '../data/alerts.js';
-import pets from '../data/pets.js';
+import db from '../db.js';
 
 const ALERT_TYPES = [
   'lost',
@@ -49,6 +48,12 @@ function validateAlertPayload(body) {
   return '';
 }
 
+function findAlert(id) {
+  return db
+    .prepare('SELECT * FROM alerts WHERE id = ?')
+    .get(id);
+}
+
 export function getAlerts(req, res) {
   const type = req.query.type;
   const zone = req.query.zone;
@@ -65,19 +70,30 @@ export function getAlerts(req, res) {
     });
   }
 
-  const visibleAlerts = alerts.filter(
-    (alert) => {
-      const matchesType =
-        !type || alert.type === type;
+  const conditions = [];
+  const params = [];
 
-      const matchesZone =
-        !zone || alert.zone === zone;
+  if (type) {
+    conditions.push('type = ?');
+    params.push(type);
+  }
 
-      return matchesType && matchesZone;
-    }
-  );
+  if (zone) {
+    conditions.push('zone = ?');
+    params.push(zone);
+  }
 
-  return res.json(visibleAlerts);
+  let sql = 'SELECT * FROM alerts';
+
+  if (conditions.length > 0) {
+    sql += ` WHERE ${conditions.join(' AND ')}`;
+  }
+
+  sql += ' ORDER BY id ASC';
+
+  const rows = db.prepare(sql).all(...params);
+
+  return res.json(rows);
 }
 
 export function getAlertById(req, res) {
@@ -89,9 +105,7 @@ export function getAlertById(req, res) {
     });
   }
 
-  const alert = alerts.find(
-    (item) => item.id === id
-  );
+  const alert = findAlert(id);
 
   if (!alert) {
     return res.status(404).json({
@@ -128,9 +142,9 @@ export function createAlert(req, res) {
       });
     }
 
-    selectedPet = pets.find(
-      (pet) => pet.id === petId
-    );
+    selectedPet = db
+      .prepare('SELECT * FROM pets WHERE id = ?')
+      .get(petId);
 
     if (!selectedPet) {
       return res.status(404).json({
@@ -139,54 +153,74 @@ export function createAlert(req, res) {
     }
   }
 
-  const nextId =
-    alerts.length > 0
-      ? Math.max(
-          ...alerts.map((alert) => alert.id)
-        ) + 1
-      : 1;
+  const type = req.body.type;
 
-  const newAlert = {
-    id: nextId,
-    type: req.body.type,
-    petId:
-      req.body.type === 'lost' && selectedPet
-        ? selectedPet.id
-        : null,
-    petName:
-      req.body.type === 'lost'
-        ? selectedPet?.name ||
-          req.body.petName?.trim() ||
-          'Mascota perdida'
-        : req.body.type === 'adoption'
-          ? req.body.petName?.trim() ||
-            'En adopción'
-          : 'Emergencia',
-    photo:
-      req.body.type === 'lost'
-        ? selectedPet?.photo ||
-          req.body.photo ||
-          null
-        : req.body.photo || null,
-    zone: req.body.zone,
-    location:
-      req.body.location?.trim() ||
-      ZONE_LABELS[req.body.zone],
-    date:
-      req.body.date ||
-      new Date().toISOString().slice(0, 10),
-    description: req.body.description.trim(),
-    contact: req.body.contact?.trim() || '',
-    status: 'active',
-  };
+  const petId =
+    type === 'lost' && selectedPet
+      ? selectedPet.id
+      : null;
 
-  alerts.unshift(newAlert);
+  const petName =
+    type === 'lost'
+      ? selectedPet?.name ||
+        req.body.petName?.trim() ||
+        'Mascota perdida'
+      : type === 'adoption'
+        ? req.body.petName?.trim() ||
+          'En adopción'
+        : 'Emergencia';
 
-  if (
-    newAlert.type === 'lost' &&
-    selectedPet
-  ) {
-    selectedPet.status = 'lost';
+  const photo =
+    type === 'lost'
+      ? selectedPet?.photo || req.body.photo || null
+      : req.body.photo || null;
+
+  const location =
+    req.body.location?.trim() ||
+    ZONE_LABELS[req.body.zone];
+
+  const date =
+    req.body.date ||
+    new Date().toISOString().slice(0, 10);
+
+  const result = db
+    .prepare(`
+      INSERT INTO alerts (
+        type,
+        petId,
+        petName,
+        photo,
+        zone,
+        location,
+        date,
+        description,
+        contact,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')
+    `)
+    .run(
+      type,
+      petId,
+      petName,
+      photo,
+      req.body.zone,
+      location,
+      date,
+      req.body.description.trim(),
+      req.body.contact?.trim() || ''
+    );
+
+  const newAlert = findAlert(
+    Number(result.lastInsertRowid)
+  );
+
+  if (newAlert.type === 'lost' && selectedPet) {
+    db.prepare(`
+      UPDATE pets
+      SET status = 'lost'
+      WHERE id = ?
+    `).run(selectedPet.id);
   }
 
   return res.status(201).json(newAlert);
@@ -201,17 +235,14 @@ export function updateAlert(req, res) {
     });
   }
 
-  const alertIndex = alerts.findIndex(
-    (alert) => alert.id === id
-  );
+  const currentAlert = findAlert(id);
 
-  if (alertIndex === -1) {
+  if (!currentAlert) {
     return res.status(404).json({
       error: 'Alerta no encontrada',
     });
   }
 
-  const currentAlert = alerts[alertIndex];
   const nextStatus =
     req.body.status ?? currentAlert.status;
 
@@ -221,36 +252,38 @@ export function updateAlert(req, res) {
     });
   }
 
-  const updatedAlert = {
-    ...currentAlert,
-    status: nextStatus,
-  };
-
-  alerts[alertIndex] = updatedAlert;
+  db.prepare(`
+    UPDATE alerts
+    SET status = ?
+    WHERE id = ?
+  `).run(nextStatus, id);
 
   if (
     currentAlert.type === 'lost' &&
     currentAlert.petId !== null &&
     nextStatus === 'resolved'
   ) {
-    const hasAnotherActiveLostAlert = alerts.some(
-      (alert) =>
-        alert.id !== id &&
-        alert.type === 'lost' &&
-        alert.petId === currentAlert.petId &&
-        alert.status === 'active'
-    );
+    const anotherActiveLostAlert = db
+      .prepare(`
+        SELECT id
+        FROM alerts
+        WHERE
+          id <> ?
+          AND type = 'lost'
+          AND petId = ?
+          AND status = 'active'
+        LIMIT 1
+      `)
+      .get(id, currentAlert.petId);
 
-    if (!hasAnotherActiveLostAlert) {
-      const pet = pets.find(
-        (item) => item.id === currentAlert.petId
-      );
-
-      if (pet) {
-        pet.status = 'normal';
-      }
+    if (!anotherActiveLostAlert) {
+      db.prepare(`
+        UPDATE pets
+        SET status = 'normal'
+        WHERE id = ?
+      `).run(currentAlert.petId);
     }
   }
 
-  return res.json(updatedAlert);
+  return res.json(findAlert(id));
 }

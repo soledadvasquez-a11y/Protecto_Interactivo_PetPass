@@ -1,4 +1,4 @@
-import places from '../data/places.js';
+import db from '../db.js';
 
 const PLACE_CATEGORIES = [
   'park',
@@ -9,6 +9,13 @@ const PLACE_CATEGORIES = [
 function parseNumericId(value) {
   const id = Number(value);
   return Number.isNaN(id) ? null : id;
+}
+
+function toPlace(row) {
+  return {
+    ...row,
+    position: JSON.parse(row.position),
+  };
 }
 
 export function getPlaces(req, res) {
@@ -28,23 +35,33 @@ export function getPlaces(req, res) {
     .trim()
     .toLowerCase();
 
-  let visiblePlaces = places;
+  const conditions = [];
+  const params = [];
 
   if (category && category !== 'all') {
-    visiblePlaces = visiblePlaces.filter(
-      (place) => place.category === category
-    );
+    conditions.push('category = ?');
+    params.push(category);
   }
 
   if (query) {
-    visiblePlaces = visiblePlaces.filter(
-      (place) =>
-        place.name.toLowerCase().includes(query) ||
-        place.address.toLowerCase().includes(query)
+    conditions.push(
+      '(LOWER(name) LIKE ? OR LOWER(address) LIKE ?)'
     );
+    const pattern = `%${query}%`;
+    params.push(pattern, pattern);
   }
 
-  return res.json(visiblePlaces);
+  let sql = 'SELECT * FROM places';
+
+  if (conditions.length > 0) {
+    sql += ` WHERE ${conditions.join(' AND ')}`;
+  }
+
+  sql += ' ORDER BY id ASC';
+
+  const rows = db.prepare(sql).all(...params);
+
+  return res.json(rows.map(toPlace));
 }
 
 export function getPlaceById(req, res) {
@@ -56,9 +73,9 @@ export function getPlaceById(req, res) {
     });
   }
 
-  const place = places.find(
-    (item) => item.id === id
-  );
+  const place = db
+    .prepare('SELECT * FROM places WHERE id = ?')
+    .get(id);
 
   if (!place) {
     return res.status(404).json({
@@ -66,5 +83,5 @@ export function getPlaceById(req, res) {
     });
   }
 
-  return res.json(place);
+  return res.json(toPlace(place));
 }
