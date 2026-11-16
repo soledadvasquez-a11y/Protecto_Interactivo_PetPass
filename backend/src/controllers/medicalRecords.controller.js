@@ -1,5 +1,4 @@
-import medicalRecords from '../data/medicalRecords.js';
-import pets from '../data/pets.js';
+import db from '../db.js';
 
 const MEDICAL_TYPES = [
   'vaccine',
@@ -28,6 +27,14 @@ function validateMedicalPayload(body) {
   return '';
 }
 
+function findMedicalRecord(id) {
+  return db
+    .prepare(
+      'SELECT * FROM medical_records WHERE id = ?'
+    )
+    .get(id);
+}
+
 export function getMedicalRecordsByPet(req, res) {
   const petId = parseNumericId(req.params.petId);
 
@@ -37,9 +44,9 @@ export function getMedicalRecordsByPet(req, res) {
     });
   }
 
-  const petExists = pets.some(
-    (pet) => pet.id === petId
-  );
+  const petExists = db
+    .prepare('SELECT id FROM pets WHERE id = ?')
+    .get(petId);
 
   if (!petExists) {
     return res.status(404).json({
@@ -55,17 +62,25 @@ export function getMedicalRecordsByPet(req, res) {
     });
   }
 
-  const petRecords = medicalRecords.filter(
-    (record) => record.petId === petId
-  );
+  const rows = type
+    ? db
+        .prepare(`
+          SELECT *
+          FROM medical_records
+          WHERE petId = ? AND type = ?
+          ORDER BY id ASC
+        `)
+        .all(petId, type)
+    : db
+        .prepare(`
+          SELECT *
+          FROM medical_records
+          WHERE petId = ?
+          ORDER BY id ASC
+        `)
+        .all(petId);
 
-  const visibleRecords = type
-    ? petRecords.filter(
-        (record) => record.type === type
-      )
-    : petRecords;
-
-  return res.json(visibleRecords);
+  return res.json(rows);
 }
 
 export function getMedicalRecordById(req, res) {
@@ -77,9 +92,7 @@ export function getMedicalRecordById(req, res) {
     });
   }
 
-  const record = medicalRecords.find(
-    (item) => item.id === id
-  );
+  const record = findMedicalRecord(id);
 
   if (!record) {
     return res.status(404).json({
@@ -99,9 +112,9 @@ export function createMedicalRecord(req, res) {
     });
   }
 
-  const petExists = pets.some(
-    (pet) => pet.id === petId
-  );
+  const petExists = db
+    .prepare('SELECT id FROM pets WHERE id = ?')
+    .get(petId);
 
   if (!petExists) {
     return res.status(404).json({
@@ -119,28 +132,32 @@ export function createMedicalRecord(req, res) {
     });
   }
 
-  const nextId =
-    medicalRecords.length > 0
-      ? Math.max(
-          ...medicalRecords.map(
-            (record) => record.id
-          )
-        ) + 1
-      : 1;
+  const result = db
+    .prepare(`
+      INSERT INTO medical_records (
+        petId,
+        type,
+        title,
+        date,
+        nextDate,
+        place,
+        description
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `)
+    .run(
+      petId,
+      req.body.type,
+      req.body.title.trim(),
+      req.body.date,
+      req.body.nextDate || '',
+      req.body.place?.trim() || '',
+      req.body.description?.trim() || ''
+    );
 
-  const newRecord = {
-    id: nextId,
-    petId,
-    type: req.body.type,
-    title: req.body.title.trim(),
-    date: req.body.date,
-    nextDate: req.body.nextDate || '',
-    place: req.body.place?.trim() || '',
-    description:
-      req.body.description?.trim() || '',
-  };
-
-  medicalRecords.push(newRecord);
+  const newRecord = findMedicalRecord(
+    Number(result.lastInsertRowid)
+  );
 
   return res.status(201).json(newRecord);
 }
@@ -154,11 +171,9 @@ export function updateMedicalRecord(req, res) {
     });
   }
 
-  const recordIndex = medicalRecords.findIndex(
-    (record) => record.id === id
-  );
+  const currentRecord = findMedicalRecord(id);
 
-  if (recordIndex === -1) {
+  if (!currentRecord) {
     return res.status(404).json({
       error: 'Registro médico no encontrado',
     });
@@ -174,20 +189,25 @@ export function updateMedicalRecord(req, res) {
     });
   }
 
-  const currentRecord = medicalRecords[recordIndex];
+  db.prepare(`
+    UPDATE medical_records
+    SET
+      type = ?,
+      title = ?,
+      date = ?,
+      nextDate = ?,
+      place = ?,
+      description = ?
+    WHERE id = ?
+  `).run(
+    req.body.type,
+    req.body.title.trim(),
+    req.body.date,
+    req.body.nextDate || '',
+    req.body.place?.trim() || '',
+    req.body.description?.trim() || '',
+    id
+  );
 
-  const updatedRecord = {
-    ...currentRecord,
-    type: req.body.type,
-    title: req.body.title.trim(),
-    date: req.body.date,
-    nextDate: req.body.nextDate || '',
-    place: req.body.place?.trim() || '',
-    description:
-      req.body.description?.trim() || '',
-  };
-
-  medicalRecords[recordIndex] = updatedRecord;
-
-  return res.json(updatedRecord);
+  return res.json(findMedicalRecord(id));
 }
