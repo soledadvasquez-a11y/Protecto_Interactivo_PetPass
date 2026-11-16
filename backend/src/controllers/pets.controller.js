@@ -1,6 +1,4 @@
-import pets from '../data/pets.js';
-import medicalRecords from '../data/medicalRecords.js';
-import alerts from '../data/alerts.js';
+import db from '../db.js';
 
 const PET_SPECIES = ['Perro', 'Gato'];
 const PET_STATUSES = ['normal', 'lost'];
@@ -33,6 +31,12 @@ function validatePetPayload(body = {}) {
   return '';
 }
 
+function findPet(id) {
+  return db
+    .prepare('SELECT * FROM pets WHERE id = ?')
+    .get(id);
+}
+
 export function getPets(req, res) {
   const species = req.query.especie;
 
@@ -45,13 +49,24 @@ export function getPets(req, res) {
     });
   }
 
-  const visiblePets = species
-    ? pets.filter(
-        (pet) => pet.species === species
-      )
-    : pets;
+  const rows = species
+    ? db
+        .prepare(`
+          SELECT *
+          FROM pets
+          WHERE species = ?
+          ORDER BY id ASC
+        `)
+        .all(species)
+    : db
+        .prepare(`
+          SELECT *
+          FROM pets
+          ORDER BY id ASC
+        `)
+        .all();
 
-  return res.json(visiblePets);
+  return res.json(rows);
 }
 
 export function getPetById(req, res) {
@@ -63,9 +78,7 @@ export function getPetById(req, res) {
     });
   }
 
-  const pet = pets.find(
-    (item) => item.id === id
-  );
+  const pet = findPet(id);
 
   if (!pet) {
     return res.status(404).json({
@@ -87,28 +100,38 @@ export function createPet(req, res) {
     });
   }
 
-  const nextId =
-    pets.length > 0
-      ? Math.max(
-          ...pets.map((pet) => pet.id)
-        ) + 1
-      : 1;
+  const result = db
+    .prepare(`
+      INSERT INTO pets (
+        name,
+        photo,
+        species,
+        breed,
+        age,
+        weight,
+        sex,
+        color,
+        birthDate,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `)
+    .run(
+      req.body.name.trim(),
+      req.body.photo || null,
+      req.body.species,
+      req.body.breed?.trim() || '',
+      req.body.age?.trim() || '',
+      req.body.weight?.trim() || '',
+      req.body.sex?.trim() || '',
+      req.body.color?.trim() || '',
+      req.body.birthDate || '',
+      req.body.status || 'normal'
+    );
 
-  const newPet = {
-    id: nextId,
-    name: req.body.name.trim(),
-    photo: req.body.photo || null,
-    species: req.body.species,
-    breed: req.body.breed?.trim() || '',
-    age: req.body.age?.trim() || '',
-    weight: req.body.weight?.trim() || '',
-    sex: req.body.sex?.trim() || '',
-    color: req.body.color?.trim() || '',
-    birthDate: req.body.birthDate || '',
-    status: req.body.status || 'normal',
-  };
-
-  pets.push(newPet);
+  const newPet = findPet(
+    Number(result.lastInsertRowid)
+  );
 
   return res.status(201).json(newPet);
 }
@@ -122,17 +145,13 @@ export function updatePet(req, res) {
     });
   }
 
-  const petIndex = pets.findIndex(
-    (pet) => pet.id === id
-  );
+  const currentPet = findPet(id);
 
-  if (petIndex === -1) {
+  if (!currentPet) {
     return res.status(404).json({
       error: 'Mascota no encontrada',
     });
   }
-
-  const currentPet = pets[petIndex];
 
   const candidatePet = {
     ...currentPet,
@@ -150,23 +169,35 @@ export function updatePet(req, res) {
     });
   }
 
-  const updatedPet = {
-    ...currentPet,
-    name: candidatePet.name.trim(),
-    photo: candidatePet.photo || null,
-    species: candidatePet.species,
-    breed: candidatePet.breed?.trim() || '',
-    age: candidatePet.age?.trim() || '',
-    weight: candidatePet.weight?.trim() || '',
-    sex: candidatePet.sex?.trim() || '',
-    color: candidatePet.color?.trim() || '',
-    birthDate: candidatePet.birthDate || '',
-    status: candidatePet.status || 'normal',
-  };
+  db.prepare(`
+    UPDATE pets
+    SET
+      name = ?,
+      photo = ?,
+      species = ?,
+      breed = ?,
+      age = ?,
+      weight = ?,
+      sex = ?,
+      color = ?,
+      birthDate = ?,
+      status = ?
+    WHERE id = ?
+  `).run(
+    candidatePet.name.trim(),
+    candidatePet.photo || null,
+    candidatePet.species,
+    candidatePet.breed?.trim() || '',
+    candidatePet.age?.trim() || '',
+    candidatePet.weight?.trim() || '',
+    candidatePet.sex?.trim() || '',
+    candidatePet.color?.trim() || '',
+    candidatePet.birthDate || '',
+    candidatePet.status || 'normal',
+    id
+  );
 
-  pets[petIndex] = updatedPet;
-
-  return res.json(updatedPet);
+  return res.json(findPet(id));
 }
 
 export function deletePet(req, res) {
@@ -178,37 +209,15 @@ export function deletePet(req, res) {
     });
   }
 
-  const petIndex = pets.findIndex(
-    (pet) => pet.id === id
-  );
+  const pet = findPet(id);
 
-  if (petIndex === -1) {
+  if (!pet) {
     return res.status(404).json({
       error: 'Mascota no encontrada',
     });
   }
 
-  // Eliminar la mascota
-  pets.splice(petIndex, 1);
-
-  // Eliminar todos sus registros médicos
-  for (
-    let index = medicalRecords.length - 1;
-    index >= 0;
-    index -= 1
-  ) {
-    if (medicalRecords[index].petId === id) {
-      medicalRecords.splice(index, 1);
-    }
-  }
-
-  // Mantener las alertas, pero quitar la referencia
-  // a una mascota que ya no existe.
-  alerts.forEach((alert) => {
-    if (alert.petId === id) {
-      alert.petId = null;
-    }
-  });
+  db.prepare('DELETE FROM pets WHERE id = ?').run(id);
 
   return res.status(204).send();
 }
