@@ -29,6 +29,8 @@ db.exec(`
 
 // =====================================================
 // TABLA MEDICAL_RECORDS
+// Si se elimina una mascota, su historial médico
+// también se elimina.
 // =====================================================
 db.exec(`
   CREATE TABLE IF NOT EXISTS medical_records (
@@ -48,6 +50,7 @@ db.exec(`
 
 // =====================================================
 // TABLA PLACES
+// position se guarda como texto JSON.
 // =====================================================
 db.exec(`
   CREATE TABLE IF NOT EXISTS places (
@@ -65,6 +68,8 @@ db.exec(`
 
 // =====================================================
 // TABLA ALERTS
+// petId es opcional. Si una mascota se elimina, la
+// alerta permanece, pero petId pasa a NULL.
 // =====================================================
 db.exec(`
   CREATE TABLE IF NOT EXISTS alerts (
@@ -95,48 +100,90 @@ const { total: totalPets } = db
 if (totalPets === 0) {
   const insertPet = db.prepare(`
     INSERT INTO pets (
-      id, name, photo, species, breed, age, weight, sex, color, birthDate, status
+      id,
+      name,
+      photo,
+      species,
+      breed,
+      age,
+      weight,
+      sex,
+      color,
+      birthDate,
+      status
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
 
   for (const pet of pets) {
     insertPet.run(
-      pet.id, pet.name, pet.photo, pet.species, pet.breed,
-      pet.age, pet.weight, pet.sex, pet.color, pet.birthDate, pet.status
+      pet.id,
+      pet.name,
+      pet.photo,
+      pet.species,
+      pet.breed,
+      pet.age,
+      pet.weight,
+      pet.sex,
+      pet.color,
+      pet.birthDate,
+      pet.status
     )
   }
 
-  console.log(`Seed pets: ${pets.length} mascotas cargadas`)
+  console.log(
+    `Seed pets: ${pets.length} mascotas cargadas`
+  )
 } else {
-  console.log(`Seed pets omitido: la tabla ya tiene ${totalPets} mascotas`)
+  console.log(
+    `Seed pets omitido: la tabla ya tiene ${totalPets} mascotas`
+  )
 }
 
 // =====================================================
 // SEED MEDICAL_RECORDS
 // =====================================================
 const { total: totalMedicalRecords } = db
-  .prepare('SELECT COUNT(*) AS total FROM medical_records')
+  .prepare(
+    'SELECT COUNT(*) AS total FROM medical_records'
+  )
   .get()
 
 if (totalMedicalRecords === 0) {
   const insertMedicalRecord = db.prepare(`
     INSERT INTO medical_records (
-      id, petId, type, title, date, nextDate, place, description
+      id,
+      petId,
+      type,
+      title,
+      date,
+      nextDate,
+      place,
+      description
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `)
 
   for (const record of medicalRecords) {
     insertMedicalRecord.run(
-      record.id, record.petId, record.type, record.title,
-      record.date, record.nextDate, record.place, record.description
+      record.id,
+      record.petId,
+      record.type,
+      record.title,
+      record.date,
+      record.nextDate,
+      record.place,
+      record.description
     )
   }
 
-  console.log(`Seed medical_records: ${medicalRecords.length} registros cargados`)
+  console.log(
+    `Seed medical_records: ${medicalRecords.length} registros cargados`
+  )
 } else {
-  console.log(`Seed medical_records omitido: la tabla ya tiene ${totalMedicalRecords} registros`)
+  console.log(
+    `Seed medical_records omitido: la tabla ya tiene ${totalMedicalRecords} registros`
+  )
 }
 
 // =====================================================
@@ -149,25 +196,46 @@ const { total: totalPlaces } = db
 if (totalPlaces === 0) {
   const insertPlace = db.prepare(`
     INSERT INTO places (
-      id, category, type, name, address, schedule, description, photo, position
+      id,
+      category,
+      type,
+      name,
+      address,
+      schedule,
+      description,
+      photo,
+      position
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
 
   for (const place of places) {
     insertPlace.run(
-      place.id, place.category, place.type, place.name, place.address,
-      place.schedule, place.description, place.photo, JSON.stringify(place.position)
+      place.id,
+      place.category,
+      place.type,
+      place.name,
+      place.address,
+      place.schedule,
+      place.description,
+      place.photo,
+      JSON.stringify(place.position)
     )
   }
 
-  console.log(`Seed places: ${places.length} lugares cargados`)
+  console.log(
+    `Seed places: ${places.length} lugares cargados`
+  )
 } else {
-  console.log(`Seed places omitido: la tabla ya tiene ${totalPlaces} lugares`)
+  console.log(
+    `Seed places omitido: la tabla ya tiene ${totalPlaces} lugares`
+  )
 }
 
 // =====================================================
 // SEED ALERTS
+// Se ejecuta después de pets porque una alerta puede
+// tener un petId asociado.
 // =====================================================
 const { total: totalAlerts } = db
   .prepare('SELECT COUNT(*) AS total FROM alerts')
@@ -176,21 +244,72 @@ const { total: totalAlerts } = db
 if (totalAlerts === 0) {
   const insertAlert = db.prepare(`
     INSERT INTO alerts (
-      id, type, petId, petName, photo, zone, location, date, description, contact, status
+      id,
+      type,
+      petId,
+      petName,
+      photo,
+      zone,
+      location,
+      date,
+      description,
+      contact,
+      status
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
 
   for (const alert of alerts) {
     insertAlert.run(
-      alert.id, alert.type, alert.petId, alert.petName, alert.photo,
-      alert.zone, alert.location, alert.date, alert.description, alert.contact, alert.status
+      alert.id,
+      alert.type,
+      alert.petId,
+      alert.petName,
+      alert.photo,
+      alert.zone,
+      alert.location,
+      alert.date,
+      alert.description,
+      alert.contact,
+      alert.status
     )
   }
 
-  console.log(`Seed alerts: ${alerts.length} alertas cargadas`)
+  console.log(
+    `Seed alerts: ${alerts.length} alertas cargadas`
+  )
 } else {
-  console.log(`Seed alerts omitido: la tabla ya tiene ${totalAlerts} alertas`)
+  console.log(
+    `Seed alerts omitido: la tabla ya tiene ${totalAlerts} alertas`
+  )
+}
+
+// =====================================================
+// VERIFICACIÓN DE INTEGRIDAD RELACIONAL
+// =====================================================
+const foreignKeyState = db
+  .prepare('PRAGMA foreign_keys')
+  .get()
+
+if (foreignKeyState.foreign_keys !== 1) {
+  throw new Error(
+    'SQLite inició sin foreign_keys habilitado'
+  )
+}
+
+const foreignKeyViolations = db
+  .prepare('PRAGMA foreign_key_check')
+  .all()
+
+if (foreignKeyViolations.length > 0) {
+  console.error(
+    'Violaciones de claves foráneas:',
+    foreignKeyViolations
+  )
+
+  throw new Error(
+    'La base de datos contiene referencias inválidas'
+  )
 }
 
 export default db
