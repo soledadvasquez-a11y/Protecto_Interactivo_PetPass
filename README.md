@@ -1,350 +1,739 @@
 # PetPass La Paz
 
-PetPass La Paz es una aplicación web para tutores de mascotas que centraliza perfiles, historial médico, alertas comunitarias y lugares relacionados con el cuidado animal, integrando frontend, API REST y persistencia SQLite.
+PetPass La Paz es un MVP web orientado al cuidado y gestión de mascotas. Permite registrar mascotas, consultar y editar su información, acceder a su carnet digital e historial médico, publicar alertas comunitarias y consultar lugares relacionados con el cuidado animal.
 
-## 1. Identificación
-
-**Asignatura:** Taller de Proyectos Interactivos  
-**Carrera:** Ingeniería Multimedia e Interactividad Digital  
-**Periodo:** 2/2026  
-**Equipo:** Gatos
-
-### Equipo y aportes
-
-| Integrante | Cuenta GitHub | Accountability Scrum | Principales aportes técnicos |
-|---|---|---|---|
-| Heidy Quispe | HeidyCamila | Product Owner | Componentes de interfaz y páginas de mascotas; M5 de mascotas; M6 de historial y lugares; validaciones de API y proxy de Vite; integración frontend-backend; CRUD de mascotas; esquema y persistencia SQLite de `pets`; reglas de negocio de alertas y revisión final. |
-| Daniel Gutierrez | dani4773 | Scrum Master | Componentes agrupados y páginas de comunidad; flujos M5; backend inicial con Express; endpoints de mascotas e historial médico; correcciones EC2 y datos demo; esquema SQLite de alertas y persistencia de alertas/lugares. |
-| Soledad Vasquez | soledadvasquez-a11y | Developer | Páginas iniciales e historial médico; M5 de comunidad; M6 de alertas; integración de mascotas, alertas y mapa con la API; actualización de documentación; esquema y persistencia SQLite de historial/lugares; integridad referencial y cierre final de SQLite. |
-
-> En Scrum, Product Owner, Scrum Master y Developers forman parte del mismo Scrum Team. En este proyecto académico, los tres integrantes participaron también en la construcción técnica del producto. El historial del repositorio conserva ramas y commits de las distintas fases de trabajo; algunas ramas tuvieron participación compartida.
+El proyecto integra **React + Vite** en el frontend, una **API REST con Node.js + Express** y persistencia mediante **SQLite**.
 
 ---
 
-## 2. Problema
-
-En La Paz, nuestras mascotas son parte vital de la familia, pero la ciudad carece de una red centralizada y accesible para su cuidado. Cuando un animalito se extravía, la angustia y desesperación de los tutores es inmensa; por ello, se necesita una herramienta comunitaria que facilite la difusión de alertas y contribuya a lograr un reencuentro seguro.
-
-Además, el día a día puede complicarse al no contar con acceso rápido y organizado a información sobre la salud de las mascotas, servicios veterinarios y espacios urbanos donde nuestros compañeros de cuatro patas sean bienvenidos.
-
----
-
-## 3. Usuario principal
-
-Familias paceñas y tutores de mascotas que buscan brindar una mejor calidad de vida, seguridad y cuidado responsable a sus animales.
-
-**Usuarios o actores secundarios:**
-- **Clínicas y servicios veterinarios:** establecimientos relacionados con la salud animal que pueden ser consultados por los tutores.
-- **Locales y espacios Pet-Friendly:** cafeterías, parques, plazas y otros espacios urbanos que aceptan mascotas.
-- **Personas de la comunidad:** ciudadanos que pueden consultar y compartir alertas relacionadas con mascotas extraviadas.
-
----
-
-## 4. Objetivo / resultado esperado
-
-Transformar a La Paz en una comunidad solidaria que proteja a sus animales, facilitando una tenencia responsable y amorosa. Para ello, PetPass centraliza información de las mascotas y conecta a sus tutores con herramientas digitales relacionadas con su cuidado, seguridad y bienestar.
-
----
-
-## 5. Valor esperado
-
-Facilitar la organización de la información de las mascotas y mejorar el acceso a herramientas de comunicación comunitaria en caso de extravío. Adicionalmente, brindar a los tutores mayor comodidad para consultar registros médicos y encontrar lugares relacionados con el cuidado de sus animales.
-
----
-
-## 6. Product Goal
-
-Convertir a PetPass en una red de identidad digital y seguridad colaborativa para mascotas en La Paz, promoviendo una tenencia responsable, informada y solidaria.
-
-**Criterio de revisión:**
-- **¿Expresa una dirección de producto?** Sí. Define que el producto busca convertirse en una plataforma de protección, identidad y comunidad para mascotas en La Paz.
-- **¿Está orientado a valor?** Sí. Su foco está en la tranquilidad de los tutores, la seguridad de las mascotas y la convivencia responsable.
-- **¿Evita enumerar funcionalidades?** Sí. Se enfoca en el propósito y el impacto del producto.
-- **¿Permite que las funcionalidades evolucionen sin perder el objetivo?** Sí. PetPass puede incorporar nuevas herramientas manteniendo su propósito principal.
-
----
-
-## 7. Producto / MVP actual
-
-PetPass La Paz es una aplicación web orientada a tutores de mascotas que centraliza información básica de sus animales, historial médico, alertas comunitarias y lugares relacionados con el cuidado de mascotas.
-
-El MVP está desarrollado con React y Vite en el frontend y Node.js con Express en el backend. La aplicación consume una API REST conectada a una base de datos SQLite, que permite almacenar y gestionar la información de mascotas, registros médicos, alertas y lugares.
-
-La integración de SQLite permite que los datos creados o modificados mediante la API permanezcan almacenados incluso después de reiniciar el servidor.
-
-### Funcionalidades del MVP
-- **Gestión de mascotas:** registro y administración de perfiles de animales.
-- **Carnet digital:** visualización de información identificativa de las mascotas.
-- **Historial médico:** consulta y gestión de registros relacionados con la salud de los animales.
-- **Alertas comunitarias:** gestión de información sobre mascotas extraviadas y otras alertas comunitarias.
-- **Lugares:** consulta de espacios y establecimientos relacionados con el cuidado de mascotas.
-
-### Alcance y limitaciones
-El MVP actual incorpora persistencia de datos mediante SQLite en el backend y utiliza información de demostración para inicializar las tablas cuando se crea una base de datos vacía.
-
-La aplicación no incluye:
-- Dispositivos físicos o collares con rastreo GPS incorporado.
-- Comercio electrónico o pasarelas de pago.
-- Integración con dispositivos externos de geolocalización.
-
----
-
-## 8. Enfoque de trabajo
-
-**Enfoque predominante:** Ágil / adaptativo  
-**Framework de trabajo:** Scrum  
-**Forma de desarrollo:** Iterativa e incremental.
-
-### Justificación
-El proyecto utiliza un enfoque ágil porque permite desarrollar, probar y mejorar progresivamente las funcionalidades de PetPass.
-
-Durante el desarrollo se trabajó en la construcción de interfaces con React, la implementación de una API REST con Express, la integración entre frontend y backend y la incorporación de persistencia de datos mediante SQLite.
-
-La organización mediante Scrum permite distribuir responsabilidades, revisar los avances y adaptar el producto según las necesidades identificadas durante las diferentes etapas del proyecto.
-
----
-
-## 9. Tecnologías utilizadas
-
-### Frontend
-- React
-- Vite
-- JavaScript
-- CSS
-
-### Backend
-- Node.js 22.5 o superior
-- Express
-- API REST
-- SQLite mediante el módulo integrado `node:sqlite`
-
-### Base de datos
-- SQLite
-- Claves primarias y foráneas
-- Consultas SQL parametrizadas
-- Restricciones de integridad referencial
-
-### Herramientas de desarrollo
-- Git
-- GitHub
-- Visual Studio Code
-- npm
-
----
-
-## 10. Arquitectura actual
-
-PetPass utiliza una arquitectura cliente-servidor en el que el frontend se comunica con el backend mediante una API REST. El backend gestiona las solicitudes y realiza las operaciones de lectura y escritura directamente sobre la base de datos SQLite.
-
-### Flujo de arquitectura
-
-          React + Vite
-                |
-                v
-             /api/*
-                |
-                v
-        Node.js + Express
-                |
-                v
-         Controladores API
-                |
-                v
-             SQLite
-          (petpass.db)
-
-Los principales recursos gestionados mediante la API son:
-- Mascotas
-- Historial médico
-- Alertas
-- Lugares
-
-Los controladores utilizan consultas SQL parametrizadas para gestionar la información almacenada en SQLite.
-
-Los datos de demostración ubicados en `backend/src/data/` se conservan como fuentes de inicialización (seeds), no como almacenamiento definitivo. Cuando se crea una base de datos vacía, `backend/src/db.js` utiliza estos datos para inicializar las tablas correspondientes.
-
-La integración mantiene la separación entre frontend y backend mediante las rutas existentes de la API REST.
-
----
-
-## 11. Base de datos y persistencia
-
-PetPass utiliza SQLite en el backend mediante el módulo integrado `node:sqlite` de Node.js.
-
-La base de datos local se crea en:
-`backend/petpass.db`
-
-Este archivo corresponde a la base de datos de desarrollo y está excluido del seguimiento de Git mediante la regla `*.db`.
-
-### Tablas
-La base de datos contiene cuatro tablas principales:
-- **pets:** almacena la información de las mascotas.
-- **medical_records:** almacena los registros del historial médico.
-- **places:** almacena los lugares relacionados con el cuidado y bienestar de las mascotas.
-- **alerts:** almacena las alertas comunitarias.
-
-### Inicialización de datos
-Los datos de demostración ubicados en `backend/src/data/` se conservan únicamente como seeds.
-
-Al crear una base de datos vacía, `backend/src/db.js` carga los datos iniciales correspondientes a las tablas. La inicialización evita volver a insertar los datos demo cuando las tablas ya contienen registros.
-
-### Operaciones de persistencia
-Los controladores trabajan directamente con SQLite mediante consultas parametrizadas:
-- `SELECT` para consultar información.
-- `INSERT` para crear registros.
-- `UPDATE` para modificar registros.
-- `DELETE` para eliminar registros.
-
-### Integridad referencial
-La base de datos utiliza claves foráneas para mantener la relación entre las mascotas y sus registros asociados:
-- `medical_records.petId → pets.id ON DELETE CASCADE`
-- `alerts.petId → pets.id ON DELETE SET NULL`
-
-Esto significa que:
-- **CASCADE:** cuando se elimina una mascota, sus registros médicos asociados también se eliminan automáticamente.
-- **SET NULL:** cuando se elimina una mascota, las alertas relacionadas permanecen almacenadas, pero su campo `petId` pasa a ser `NULL`.
-
-Además, `db.js` habilita:
-`PRAGMA foreign_keys = ON`
-
-Y verifica la integridad referencial mediante:
-`PRAGMA foreign_key_check`
-
-Esta comprobación permite detectar relaciones inválidas entre las tablas.
-
-### Persistencia de datos
-Los cambios realizados mediante la API permanecen almacenados después de reiniciar el servidor backend.
-
-La información no se pierde al detener y volver a iniciar la aplicación, ya que los registros se almacenan en el archivo SQLite local.
-
-### Crear una base demo limpia en desarrollo
-Para eliminar la base local y volver a inicializarla con los datos de demostración, ejecutar desde la raíz del proyecto:
-
-    Remove-Item backend/petpass.db -ErrorAction SilentlyContinue
-    cd backend
-    node src/db.js
-
-Este procedimiento está destinado al entorno de desarrollo y elimina los datos locales almacenados en la base antes de volver a crearla.
-
----
-
-## 12. Flujo principal para el EC2
-
-Un recorrido recomendado del MVP es:
-
-    HomePage
-       ↓
-    PetsPage
-       ↓
-    RegisterPetPage → POST /api/mascotas
-       ↓
-    PetsPage / HomePage → GET /api/mascotas
-       ↓
-    DigitalCardPage → GET /api/mascotas/:id
-       ↓
-    MedicalHistoryPage → GET/POST/PUT historial
-
-Como flujos complementarios:
-
-    AlertsPage → GET/POST/PUT alertas
-    MapPage    → GET lugares
-
-Este flujo permite demostrar que la aplicación consulta datos desde la API, crea y modifica información, muestra estados de carga/error y conserva los cambios después de reiniciar el backend.
-
----
-
-## 13. Cómo ejecutar el proyecto
+## Cómo ejecutar
 
 ### Requisitos
-Tener instalado:
-- Node.js 22.5 o superior.
+
+- Node.js **22.5 o superior**.
 - npm.
 - Git.
 
-### 1. Clonar el repositorio
+SQLite se utiliza mediante `node:sqlite`, por lo que no es necesario instalar un paquete SQLite adicional.
 
-    git clone https://github.com/soledadvasquez-a11y/Protecto_Interactivo_PetPass.git
+### 1. Instalar las dependencias del frontend
 
-Entrar al proyecto:
-
-    cd Protecto_Interactivo_PetPass
-
-### 2. Instalar dependencias del frontend
 Desde la raíz del proyecto:
 
-    npm install
+```powershell
+npm install
+```
 
-### 3. Instalar dependencias del backend
-Ingresar a la carpeta backend:
+### 2. Instalar las dependencias del backend
 
-    cd backend
-    npm install
-    cd ..
+```powershell
+cd backend
+npm install
+```
 
-### 4. Ejecutar el backend
-Desde una terminal:
+Luego volver a la raíz:
 
-    cd backend
-    npm run dev
+```powershell
+cd ..
+```
 
-El servidor backend se ejecuta en:
-`http://localhost:3000`
+### 3. Encender el backend
 
-Para verificar su funcionamiento:
-`http://localhost:3000/api/health`
+En una primera terminal:
+
+```powershell
+cd backend
+npm run dev
+```
+
+El servidor Express estará disponible normalmente en:
+
+```text
+http://localhost:3000
+```
+
+Puede comprobarse mediante:
+
+```text
+http://localhost:3000/api/health
+```
 
 Respuesta esperada:
 
-    {
-      "status": "ok"
-    }
+```json
+{
+  "status": "ok"
+}
+```
 
-La base de datos SQLite se crea e inicializa automáticamente cuando el backend utiliza `backend/src/db.js` por primera vez.
+### 4. Encender el frontend
 
-### 5. Ejecutar el frontend
-Abrir otra terminal desde la raíz del proyecto:
+En una segunda terminal, desde la raíz del proyecto:
 
-    npm run dev
+```powershell
+npm run dev
+```
 
 Vite mostrará la dirección local de la aplicación, normalmente:
-`http://localhost:5173`
 
-El frontend utiliza el proxy de Vite para enviar las solicitudes que comienzan con `/api/` al backend en `http://localhost:3000`.
+```text
+http://localhost:5173
+```
 
-### Importante
-Para utilizar las funcionalidades integradas de PetPass, deben estar ejecutándose simultáneamente:
-- El servidor frontend (React + Vite).
-- El servidor backend (Node.js + Express).
+### Base de datos
 
----
+La base de datos:
 
-## 14. Evidencias del proyecto
+```text
+backend/petpass.db
+```
 
-- [x] Ficha Inicial del Proyecto – Versión 0.1.
-- [x] Matriz de selección de ideas y enfoque.
-- [x] Product Goal aprobado por el equipo.
-- [x] Scrum Team identificado.
-- [x] Repositorio GitHub creado.
-- [x] Frontend y backend integrados mediante API REST.
-- [x] M4, M5 y M6 actualizados para el EC2.
-- [x] Persistencia implementada con SQLite.
-- [x] README con instrucciones de ejecución y aportes del equipo.
+se crea automáticamente cuando se inicia el backend por primera vez.
 
----
+Si las tablas están vacías, el proyecto carga los datos iniciales de demostración desde:
 
-## 15. Referencias de trabajo
+```text
+backend/src/data
+```
 
-- Scrum Guide 2020 – Ken Schwaber y Jeff Sutherland: https://scrumguides.org/download
-- PMI – A Spectrum of Approaches: https://www.pmi.org/learning/thought-leadership/series/achieving-greater-agility/spectrum-of-approaches
-- PMI – Agile Practice Guide, Second Edition: https://www.pmi.org/standards/agile
+Los archivos `.db` están excluidos de Git mediante `.gitignore`.
 
 ---
 
-## 16. Historial del documento
+## Tecnologías
 
-| Versión | Fecha | Cambio principal |
-|---|---|---|
-| 0.1 | 10/09/2026 | Definición inicial del proyecto. |
-| 0.2 | 12/11/2026 | Actualización del MVP, tecnologías, arquitectura, integrantes e instrucciones de ejecución del proyecto. |
-| 0.3 | 17/11/2026 | Integración de SQLite, documentación de persistencia, tablas, seeds e integridad referencial. |
-| 0.4 | 17/11/2026 | Cierre documental para EC2: cuentas GitHub, aportes técnicos, flujo principal, requisitos y evidencias finales. |
+### Frontend
+
+- React
+- Vite
+- React Router
+- CSS
+- Fetch API
+
+### Backend
+
+- Node.js
+- Express
+- API REST
+
+### Base de datos
+
+- SQLite mediante `node:sqlite`
+
+### Desarrollo y organización
+
+- Git
+- GitHub
+- Pull Requests
+- Ramas por funcionalidad
+
+---
+
+## Arquitectura general
+
+```text
+Frontend React
+     ↓
+fetch('/api/...')
+     ↓
+Proxy de Vite
+     ↓
+Express
+     ↓
+Rutas
+     ↓
+Controladores
+     ↓
+SQLite
+```
+
+Durante el desarrollo, el frontend se ejecuta normalmente en el puerto `5173` y el backend en el puerto `3000`.
+
+El proxy configurado en Vite redirige las solicitudes que comienzan con:
+
+```text
+/api
+```
+
+hacia el backend de Express.
+
+Esto permite realizar solicitudes desde React utilizando rutas relativas como:
+
+```js
+fetch('/api/mascotas')
+```
+
+sin escribir directamente la dirección del servidor backend en cada página.
+
+---
+
+## Flujo principal
+
+El flujo principal de PetPass permite registrar una mascota, consultar su información y acceder a diferentes herramientas relacionadas con su cuidado.
+
+```text
+HomePage
+   ↓
+Mis Mascotas
+   ↓
+Seleccionar mascota
+   ↓
+Detalle de mascota
+   ├── Editar mascota
+   ├── Carnet digital
+   └── Historial médico
+```
+
+La creación de una nueva mascota sigue este flujo:
+
+```text
+RegisterPetPage
+      ↓
+POST /api/mascotas
+      ↓
+Express
+      ↓
+SQLite
+      ↓
+PetsPage
+      ↓
+GET /api/mascotas
+```
+
+Una mascota creada desde el formulario queda almacenada en SQLite y continúa disponible incluso después de reiniciar la API.
+
+PetPass también incluye módulos complementarios:
+
+```text
+HomePage
+   ├── Mascotas
+   ├── Historial médico
+   ├── Alertas comunitarias
+   └── Mapa de lugares
+```
+
+---
+
+## Funcionalidades principales
+
+### Mascotas
+
+Permite:
+
+- listar mascotas;
+- consultar una mascota por id;
+- registrar una mascota;
+- editar sus datos;
+- cambiar su estado;
+- eliminar una mascota;
+- acceder a su carnet digital;
+- acceder a su historial médico.
+
+### Historial médico
+
+Permite consultar los registros médicos correspondientes a una mascota.
+
+Los registros pueden clasificarse como:
+
+```text
+vaccine
+deworming
+consultation
+```
+
+También pueden crearse y editarse desde la aplicación.
+
+### Alertas comunitarias
+
+PetPass permite trabajar con alertas de:
+
+```text
+lost
+adoption
+emergency
+```
+
+Las alertas pueden filtrarse por tipo y zona.
+
+También pueden publicarse desde la interfaz y cambiar su estado entre:
+
+```text
+active
+resolved
+```
+
+Cuando una alerta `lost` activa está vinculada a una mascota registrada, PetPass mantiene sincronizado el estado de la mascota.
+
+### Mapa de lugares
+
+Permite consultar lugares relacionados con el cuidado animal.
+
+La interfaz incluye:
+
+- búsqueda;
+- filtros por categoría;
+- marcadores;
+- selección de lugares;
+- información detallada del lugar seleccionado.
+
+---
+
+## API REST
+
+La API utiliza el prefijo:
+
+```text
+/api
+```
+
+### Estado del servidor
+
+```text
+GET /api/health
+```
+
+Comprueba que la API esté encendida.
+
+### Mascotas
+
+```text
+GET    /api/mascotas
+GET    /api/mascotas/:id
+POST   /api/mascotas
+PUT    /api/mascotas/:id
+DELETE /api/mascotas/:id
+```
+
+`GET /api/mascotas` acepta el filtro:
+
+```text
+?especie=
+```
+
+### Historial médico
+
+```text
+GET  /api/mascotas/:petId/historial
+GET  /api/historial/:id
+POST /api/mascotas/:petId/historial
+PUT  /api/historial/:id
+```
+
+El historial de una mascota también puede filtrarse mediante:
+
+```text
+?type=
+```
+
+### Lugares
+
+```text
+GET /api/lugares
+GET /api/lugares/:id
+```
+
+El listado acepta:
+
+```text
+?category=
+?q=
+```
+
+### Alertas
+
+```text
+GET  /api/alertas
+GET  /api/alertas/:id
+POST /api/alertas
+PUT  /api/alertas/:id
+```
+
+El listado puede filtrarse mediante:
+
+```text
+?type=
+?zone=
+```
+
+---
+
+## Validaciones de la API
+
+La API utiliza respuestas HTTP para diferenciar distintos tipos de resultados.
+
+### 200
+
+Solicitud realizada correctamente.
+
+### 201
+
+Recurso creado correctamente.
+
+Por ejemplo:
+
+```text
+POST /api/mascotas
+POST /api/alertas
+```
+
+### 204
+
+Operación completada correctamente sin contenido de respuesta.
+
+Por ejemplo, al eliminar una mascota.
+
+### 400
+
+Se utiliza cuando los datos recibidos no son válidos.
+
+Ejemplos:
+
+```text
+El id debe ser un número
+Especie no válida
+Tipo de alerta no válido
+Zona no válida
+La descripción es obligatoria
+```
+
+### 404
+
+Se utiliza cuando el recurso solicitado no existe.
+
+Ejemplos:
+
+```text
+Mascota no encontrada
+Registro médico no encontrado
+Lugar no encontrado
+Alerta no encontrada
+Ruta no encontrada
+```
+
+---
+
+## Base de datos
+
+PetPass utiliza SQLite para almacenar la información de forma persistente.
+
+La base contiene cuatro tablas principales, correspondientes a las listas de datos documentadas en M5:
+
+```text
+pets
+medical_records
+places
+alerts
+```
+
+### `pets`
+
+Almacena la información principal de las mascotas:
+
+```text
+id
+name
+photo
+species
+breed
+age
+weight
+sex
+color
+birthDate
+status
+```
+
+### `medical_records`
+
+Almacena los registros médicos asociados a una mascota:
+
+```text
+id
+petId
+type
+title
+date
+nextDate
+place
+description
+```
+
+`petId` referencia a:
+
+```text
+pets(id)
+```
+
+Si se elimina una mascota, sus registros médicos asociados se eliminan mediante:
+
+```text
+ON DELETE CASCADE
+```
+
+### `places`
+
+Almacena los lugares mostrados en el mapa:
+
+```text
+id
+category
+type
+name
+address
+schedule
+description
+photo
+position
+```
+
+El campo `position` se almacena en formato JSON.
+
+### `alerts`
+
+Almacena las alertas comunitarias:
+
+```text
+id
+type
+petId
+petName
+photo
+zone
+location
+date
+description
+contact
+status
+```
+
+Cuando una alerta está asociada a una mascota, `petId` referencia a:
+
+```text
+pets(id)
+```
+
+Si la mascota es eliminada, la alerta puede conservarse y su relación pasa a:
+
+```text
+petId = NULL
+```
+
+mediante:
+
+```text
+ON DELETE SET NULL
+```
+
+---
+
+## Persistencia
+
+Los controladores trabajan directamente con SQLite mediante operaciones SQL.
+
+Las operaciones principales son:
+
+```text
+GET     → SELECT
+POST    → INSERT
+PUT     → UPDATE
+DELETE  → DELETE
+```
+
+Por ejemplo, al registrar una mascota:
+
+```text
+Formulario React
+      ↓
+POST /api/mascotas
+      ↓
+INSERT INTO pets
+      ↓
+SQLite
+```
+
+Al reiniciar el backend y volver a consultar:
+
+```text
+GET /api/mascotas
+```
+
+el registro continúa disponible porque los datos ya no dependen de arreglos en memoria.
+
+---
+
+## Integridad referencial
+
+El proyecto habilita las claves foráneas de SQLite mediante:
+
+```sql
+PRAGMA foreign_keys = ON;
+```
+
+Después de inicializar y cargar los datos, también se comprueba la integridad mediante:
+
+```sql
+PRAGMA foreign_key_check;
+```
+
+Esto permite detectar referencias inválidas entre las tablas.
+
+Las relaciones principales son:
+
+```text
+pets
+ ├── medical_records
+ │      ON DELETE CASCADE
+ │
+ └── alerts
+        ON DELETE SET NULL
+```
+
+---
+
+## Datos de demostración
+
+Los archivos de:
+
+```text
+backend/src/data
+```
+
+se conservan únicamente como datos iniciales o seeds.
+
+Los controladores no utilizan esos arreglos como almacenamiento principal.
+
+Cuando la base de datos está vacía, los seeds permiten crear un conjunto inicial de datos para probar y presentar la aplicación.
+
+El estado inicial incluye datos de demostración para:
+
+```text
+6 mascotas
+13 registros médicos
+8 lugares
+6 alertas
+```
+
+---
+
+## Manejo de estados en el frontend
+
+Las páginas que consumen información de la API manejan estados como:
+
+```text
+loading
+error
+saving
+```
+
+Esto permite mostrar mensajes al usuario durante las solicitudes.
+
+Por ejemplo:
+
+```text
+Cargando...
+No se pudo cargar...
+Guardando...
+```
+
+Si el backend está apagado y una solicitud `fetch` falla, la aplicación muestra un aviso de conexión en lugar de dejar la pantalla sin respuesta.
+
+---
+
+## Organización del proyecto
+
+```text
+petpass-la-paz/
+│
+├── public/
+│
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── layouts/
+│   ├── pages/
+│   └── App.jsx
+│
+├── backend/
+│   └── src/
+│       ├── controllers/
+│       ├── data/
+│       ├── routes/
+│       ├── db.js
+│       └── server.js
+│
+├── README.md
+├── package.json
+└── vite.config.js
+```
+
+---
+
+## Equipo y aportes
+
+| Integrante | Cuenta de GitHub | Páginas y componentes | Endpoints y base de datos |
+|---|---|---|---|
+| **Heidy Quispe** | `HeidyCQC` · `HeidyCamila` | RegisterPetPage, PetsPage, DigitalCardPage, componentes de mascotas e historial, M5 de mascotas e integración final frontend–backend | Validaciones de API, proxy de Vite, integración CRUD de mascotas, esquema SQLite de `pets`, persistencia de mascotas y reglas de sincronización entre alertas `lost` y estado de mascotas |
+| **Daniel Gutierrez** | `dani4773` · `Daniel Gutierrez` | PublicPetProfilePage, MapPage, AlertsPage, AccountPage, componentes compartidos y flujos de mascotas/comunidad | Servidor Express inicial, endpoints de mascotas e historial médico, datos de demostración, esquema SQLite de `alerts` y persistencia de alertas/lugares |
+| **Soledad Vasquez** | `soledadvasquez-a11y` | OnboardingPage, LoginPage, HomePage, RegisterTutorPage, historial médico, M5 de comunidad e integración de páginas con la API | API de alertas, integración HomePage/DigitalCardPage, esquema SQLite de `medical_records` y `places`, persistencia del historial médico, integridad referencial y cierre final de SQLite |
+
+### Trabajo colaborativo
+
+El proyecto fue desarrollado mediante ramas de trabajo y Pull Requests integrados progresivamente a `main`.
+
+Durante las diferentes etapas se trabajó en:
+
+- componentes reutilizables;
+- páginas del flujo principal;
+- documentación M4, M5 y M6;
+- estados y condiciones de interfaz;
+- API REST;
+- validaciones;
+- conexión frontend–backend;
+- CRUD;
+- persistencia SQLite;
+- integridad referencial;
+- reglas de negocio;
+- pruebas de regresión;
+- documentación final para el EC2.
+
+---
+
+## Evidencias del EC2
+
+El proyecto permite demostrar:
+
+```text
+✓ Arranque del frontend y backend siguiendo este README
+✓ Lista → detalle → acción
+✓ Creación mediante POST desde la interfaz
+✓ Persistencia después de reiniciar la API
+✓ Modificación mediante PUT
+✓ Eliminación mediante DELETE
+✓ Respuestas 400 ante datos inválidos
+✓ Respuestas 404 ante recursos inexistentes
+✓ Manejo visual cuando la API está apagada
+✓ Datos persistentes en SQLite
+✓ Frontend integrado con la API
+```
+
+La documentación de estados y datos se encuentra en M5 y la documentación de endpoints en M6.
+
+---
+
+## Estado actual
+
+PetPass La Paz cuenta con un MVP web integrado que conecta:
+
+```text
+Interfaz React
+      +
+Estado y formularios
+      +
+API Express
+      +
+SQLite
+      +
+Persistencia
+```
+
+El proyecto está preparado para demostrar el flujo completo de integración requerido en el EC2.
