@@ -29,6 +29,7 @@ const ZONE_LABELS = {
 
 function parseNumericId(value) {
   const id = Number(value);
+
   return Number.isNaN(id) ? null : id;
 }
 
@@ -52,6 +53,33 @@ function findAlert(id) {
   return db
     .prepare('SELECT * FROM alerts WHERE id = ?')
     .get(id);
+}
+
+function syncPetLostStatus(petId) {
+  if (petId === null || petId === undefined) {
+    return;
+  }
+
+  const activeLostAlert = db
+    .prepare(`
+      SELECT id
+      FROM alerts
+      WHERE
+        petId = ?
+        AND type = 'lost'
+        AND status = 'active'
+      LIMIT 1
+    `)
+    .get(petId);
+
+  db.prepare(`
+    UPDATE pets
+    SET status = ?
+    WHERE id = ?
+  `).run(
+    activeLostAlert ? 'lost' : 'normal',
+    petId
+  );
 }
 
 export function getAlerts(req, res) {
@@ -215,12 +243,8 @@ export function createAlert(req, res) {
     Number(result.lastInsertRowid)
   );
 
-  if (newAlert.type === 'lost' && selectedPet) {
-    db.prepare(`
-      UPDATE pets
-      SET status = 'lost'
-      WHERE id = ?
-    `).run(selectedPet.id);
+  if (newAlert.type === 'lost') {
+    syncPetLostStatus(newAlert.petId);
   }
 
   return res.status(201).json(newAlert);
@@ -258,31 +282,8 @@ export function updateAlert(req, res) {
     WHERE id = ?
   `).run(nextStatus, id);
 
-  if (
-    currentAlert.type === 'lost' &&
-    currentAlert.petId !== null &&
-    nextStatus === 'resolved'
-  ) {
-    const anotherActiveLostAlert = db
-      .prepare(`
-        SELECT id
-        FROM alerts
-        WHERE
-          id <> ?
-          AND type = 'lost'
-          AND petId = ?
-          AND status = 'active'
-        LIMIT 1
-      `)
-      .get(id, currentAlert.petId);
-
-    if (!anotherActiveLostAlert) {
-      db.prepare(`
-        UPDATE pets
-        SET status = 'normal'
-        WHERE id = ?
-      `).run(currentAlert.petId);
-    }
+  if (currentAlert.type === 'lost') {
+    syncPetLostStatus(currentAlert.petId);
   }
 
   return res.json(findAlert(id));
