@@ -1,3 +1,4 @@
+
 import {
   useEffect,
   useMemo,
@@ -6,11 +7,9 @@ import {
 
 import { useParams } from 'react-router-dom';
 
-import FilterTab from '../components/FilterTab/FilterTab.jsx';
 import MedicalRecordCard from '../components/MedicalRecordCard/MedicalRecordCard.jsx';
 import FormField from '../components/FormField/FormField.jsx';
 import Button from '../components/Button/Button.jsx';
-
 
 import './MedicalHistoryPage.css';
 
@@ -35,6 +34,21 @@ const TYPE_OPTIONS = [
   {
     value: 'consultation',
     label: 'Consulta',
+  },
+];
+
+const FILTERS = [
+  {
+    id: 'vaccine',
+    label: 'Vacunas',
+  },
+  {
+    id: 'deworming',
+    label: 'Desparasitación',
+  },
+  {
+    id: 'consultation',
+    label: 'Consultas',
   },
 ];
 
@@ -72,6 +86,7 @@ function MedicalHistoryPage() {
     setEditingRecordId,
   ] = useState(null);
 
+  // CARGAR REGISTROS REALES DESDE SQLITE
   useEffect(() => {
     async function loadMedicalRecords() {
       setLoading(true);
@@ -104,6 +119,7 @@ function MedicalHistoryPage() {
     loadMedicalRecords();
   }, [id]);
 
+  // FILTRAR REGISTROS
   const visibleRecords = useMemo(
     () =>
       medicalRecords.filter(
@@ -113,15 +129,23 @@ function MedicalHistoryPage() {
     [medicalRecords, activeFilter]
   );
 
+  const activeFilterLabel =
+    FILTERS.find(
+      (filter) => filter.id === activeFilter
+    )?.label || '';
+
+  // EDITAR CAMPOS
   const handleMedicalChange =
     (field) => (event) => {
       setMedicalFormData((current) => ({
         ...current,
         [field]: event.target.value,
       }));
+
       setFormError('');
     };
 
+  // ABRIR FORMULARIO NUEVO
   const handleOpenNewRecord = () => {
     setMedicalFormData({
       ...EMPTY_MEDICAL_FORM,
@@ -133,6 +157,7 @@ function MedicalHistoryPage() {
     setMedicalFormOpen(true);
   };
 
+  // ABRIR FORMULARIO DE EDICION
   const handleOpenEditRecord = (record) => {
     setMedicalFormData({
       type: record.type,
@@ -148,6 +173,7 @@ function MedicalHistoryPage() {
     setMedicalFormOpen(true);
   };
 
+  // CERRAR FORMULARIO
   const handleCloseMedicalForm = () => {
     setMedicalFormOpen(false);
 
@@ -159,6 +185,7 @@ function MedicalHistoryPage() {
     setFormError('');
   };
 
+  // GUARDAR: CONSERVAMOS POST Y PUT
   const handleSaveMedicalRecord = async () => {
     if (
       !medicalFormData.title.trim() ||
@@ -228,64 +255,73 @@ function MedicalHistoryPage() {
   return (
     <main className="page medical-history-page">
 
+      {/* ENCABEZADO */}
       <header className="medical-history-page__heading">
-
         <div>
-          <h1>
-            Historial médico
-          </h1>
+          <h1>Historial Médico</h1>
 
           <p>
             Consulta y administra los registros
             de salud de tu mascota.
           </p>
         </div>
-
-        <Button
-          variant="primary"
-          onClick={handleOpenNewRecord}
-        >
-          Agregar registro
-        </Button>
-
       </header>
 
+      {/* FILTROS EN UNA SOLA FILA */}
       <div className="medical-history-page__filters">
+        {FILTERS.map((filter) => {
+          const active =
+            activeFilter === filter.id;
 
-        <FilterTab
-          label="Vacunas"
-          active={
-            activeFilter === 'vaccine'
-          }
-          onClick={() =>
-            setActiveFilter('vaccine')
-          }
-        />
-
-        <FilterTab
-          label="Desparasitación"
-          active={
-            activeFilter === 'deworming'
-          }
-          onClick={() =>
-            setActiveFilter('deworming')
-          }
-        />
-
-        <FilterTab
-          label="Consultas"
-          active={
-            activeFilter === 'consultation'
-          }
-          onClick={() =>
-            setActiveFilter('consultation')
-          }
-        />
-
+          return (
+            <button
+              key={filter.id}
+              type="button"
+              disabled={saving}
+              onClick={() =>
+                setActiveFilter(filter.id)
+              }
+              aria-pressed={active}
+              className={[
+                'medical-history-page__filter',
+                active
+                  ? 'medical-history-page__filter--active'
+                  : '',
+              ].join(' ')}
+            >
+              {filter.label}
+            </button>
+          );
+        })}
       </div>
 
-      {medicalFormOpen && (
+      {/* TITULO, CONTADOR Y BOTON + */}
+      <div className="medical-history-page__section-header">
+        <div>
+          <h2 className="medical-history-page__section-title">
+            {activeFilterLabel}
+          </h2>
 
+          <p className="medical-history-page__section-count">
+            {visibleRecords.length} registro
+            {visibleRecords.length === 1 ? '' : 's'}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleOpenNewRecord}
+          disabled={saving}
+          className="medical-history-page__add-button"
+          aria-label="Agregar registro médico"
+          title="Agregar registro"
+        >
+          +
+        </button>
+      </div>
+
+      {/* FORMULARIO ORIGINAL */}
+      {medicalFormOpen && (
         <section className="medical-history-page__form">
 
           <h2>
@@ -326,13 +362,9 @@ function MedicalHistoryPage() {
           <FormField
             label="Próxima fecha"
             type="date"
-            value={
-              medicalFormData.nextDate
-            }
+            value={medicalFormData.nextDate}
             onChange={
-              handleMedicalChange(
-                'nextDate'
-              )
+              handleMedicalChange('nextDate')
             }
           />
 
@@ -349,14 +381,10 @@ function MedicalHistoryPage() {
           <FormField
             label="Detalle"
             type="text"
-            value={
-              medicalFormData.description
-            }
+            value={medicalFormData.description}
             placeholder="Descripción del registro"
             onChange={
-              handleMedicalChange(
-                'description'
-              )
+              handleMedicalChange('description')
             }
           />
 
@@ -367,13 +395,10 @@ function MedicalHistoryPage() {
           )}
 
           <div className="medical-history-page__form-actions">
-
             <Button
               variant="primary"
               disabled={saving}
-              onClick={
-                handleSaveMedicalRecord
-              }
+              onClick={handleSaveMedicalRecord}
             >
               {saving
                 ? 'Guardando…'
@@ -384,80 +409,70 @@ function MedicalHistoryPage() {
 
             <Button
               variant="secondary"
-              onClick={
-                handleCloseMedicalForm
-              }
+              onClick={handleCloseMedicalForm}
             >
               Cancelar
             </Button>
-
           </div>
 
         </section>
-
       )}
 
-      <section className="medical-history-page__records">
+      {/* TARJETAS MEDICAS */}
+      {!medicalFormOpen && (
+        <section className="medical-history-page__records">
 
-        {loading && (
-          <div className="medical-history-page__empty">
-            <p>Cargando historial médico…</p>
-          </div>
-        )}
+          {loading && (
+            <div className="medical-history-page__empty">
+              <p>Cargando historial médico…</p>
+            </div>
+          )}
 
-        {!loading && error && (
-          <div className="medical-history-page__empty">
-            <h3>No se pudo cargar</h3>
-            <p role="alert">{error}</p>
-          </div>
-        )}
+          {!loading && error && (
+            <div className="medical-history-page__empty">
+              <h3>No se pudo cargar</h3>
+              <p role="alert">{error}</p>
+            </div>
+          )}
 
-        {!loading &&
-          !error &&
-          visibleRecords.length === 0 && (
+          {!loading &&
+            !error &&
+            visibleRecords.length === 0 && (
+              <div className="medical-history-page__empty">
+                <span aria-hidden="true">
+                  🩺
+                </span>
 
-          <div className="medical-history-page__empty">
+                <h3>
+                  No hay registros en esta categoría
+                </h3>
 
-            <span aria-hidden="true">
-              🩺
-            </span>
+                <p>
+                  Puedes agregar el primer registro
+                  médico de esta categoría.
+                </p>
+              </div>
+            )}
 
-            <h3>
-              No hay registros en esta categoría
-            </h3>
+          {!loading &&
+            !error &&
+            visibleRecords.map((record) => (
+              <MedicalRecordCard
+                key={record.id}
+                type={record.type}
+                title={record.title}
+                date={record.date}
+                nextDate={record.nextDate}
+                place={record.place}
+                description={record.description}
+                onEdit={() =>
+                  handleOpenEditRecord(record)
+                }
+              />
+            ))}
 
-            <p>
-              Puedes agregar el primer registro
-              médico de esta categoría.
-            </p>
-
-          </div>
-
-        )}
-
-        {!loading &&
-          !error &&
-          visibleRecords.map(
-          (record) => (
-            <MedicalRecordCard
-              key={record.id}
-              type={record.type}
-              title={record.title}
-              date={record.date}
-              place={record.place}
-              description={
-                record.description
-              }
-              onClick={() =>
-                handleOpenEditRecord(
-                  record
-                )
-              }
-            />
-          )
-        )}
-
-      </section>
+        </section>
+      )}
 
     </main>
   );

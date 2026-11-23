@@ -1,61 +1,101 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* TARJETA PRINCIPAL */
 
 .medical-record-card {
   width: 100%;
-  max-width: 384px;
-  min-height: 74px;
   box-sizing: border-box;
 
-  padding: 12px 20px;
-  background-color: #faf8f5; /* Fondo crema muy suave de Figma */
-  border-radius: 24px;       /* Píldora redondeada */
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 16px 17px;
 
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  background-color: #fbfaf8;
+  border: 1px solid #f0ede7;
+  border-radius: 27px;
 
   font-family: 'Poppins', sans-serif;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.04);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .medical-record-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.06);
 }
 
-/* Círculo indicador izquierdo */
+/* PARTE SUPERIOR */
+
+.medical-record-card__top {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.medical-record-card__summary {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  font: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+/* CIRCULO DEL ICONO */
+
 .medical-card__badge {
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   flex-shrink: 0;
 }
 
-/* Vacuna: verde oliva */
+/* VACUNAS */
 .medical-card__badge--vaccine {
   background-color: #d6d396;
   color: #585526;
 }
 
-/* Desparasitación: naranja suave */
+/* DESPARASITACION */
 .medical-card__badge--deworming {
   background-color: #f7bda8;
   color: #8c3618;
 }
 
-/* Consulta: amarillo mostaza cálido */
+/* CONSULTAS */
 .medical-card__badge--consultation {
   background-color: #fde8be;
   color: #7a6328;
 }
 
+/* TEXTO */
+
 .medical-card__content {
+  flex: 1;
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -63,14 +103,135 @@
 
 .medical-card__title {
   margin: 0;
+
   font-size: 16px;
   font-weight: 600;
+  line-height: 1.3;
+
   color: #2b2826;
-  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .medical-card__date {
   font-size: 13px;
   font-weight: 400;
   color: #7d7975;
+}
+
+/* BOTON EDITAR */
+
+.medical-record-card__edit {
+  width: 36px;
+  height: 40px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #8c8780;
+
+  cursor: pointer;
+}
+
+.medical-record-card__edit:hover {
+  background-color: #f0ece6;
+  color: #d1734b;
+}
+
+/* VER / OCULTAR DETALLES */
+
+.medical-record-card__details-toggle {
+  display: block;
+
+  margin: 8px 0 0 auto;
+  padding: 4px;
+
+  border: none;
+  background: transparent;
+
+  color: #8b867b;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.medical-record-card__details-toggle:hover {
+  color: #d1734b;
+}
+
+/* INFORMACION DESPLEGABLE */
+
+.medical-record-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  margin-top: 12px;
+  padding-top: 12px;
+
+  border-top: 1px solid #ebe6de;
+}
+
+.medical-record-card__details p {
+  margin: 0;
+
+  color: #524b48;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.medical-record-card__details strong {
+  font-weight: 600;
+}
+
+.medical-record-card__description {
+  margin-top: 6px;
+  padding: 11px 13px;
+
+  border-radius: 15px;
+
+  background-color: #f4f0e9;
+  color: #524b48;
+
+  font-size: 12px;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+/* ADAPTACION MOVIL */
+
+@media (max-width: 480px) {
+  .medical-record-card {
+    padding: 14px;
+    border-radius: 24px;
+  }
+
+  .medical-card__badge {
+    width: 52px;
+    height: 52px;
+  }
+
+  .medical-card__title {
+    font-size: 14px;
+  }
+
+  .medical-card__date {
+    font-size: 12px;
+  }
+
+  .medical-record-card__summary {
+    gap: 10px;
+  }
 }

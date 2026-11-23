@@ -1,9 +1,36 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import PetCard from '../components/PetCard/PetCard.jsx';
 
 import './HomePage.css';
+
+// Estilos exclusivos de la etiqueta de mascota perdida.
+// No modificamos los estilos originales de las tarjetas.
+const petWrapperStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'stretch',
+  gap: '8px',
+  width: '100%',
+  minWidth: 0,
+};
+
+const lostBadgeStyle = {
+  alignSelf: 'flex-start',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '6px',
+  padding: '6px 12px',
+  borderRadius: '12px',
+  border: '1px solid #E6AAA0',
+  backgroundColor: '#FDE8E5',
+  color: '#A73A2D',
+  fontFamily: 'Poppins, sans-serif',
+  fontSize: '12px',
+  fontWeight: 600,
+};
 
 function HomePage() {
   const navigate = useNavigate();
@@ -18,10 +45,7 @@ function HomePage() {
       setError('');
 
       try {
-        const response = await fetch(
-          '/api/mascotas'
-        );
-
+        const response = await fetch('/api/mascotas');
         const data = await response.json();
 
         if (response.ok) {
@@ -51,6 +75,7 @@ function HomePage() {
   return (
     <div className="home-page">
       <main className="home-content">
+
         <section className="home-page__welcome">
           <div className="home-page__welcome-text">
             <h1>Hola, Usuario!</h1>
@@ -66,27 +91,14 @@ function HomePage() {
               width="130"
               height="130"
             >
-              <circle
-                cx="20"
-                cy="35"
-                r="12"
+              <circle cx="20" cy="35" r="12" />
+              <circle cx="45" cy="18" r="12" />
+              <circle cx="75" cy="28" r="12" />
+              <circle cx="92" cy="55" r="11" />
+
+              <path
+                d="M 28 68 C 22 46, 82 46, 76 68 C 70 86, 34 86, 28 68 Z"
               />
-              <circle
-                cx="45"
-                cy="18"
-                r="12"
-              />
-              <circle
-                cx="75"
-                cy="28"
-                r="12"
-              />
-              <circle
-                cx="92"
-                cy="55"
-                r="11"
-              />
-              <path d="M 28 68 C 22 46, 82 46, 76 68 C 70 86, 34 86, 28 68 Z" />
             </svg>
           </div>
         </section>
@@ -96,21 +108,14 @@ function HomePage() {
 
           {loading && (
             <div className="home-page__empty">
-              <p>
-                Cargando mascotas…
-              </p>
+              <p>Cargando mascotas…</p>
             </div>
           )}
 
           {!loading && error && (
             <div className="home-page__empty">
-              <h3>
-                No se pudo cargar
-              </h3>
-
-              <p role="alert">
-                {error}
-              </p>
+              <h3>No se pudo cargar</h3>
+              <p role="alert">{error}</p>
             </div>
           )}
 
@@ -131,9 +136,8 @@ function HomePage() {
 
                 <p>
                   Puedes usar PetPass aunque todavía
-                  no tengas una mascota. Cuando
-                  quieras, puedes registrar una
-                  desde aquí.
+                  no tengas una mascota. Cuando quieras,
+                  puedes registrar una desde aquí.
                 </p>
 
                 <button
@@ -169,13 +173,8 @@ function HomePage() {
                   </div>
 
                   <div className="home-page__register-text">
-                    <h3>
-                      Registrar mascota
-                    </h3>
-
-                    <p>
-                      Crea el PetPass de tu mascota
-                    </p>
+                    <h3>Registrar mascota</h3>
+                    <p>Crea el PetPass de tu mascota</p>
                   </div>
                 </button>
               </div>
@@ -186,21 +185,35 @@ function HomePage() {
             pets.length > 0 && (
               <>
                 {pets.map((pet) => (
-                  <PetCard
+                  <div
                     key={pet.id}
-                    variant="compact"
-                    name={pet.name}
-                    photo={pet.photo}
-                    species={pet.species}
-                    breed={pet.breed}
-                    age={pet.age}
-                    weight={pet.weight}
-                    onClick={() =>
-                      navigate(
-                        `/mascotas/${pet.id}/carnet`
-                      )
-                    }
-                  />
+                    style={petWrapperStyle}
+                  >
+                    <PetCard
+                      variant="compact"
+                      name={pet.name}
+                      photo={pet.photo}
+                      species={pet.species}
+                      breed={pet.breed}
+                      age={pet.age}
+                      weight={pet.weight}
+                      onClick={() =>
+                        navigate(
+                          `/mascotas/${pet.id}/carnet`
+                        )
+                      }
+                    />
+
+                    {/* ESTADO REAL DESDE SQLITE */}
+                    {pet.status === 'lost' && (
+                      <span
+                        style={lostBadgeStyle}
+                        role="status"
+                      >
+                        ⚠ MASCOTA PERDIDA
+                      </span>
+                    )}
+                  </div>
                 ))}
 
                 <button
@@ -236,18 +249,14 @@ function HomePage() {
                   </div>
 
                   <div className="home-page__register-text">
-                    <h3>
-                      Registrar mascota
-                    </h3>
-
-                    <p>
-                      Crea el PetPass de tu mascota
-                    </p>
+                    <h3>Registrar mascota</h3>
+                    <p>Crea el PetPass de tu mascota</p>
                   </div>
                 </button>
               </>
             )}
         </section>
+
       </main>
     </div>
   );
