@@ -11,12 +11,21 @@ function parseNumericId(value) {
   return Number.isNaN(id) ? null : id;
 }
 
+
 function toPlace(row) {
   return {
     ...row,
+
+    // Compatibilidad con el mapa ilustrado anterior.
     position: JSON.parse(row.position),
+
+    // Parte 7: indicador utilizado por el mapa nativo.
+    // Solo mostramos como verificados los lugares
+    // cuya ubicación haya sido comprobada.
+    locationVerified: row.verified === 1,
   };
 }
+
 
 export function getPlaces(req, res) {
   const category = req.query.category;
