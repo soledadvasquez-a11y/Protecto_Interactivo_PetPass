@@ -66,6 +66,36 @@ db.exec(`
   )
 `)
 
+ // =====================================================
+ // PARTE 7 - COORDENADAS GPS DE LUGARES
+ // Migración segura para bases de datos existentes.
+ // =====================================================
+
+const placeColumns = db
+  .prepare('PRAGMA table_info(places)')
+  .all()
+  .map((column) => column.name)
+
+// Agregar latitud si todavía no existe.
+if (!placeColumns.includes('latitude')) {
+  db.exec('ALTER TABLE places ADD COLUMN latitude REAL')
+}
+
+// Agregar longitud si todavía no existe.
+if (!placeColumns.includes('longitude')) {
+  db.exec('ALTER TABLE places ADD COLUMN longitude REAL')
+}
+
+// 0 = lugar no verificado.
+// 1 = ubicación comprobada.
+if (!placeColumns.includes('verified')) {
+  db.exec(`
+    ALTER TABLE places
+    ADD COLUMN verified INTEGER NOT NULL DEFAULT 0
+  `)
+}
+
+
 // =====================================================
 // TABLA ALERTS
 // petId es opcional. Si una mascota se elimina, la
@@ -194,34 +224,55 @@ const { total: totalPlaces } = db
   .get()
 
 if (totalPlaces === 0) {
-  const insertPlace = db.prepare(`
-    INSERT INTO places (
-      id,
-      category,
-      type,
-      name,
-      address,
-      schedule,
-      description,
-      photo,
-      position
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `)
 
-  for (const place of places) {
-    insertPlace.run(
-      place.id,
-      place.category,
-      place.type,
-      place.name,
-      place.address,
-      place.schedule,
-      place.description,
-      place.photo,
-      JSON.stringify(place.position)
-    )
-  }
+const insertPlace = db.prepare(`
+  INSERT INTO places (
+    id,
+    category,
+    type,
+    name,
+    address,
+    schedule,
+    description,
+    photo,
+    position,
+    latitude,
+    longitude,
+    verified
+  )
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`)
+
+
+
+for (const place of places) {
+  insertPlace.run(
+    place.id,
+    place.category,
+    place.type,
+    place.name,
+    place.address,
+    place.schedule,
+    place.description,
+    place.photo,
+
+    // Posición visual para compatibilidad web.
+    JSON.stringify(place.position ?? {}),
+
+    // Coordenadas reales para el mapa móvil.
+    Number.isFinite(place.latitude)
+      ? place.latitude
+      : null,
+
+    Number.isFinite(place.longitude)
+      ? place.longitude
+      : null,
+
+    // 1 = ubicación comprobada; 0 = demostración.
+    place.verified === 1 ? 1 : 0
+  )
+}
+
 
   console.log(
     `Seed places: ${places.length} lugares cargados`

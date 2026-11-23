@@ -104,13 +104,31 @@ function MapPage() {
     loadPlaces();
   }, [activeCategory, searchQuery]);
 
+
+  // El mapa web actual utiliza una imagen SVG.
+  // Solo admite posiciones expresadas en porcentajes.
+  // Los lugares con GPS pero sin posición SVG se
+  // mostrarán únicamente en el mapa nativo móvil.
+  const mapPlaces = places.filter((place) => {
+    const top = place.position?.top;
+    const left = place.position?.left;
+
+    return (
+      typeof top === 'string' &&
+      typeof left === 'string' &&
+      /^\d+(\.\d+)?%$/.test(top) &&
+      /^\d+(\.\d+)?%$/.test(left)
+    );
+  });
+
   const selectedPlace =
-    places.find(
+    mapPlaces.find(
       (place) =>
         place.id === selectedPlaceId
     ) ??
-    places[0] ??
+    mapPlaces[0] ??
     null;
+
 
   const handleCategoryChange = (
     categoryId
@@ -198,7 +216,7 @@ function MapPage() {
 
         {!loading &&
           !error &&
-          places.length === 0 && (
+          mapPlaces.length === 0 && (
           <div className="map-page__empty">
 
             <span aria-hidden="true">
@@ -215,7 +233,7 @@ function MapPage() {
 
         {!loading &&
           !error &&
-          places.map((place) => {
+          mapPlaces.map((place) => {
           const isSelected =
             place.id ===
             selectedPlace?.id;
